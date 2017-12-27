@@ -37,7 +37,7 @@
 
 
     <properties>
-        <service.name>microservice-baseline</service.name>
+        <service.name>HTTPLoadTest-baseline</service.name>
         <jackson.version>2.9.3</jackson.version>
         <jersey.version>2.26</jersey.version>
         <jetty.version>9.4.8.v20171121</jetty.version>
@@ -402,7 +402,7 @@
                                     <extraArgument>-XX:PermSize=32m</extraArgument>
                                     <extraArgument>-XX:MaxPermSize=32m</extraArgument>
                                     <extraArgument>-DIAM_MODE=PROD</extraArgument>
-                                    <extraArgument>-DIAM_CONFIG=config_override/microservice-baseline.PROD.properties
+                                    <extraArgument>-DIAM_CONFIG=config_override/HTTPLoadTest-baseline.PROD.properties
                                     </extraArgument>
                                     <!--<extraArgument>-Dlogback.configurationFile=file:config_override/logback.xml</extraArgument>-->
                                 </extraArguments>
