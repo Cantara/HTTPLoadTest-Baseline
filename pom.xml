@@ -30,7 +30,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
-        <connection>scm:git:https://github.com/cantara/HTTPLOadTest-baseline.git</connection>
+        <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
         <url>https://wiki.cantara.no/display/architecture/Typical+micro+service+technology+stack+(java)</url>
       <tag>HEAD</tag>
   </scm>
