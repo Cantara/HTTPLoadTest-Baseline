@@ -72,7 +72,7 @@ public class LoadTestResource {
     }
 
     @GET
-    @Path("/{artifactId}/status")
+    @Path("/{loadtestId}/status")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStatusForLoadTestInstance(@PathParam("loadTestId") String artifactId) {
         log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
