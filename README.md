@@ -7,6 +7,9 @@ A typical simple baseline for building good microservices
 
 [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
 
+
+![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
+
 Documentation
 * https://wiki.cantara.no/display/architecture/Typical+micro+service+technology+stack+(java)
 
@@ -14,7 +17,9 @@ Documentation
 Quick build and verify
 '''
 * mvn clean install
-* java -jar target/microservice-baseline-0.1-SNAPSHOT.jar
+* java -jar target/HTTPLoadTest-baseline-0.1-SNAPSHOT.jar
 * wget http://localhost:8086/HTTPLoadTest-baseline/health
-* wget "http://localhost:8086/microservice-baseline/setup
 '''
+
+Open in browser:  
+* http://localhost:8086/HTTPLoadTest-baseline/setup
