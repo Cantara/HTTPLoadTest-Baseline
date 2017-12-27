@@ -68,8 +68,15 @@
         <dependency>
             <groupId>no.cantara.base</groupId>
             <artifactId>Hystrix-BaseCommands</artifactId>
-            <version>0.1.4</version>
+            <version>0.1.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.kevinsawicki</groupId>
+            <artifactId>http-request</artifactId>
+            <version>6.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.servlet</groupId>
