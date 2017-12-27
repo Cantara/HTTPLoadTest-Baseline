@@ -1,0 +1,9 @@
+{
+  "test_id": "Default-1234",
+  "test_name": "Default values for LoadTest Configuration",
+  "test_no_of_threads": 10,
+  "test_read_write_ratio": 90,
+  "test_sleep_in_ms": 10,
+  "test_randomize_sleeptime": false,
+  "test_duration_in_seconds": 40
+}
