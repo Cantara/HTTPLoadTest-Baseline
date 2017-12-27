@@ -2,6 +2,7 @@ package no.cantara.service;
 
 import no.cantara.service.health.HealthResource;
 import no.cantara.service.oauth2ping.PingResource;
+import no.cantara.service.setup.SetupLoadTestResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedTokenVerifyResource;
 import no.cantara.util.Configuration;
@@ -30,7 +31,7 @@ import java.util.logging.LogManager;
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-07-09
  */
 public class Main {
-    public static final String CONTEXT_PATH = "/microservice-baseline";
+    public static final String CONTEXT_PATH = "/HTTPLoadTest-baseline";
     public static final String ADMIN_ROLE = "admin";
     public static final String USER_ROLE = "user";
 
@@ -111,7 +112,7 @@ public class Main {
             // "System. exit(2);"
         }
         webappPort = connector.getLocalPort();
-        log.info("microservice-baseline started on http://localhost:{}{}", webappPort, CONTEXT_PATH);
+        log.info("HTTPLoadTest-baseline started on http://localhost:{}{}", webappPort, CONTEXT_PATH);
         try {
             server.join();
         } catch (InterruptedException e) {
@@ -157,6 +158,12 @@ public class Main {
         healthEndpointConstraintMapping.setPathSpec(HealthResource.HEALTH_PATH);
         securityHandler.addConstraintMapping(healthEndpointConstraintMapping);
 
+        // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+        ConstraintMapping configEndpointConstraintMapping = new ConstraintMapping();
+        configEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        healthEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH);
+        securityHandler.addConstraintMapping(configEndpointConstraintMapping);
+
         // Allow OAuth2StubbedServerResource to be accessed without authentication
         ConstraintMapping oauthserverEndpointConstraintMapping = new ConstraintMapping();
         oauthserverEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
@@ -176,7 +183,7 @@ public class Main {
         tokenVerifyConstraintMapping.setPathSpec(OAuth2StubbedTokenVerifyResource.OAUTH2TOKENVERIFY_PATH);
         securityHandler.addConstraintMapping(tokenVerifyConstraintMapping);
 
-        HashLoginService loginService = new HashLoginService("microservice-baseline");
+        HashLoginService loginService = new HashLoginService("HTTPLoadTest-baseline");
 
         String clientUsername = Configuration.getString("login.user");
         String clientPassword = Configuration.getString("login.password");
