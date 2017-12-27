@@ -18,7 +18,7 @@ public class CommandCreateApplication extends BaseHttpPostHystrixCommand<String>
 	@Override
 	protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
 		super.dealWithRequestBeforeSend(request);
-        request.contentType("basicauthapplication/json").send(json);
+        request.contentType("loadtest/json").send(json);
         return request;
 	}
 	
@@ -34,6 +34,6 @@ public class CommandCreateApplication extends BaseHttpPostHystrixCommand<String>
 	
 	@Override
 	protected String getTargetPath() {
-        return "basicauthapplication/";
+        return "loadtest/";
     }
 }

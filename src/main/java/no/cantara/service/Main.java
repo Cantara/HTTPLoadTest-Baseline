@@ -64,7 +64,7 @@ public class Main {
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
-                    log.debug("ShutdownHook triggered. Exiting basicauthapplication");
+                    log.debug("ShutdownHook triggered. Exiting loadtest");
                     main.stop();
                 }
             });

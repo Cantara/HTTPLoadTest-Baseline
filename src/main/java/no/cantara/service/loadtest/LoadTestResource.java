@@ -1,4 +1,4 @@
-package no.cantara.service.basicauthapplication;
+package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,6 @@ import com.jayway.jsonpath.JsonPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.ws.rs.*;
@@ -18,28 +17,28 @@ import java.io.IOException;
 /**
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-09-12.
  */
-@Path(ApplicationResource.APPLICATION_PATH)
-public class ApplicationResource {
-    public static final String APPLICATION_PATH = "/application";
-    private static final Logger log = LoggerFactory.getLogger(ApplicationResource.class);
+@Path(LoadTestResource.APPLICATION_PATH)
+public class LoadTestResource {
+    public static final String APPLICATION_PATH = "/loadTest";
+    private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final String application="{}";
-    private final String applications="{}";
-    private final String applicationStatus="{}";
+    private final String loadTest = "{}";
+    private final String loadTests = "{}";
+    private final String loadTestStatus = "{}";
 
     @Autowired
-    public ApplicationResource() {
+    public LoadTestResource() {
     }
 
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createApplication(@RequestParam("application") String json) {
-        log.trace("Invoked createApplication with {}", json);
+    public Response startLoadTest(@RequestParam("loadTest") String json) {
+        log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
-        String artifactId =  JsonPath.read(document, "$.artifactId");
+        String artifactId = JsonPath.read(document, "$.loadTestId");
         if (artifactId == null) {
             Response.Status status = Response.Status.BAD_REQUEST;
             log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
@@ -49,9 +48,9 @@ public class ApplicationResource {
 
         String createdJson;
         try {
-            createdJson = mapper.writeValueAsString(application);
+            createdJson = mapper.writeValueAsString(loadTest);
         } catch (IOException e) {
-            log.warn("Could not convert to Json {}", application.toString());
+            log.warn("Could not convert to Json {}", loadTest.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.ok(createdJson).build();
@@ -60,13 +59,13 @@ public class ApplicationResource {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllApplications() {
-        log.trace("getAllApplications");
+    public Response getAllLoadTests() {
+        log.trace("getAllLoadTests");
         String jsonResponse;
         try {
-            jsonResponse = mapper.writeValueAsString(applications);
+            jsonResponse = mapper.writeValueAsString(loadTests);
         } catch (JsonProcessingException e) {
-            log.warn("Could not convert to Json {}", applications);
+            log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.ok(jsonResponse).build();
@@ -75,15 +74,15 @@ public class ApplicationResource {
     @GET
     @Path("/{artifactId}/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStatusForArtifactInstances(@PathParam("artifactId") String artifactId) {
-        log.trace("getStatusForArtifactInstances, artifactId={}", artifactId);
+    public Response getStatusForLoadTestInstance(@PathParam("loadTestId") String artifactId) {
+        log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
 
 
         String jsonResult;
         try {
-            jsonResult = mapper.writeValueAsString(applicationStatus);
+            jsonResult = mapper.writeValueAsString(loadTestStatus);
         } catch (IOException e) {
-            log.warn("Could not convert to Json {}", applicationStatus);
+            log.warn("Could not convert to Json {}", loadTestStatus);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 

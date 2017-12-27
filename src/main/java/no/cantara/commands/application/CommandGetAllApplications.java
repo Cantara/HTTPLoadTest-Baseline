@@ -17,6 +17,6 @@ public class CommandGetAllApplications extends BaseHttpGetHystrixCommand<String>
 
     @Override
 	protected String getTargetPath() {
-        return "basicauthapplication/";
+        return "loadtest/";
     }
 }
