@@ -161,7 +161,7 @@ public class Main {
         // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
         ConstraintMapping configEndpointConstraintMapping = new ConstraintMapping();
         configEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-        healthEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH);
+        configEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH);
         securityHandler.addConstraintMapping(configEndpointConstraintMapping);
 
         // Allow OAuth2StubbedServerResource to be accessed without authentication
