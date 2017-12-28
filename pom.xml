@@ -40,7 +40,7 @@
         <jackson.version>2.9.3</jackson.version>
         <jersey.version>2.26</jersey.version>
         <jetty.version>9.4.8.v20171121</jetty.version>
-        <spring.version>5.0.1.RELEASE</spring.version>
+        <spring.version>5.0.2.RELEASE</spring.version>
         <slf4j.version>1.7.25</slf4j.version>
         <hystrix.version>1.5.12</hystrix.version>
         <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -62,8 +62,8 @@
     </repositories>
 
 
+    <!-- mvn versions:display-dependency-updates -->
     <dependencies>
-
         <dependency>
             <groupId>no.cantara.base</groupId>
             <artifactId>Hystrix-BaseCommands</artifactId>
@@ -105,12 +105,17 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- https://jersey.java.net/documentation/latest/spring.html, allows Spring to inject into Jersey managed components -->
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-spring4</artifactId>
             <version>2.26</version>
             <exclusions>
+                <!-- overlap with spring-aop -->
+                <exclusion>
+                    <groupId>org.glassfish.hk2.external</groupId>
+                    <artifactId>aopalliance-repackaged</artifactId>
+                </exclusion>
+                <!-- overlap with javax.inject-2.5.0-b42 from org.glassfish.jersey.inject:jersey-hk2-->
                 <exclusion>
                     <groupId>javax.inject</groupId>
                     <artifactId>javax.inject</artifactId>
@@ -121,6 +126,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
@@ -140,8 +146,8 @@
             <version>${spring.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-jcl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -154,12 +160,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -219,7 +219,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        <!-- Flyway 3.2, httpclient and spring use Commons logging -->
+        <!-- commons-logging is used by hystrix-core, Spring 5 depend on spring-jcl instead -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -246,7 +246,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.9.10</version>
+            <version>6.13.1</version>
             <scope>test</scope>
         </dependency>
         <!-- prefer testng, junit should be phased out -->
@@ -259,7 +259,7 @@
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>2.4.1</version>
+            <version>2.9.0</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
