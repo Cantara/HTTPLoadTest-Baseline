@@ -32,8 +32,7 @@
         <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
         <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
         <url>https://wiki.cantara.no/display/architecture/Typical+micro+service+technology+stack+(java)</url>
-      <tag>HEAD</tag>
-  </scm>
+    </scm>
 
 
     <properties>
@@ -162,11 +161,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.constretto</groupId>
@@ -196,12 +190,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.github.kevinsawicki</groupId>
-            <artifactId>http-request</artifactId>
-            <version>6.0</version>
-        </dependency>
-
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
