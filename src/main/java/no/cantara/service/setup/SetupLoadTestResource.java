@@ -33,7 +33,7 @@ public class SetupLoadTestResource {
             ClassLoader classLoader = getClass().getClassLoader();
             File file = new File(classLoader.getResource("loadtestconfig.json").getFile());
             LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
-            String loadTestJson = mapper.writeValueAsString(fileLoadtest);
+            jsonconfig = mapper.writeValueAsString(fileLoadtest);
 
         } catch (Exception e) {
             log.error("Unable to read default configuration for LoadTest.", e);

@@ -35,10 +35,10 @@ public class LoadTestResource {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response startLoadTest(@RequestParam("loadTest") String json) {
+    public Response startLoadTest(@RequestParam("test_id") String json) {
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
-        String artifactId = JsonPath.read(document, "$.loadTestId");
+        String artifactId = JsonPath.read(document, "$.test_id");
         if (artifactId == null) {
             Response.Status status = Response.Status.BAD_REQUEST;
             log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
@@ -72,9 +72,9 @@ public class LoadTestResource {
     }
 
     @GET
-    @Path("/{loadtestId}/status")
+    @Path("/{test_id}/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStatusForLoadTestInstance(@PathParam("loadTestId") String artifactId) {
+    public Response getStatusForLoadTestInstance(@PathParam("test_id") String artifactId) {
         log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
 
 

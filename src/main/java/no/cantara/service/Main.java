@@ -1,6 +1,7 @@
 package no.cantara.service;
 
 import no.cantara.service.health.HealthResource;
+import no.cantara.service.loadtest.LoadTestResource;
 import no.cantara.service.oauth2ping.PingResource;
 import no.cantara.service.setup.SetupLoadTestResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
@@ -163,6 +164,12 @@ public class Main {
         configEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
         configEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH);
         securityHandler.addConstraintMapping(configEndpointConstraintMapping);
+
+        // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+        ConstraintMapping loadTestEndpointConstraintMapping = new ConstraintMapping();
+        loadTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        loadTestEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH);
+        securityHandler.addConstraintMapping(loadTestEndpointConstraintMapping);
 
         // Allow OAuth2StubbedServerResource to be accessed without authentication
         ConstraintMapping oauthserverEndpointConstraintMapping = new ConstraintMapping();

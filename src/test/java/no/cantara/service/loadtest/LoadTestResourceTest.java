@@ -1,0 +1,62 @@
+package no.cantara.service.loadtest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.LoadTestConfig;
+import no.cantara.service.testsupport.TestServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.io.File;
+import java.net.HttpURLConnection;
+
+import static com.jayway.restassured.RestAssured.given;
+
+public class LoadTestResourceTest {
+
+    private TestServer testServer;
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final Logger log = LoggerFactory.getLogger(LoadTestResourceTest.class);
+
+    @BeforeClass
+    public void startServer() throws Exception {
+        testServer = new TestServer(getClass());
+        testServer.start();
+    }
+
+    @AfterClass
+    public void stop() {
+        testServer.stop();
+    }
+
+
+    @Test
+    public void testStartLoadTest() throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("loadtestconfig.json").getFile());
+        LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+        String loadTestJson = mapper.writeValueAsString(fileLoadtest);
+
+        given()
+                .log().everything()
+                .header("Content-Type", "application/json")
+                .body(loadTestJson)
+                .expect()
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().everything()
+                .when()
+                .post(LoadTestResource.APPLICATION_PATH);
+
+
+    }
+
+    @Test
+    public void testGetAllLoadTests() throws Exception {
+    }
+
+    @Test
+    public void testGetStatusForLoadTestInstance() throws Exception {
+    }
+}

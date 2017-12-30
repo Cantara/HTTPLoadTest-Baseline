@@ -25,7 +25,7 @@ public class SetupLoadTestResourceTest {
     }
 
     @Test
-    public void testHealth() throws IOException {
+    public void testCONFIG_PATH() throws IOException {
         given()
                 .log().everything()
                 .expect()

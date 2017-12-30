@@ -21,6 +21,7 @@ public class TestServer {
 
 
     public void start() throws InterruptedException {
+
         new Thread(() -> {
             main = new Main();
             main.start();
