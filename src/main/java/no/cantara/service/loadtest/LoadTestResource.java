@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import no.cantara.service.LoadTestConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,22 +39,23 @@ public class LoadTestResource {
     public Response startLoadTest(@RequestParam("test_id") String json) {
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
-        String artifactId = JsonPath.read(document, "$.test_id");
-        if (artifactId == null) {
+        String testId = JsonPath.read(document, "$.test_id");
+        if (testId == null) {
             Response.Status status = Response.Status.BAD_REQUEST;
             log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
             return Response.status(status).build();
         }
 
-
-        String createdJson;
         try {
-            createdJson = mapper.writeValueAsString(loadTest);
-        } catch (IOException e) {
-            log.warn("Could not convert to Json {}", loadTest.toString());
+
+            LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
+            LoadTestExecutorService.executeLoadTest(loadTestConfig);
+            return Response.ok(mapper.writeValueAsString(loadTestConfig)).build();
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        return Response.ok(createdJson).build();
+//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @GET
