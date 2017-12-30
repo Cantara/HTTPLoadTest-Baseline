@@ -50,7 +50,7 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig);
-            return Response.ok(mapper.writeValueAsString(loadTestConfig)).build();
+            return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -65,7 +65,7 @@ public class LoadTestResource {
         log.trace("getAllLoadTests");
         String jsonResponse;
         try {
-            jsonResponse = mapper.writeValueAsString(loadTests);
+            jsonResponse = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTests);
         } catch (JsonProcessingException e) {
             log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -82,7 +82,7 @@ public class LoadTestResource {
 
         String jsonResult;
         try {
-            jsonResult = mapper.writeValueAsString(loadTestStatus);
+            jsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
         } catch (IOException e) {
             log.warn("Could not convert to Json {}", loadTestStatus);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

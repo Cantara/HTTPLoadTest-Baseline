@@ -6,7 +6,6 @@ import no.cantara.service.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -26,18 +25,7 @@ public class LoadTestExecutorService {
     }
 
 
-    public static String getResultSizeAsJson() {
-        String result = "{}";
-        try {
-            List copyList = new ArrayList(resultList);
-            return mapper.writeValueAsString(resultList);
 
-        } catch (Exception e) {
-            log.warn("Error in producring json form resultList", e);
-        }
-        return result;
-
-    }
 
     public static List getResultList() {
         return resultList;
@@ -67,7 +55,7 @@ public class LoadTestExecutorService {
         int runNo = 1;
         ExecutorService threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
-        String[] hostList = {"http://crunchify.com", "http://yahoo.com",
+        String[] hostList = {"http://crunchify.com"}; /**, "http://yahoo.com",
                 "http://www.ebay.com", "http://google.com",
                 "http://www.example.co", "https://paypal.com",
                 "http://bing.com/", "http://techcrunch.com/",
@@ -77,13 +65,15 @@ public class LoadTestExecutorService {
                 "http://ebay.co.uk/", "http://google.co.uk/",
                 "http://www.wikipedia.org/",
                 "http://en.wikipedia.org/wiki/Main_Page"};
-
+         **/
         while (true) {
 
             for (int i = 0; i < hostList.length; i++) {
 
                 String url = hostList[i];
                 LoadTestResult loadTestResult = new LoadTestResult();
+                loadTestResult.setTest_id(loadTestConfig.getTest_id());
+                loadTestResult.setTest_name(loadTestConfig.getTest_name());
                 loadTestResult.setTest_run_no(runNo++);
                 Runnable worker = new MyRunnable(url, loadTestResult);
                 threadExecutor.execute(worker);

@@ -5,22 +5,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LoadTestResult {
     private String test_id;
     private String test_name;
+    private String test_tags;
     private long test_timestamp = System.currentTimeMillis();
     private int test_run_no = 90;
 
-    private int test_duration;
+    private long test_duration;
     private boolean test_success = false;
     private boolean test_deviation_flag = false;
 
 
     public LoadTestResult(@JsonProperty("test_id") String id,
                           @JsonProperty("test_name") String test_name,
+                          @JsonProperty("test_tags") String test_tags,
                           @JsonProperty("test_run_no") String test_run_no,
                           @JsonProperty("test_duration") String test_duration,
                           @JsonProperty("test_success") String test_success,
                           @JsonProperty("test_deviation_flag") String test_deviation_flag) {
         this.test_id = id;
         this.test_name = test_name;
+        this.test_tags = test_tags;
         this.test_run_no = Integer.valueOf(test_run_no);
         this.test_duration = Integer.valueOf(test_duration);
         this.test_success = Boolean.parseBoolean(test_success);
@@ -29,6 +32,7 @@ public class LoadTestResult {
     }
 
     public LoadTestResult() {
+        test_timestamp = System.currentTimeMillis();
     }
 
     public String getTest_id() {
@@ -47,6 +51,14 @@ public class LoadTestResult {
         this.test_name = test_name;
     }
 
+    public String getTest_tags() {
+        return test_tags;
+    }
+
+    public void setTest_tags(String test_tags) {
+        this.test_tags = test_tags;
+    }
+
     public long getTest_timestamp() {
         return test_timestamp;
     }
@@ -63,11 +75,11 @@ public class LoadTestResult {
         this.test_run_no = test_run_no;
     }
 
-    public int getTest_duration() {
+    public long getTest_duration() {
         return test_duration;
     }
 
-    public void setTest_duration(int test_duration) {
+    public void setTest_duration(long test_duration) {
         this.test_duration = test_duration;
     }
 

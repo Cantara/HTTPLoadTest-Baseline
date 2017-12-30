@@ -15,6 +15,7 @@ public class MyRunnable implements Runnable {
     MyRunnable(String url, LoadTestResult loadTestResult) {
         this.url = url;
         this.loadTestResult = loadTestResult;
+        this.loadTestResult.setTest_tags("URL: " + url);
     }
 
     @Override
@@ -41,8 +42,10 @@ public class MyRunnable implements Runnable {
             result = "->Red<-\t";
             loadTestResult.setTest_deviation_flag(true);
         }
+        loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
         System.out.println(url + "\t\tStatus:" + result);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
+
         LoadTestExecutorService.addResult(loadTestResult);
 
     }
