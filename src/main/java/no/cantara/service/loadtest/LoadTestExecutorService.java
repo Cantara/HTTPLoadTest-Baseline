@@ -1,9 +1,14 @@
 package no.cantara.service.loadtest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.LoadTestConfig;
+import no.cantara.service.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -11,7 +16,32 @@ public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     public static Random random = new Random();
+    private static List<LoadTestResult> resultList = new LinkedList<>();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
+
+    public static void addResult(LoadTestResult loadTestResult) {
+        resultList.add(loadTestResult);
+        log.info("ResultMapSize: {}", resultList.size());
+    }
+
+
+    public static String getResultSizeAsJson() {
+        String result = "{}";
+        try {
+            List copyList = new ArrayList(resultList);
+            return mapper.writeValueAsString(resultList);
+
+        } catch (Exception e) {
+            log.warn("Error in producring json form resultList", e);
+        }
+        return result;
+
+    }
+
+    public static List getResultList() {
+        return resultList;
+    }
     public static void executeLoadTest(LoadTestConfig loadTestConfig) {
 
         long startTime = System.currentTimeMillis();
@@ -34,6 +64,7 @@ public class LoadTestExecutorService {
 
 
     private static void runTask(LoadTestConfig loadTestConfig) {
+        int runNo = 1;
         ExecutorService threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
         String[] hostList = {"http://crunchify.com", "http://yahoo.com",
@@ -52,7 +83,9 @@ public class LoadTestExecutorService {
             for (int i = 0; i < hostList.length; i++) {
 
                 String url = hostList[i];
-                Runnable worker = new MyRunnable(url, loadTestConfig.getTest_id());
+                LoadTestResult loadTestResult = new LoadTestResult();
+                loadTestResult.setTest_run_no(runNo++);
+                Runnable worker = new MyRunnable(url, loadTestResult);
                 threadExecutor.execute(worker);
             }
         }
