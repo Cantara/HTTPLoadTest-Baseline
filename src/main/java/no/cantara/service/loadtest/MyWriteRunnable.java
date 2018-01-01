@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MyRunnable implements Runnable {
+public class MyWriteRunnable implements Runnable {
     private final String url;
     private final LoadTestResult loadTestResult;
     private static final Logger log = LoggerFactory.getLogger(MyRunnable.class);
 
-    MyRunnable(String url, LoadTestResult loadTestResult) {
+    MyWriteRunnable(String url, LoadTestResult loadTestResult) {
         this.url = url;
         this.loadTestResult = loadTestResult;
         this.loadTestResult.setTest_tags("URL: " + url);
