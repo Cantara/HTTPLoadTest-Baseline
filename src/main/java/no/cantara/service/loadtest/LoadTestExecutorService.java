@@ -17,6 +17,7 @@ public class LoadTestExecutorService {
     public static Random random = new Random();
     private static List<LoadTestResult> resultList = new LinkedList<>();
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static Random r = new Random();
 
 
     public static void addResult(LoadTestResult loadTestResult) {
@@ -25,11 +26,10 @@ public class LoadTestExecutorService {
     }
 
 
-
-
     public static List getResultList() {
         return resultList;
     }
+
     public static void executeLoadTest(LoadTestConfig loadTestConfig) {
 
         long startTime = System.currentTimeMillis();
@@ -56,28 +56,46 @@ public class LoadTestExecutorService {
         ExecutorService threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
         String[] hostList = {"http://crunchify.com"}; /**, "http://yahoo.com",
-                "http://www.ebay.com", "http://google.com",
-                "http://www.example.co", "https://paypal.com",
-                "http://bing.com/", "http://techcrunch.com/",
-                "http://mashable.com/", "http://thenextweb.com/",
-                "http://wordpress.com/", "http://wordpress.org/",
-                "http://example.com/", "http://sjsu.edu/",
-                "http://ebay.co.uk/", "http://google.co.uk/",
-                "http://www.wikipedia.org/",
-                "http://en.wikipedia.org/wiki/Main_Page"};
+         "http://www.ebay.com", "http://google.com",
+         "http://www.example.co", "https://paypal.com",
+         "http://bing.com/", "http://techcrunch.com/",
+         "http://mashable.com/", "http://thenextweb.com/",
+         "http://wordpress.com/", "http://wordpress.org/",
+         "http://example.com/", "http://sjsu.edu/",
+         "http://ebay.co.uk/", "http://google.co.uk/",
+         "http://www.wikipedia.org/",
+         "http://en.wikipedia.org/wiki/Main_Page"};
          **/
+        int read_ratio = loadTestConfig.getTest_read_write_ratio();
+//        int write_ratio = 100 - loadTestConfig.getTest_read_write_ratio();
+
         while (true) {
 
-            for (int i = 0; i < hostList.length; i++) {
+            int chance = r.nextInt(100);
 
-                String url = hostList[i];
-                LoadTestResult loadTestResult = new LoadTestResult();
-                loadTestResult.setTest_id(loadTestConfig.getTest_id());
-                loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                loadTestResult.setTest_run_no(runNo++);
-                Runnable worker = new MyRunnable(url, loadTestResult);
-                threadExecutor.execute(worker);
+            for (int i = 0; i < hostList.length; i++) {
+                if (chance <= read_ratio) {
+                    String url = hostList[i];
+                    LoadTestResult loadTestResult = new LoadTestResult();
+                    loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
+                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                    loadTestResult.setTest_run_no(runNo++);
+                    Runnable worker = new MyReadRunnable(url, loadTestResult);
+                    threadExecutor.execute(worker);
+
+                } else {
+                    String url = hostList[i];
+                    LoadTestResult loadTestResult = new LoadTestResult();
+                    loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
+                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                    loadTestResult.setTest_run_no(runNo++);
+                    Runnable worker = new MyWriteRunnable(url, loadTestResult);
+                    threadExecutor.execute(worker);
+
+                }
             }
+
+
         }
 //        System.out.println("\nFinished all threads");
     }

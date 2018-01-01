@@ -35,7 +35,7 @@ public class LoadTestExecutorServiceTest {
         log.info("Run-time: {} ms", endTime - startTime);
 
         List resultList = LoadTestExecutorService.getResultList();
-        log.info("Results from test:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
+        log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
     }
 
