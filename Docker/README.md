@@ -19,7 +19,7 @@ Create a configuration file, e.g. `config_override.properties`.
 
 Connecting to instance for debugging:
 ```bash
-docker exec -it -u microservice-baseline microservice-baseline bash
+docker exec -it -u HTTPLoadTest-baseline HTTPLoadTest-baseline bash
 ```
 
 ## Testing docker locally
