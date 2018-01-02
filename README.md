@@ -16,7 +16,7 @@ A typical simple baseline for building LoadTest for continous deploy/continous p
 {
   "test_id": "MyTestID",
   "test_name": "An example of load test configuration",
-  "test_no_of_threads": 100,
+  "test_no_of_threads": 10,
   "test_read_write_ratio": 90,
   "test_sleep_in_ms": 10,
   "test_randomize_sleeptime": true,
