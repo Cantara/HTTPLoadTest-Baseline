@@ -1,4 +1,4 @@
-# Running the Docker container 
+# Building the Docker container 
 
 ## How it works
 * The configuration override of the application is volume mounted when running the Docker image
@@ -22,7 +22,7 @@ Connecting to instance for debugging:
 docker exec -it -u HTTPLoadTest-baseline HTTPLoadTest-baseline bash
 ```
 
-## Testing docker locally
+## Testing docker-build locally
 See [test-docker.sh](test-docker.sh).
 
 This script can be run with `./test-docker.sh local` to also run `mvn package` and use jar from development.
@@ -34,3 +34,6 @@ wget http://localhost:18086/HTTPLoadTest-baseline/health
 
 Open in browser:  
 * http://localhost:18086/HTTPLoadTest-baseline/config
+
+
+Ypu may also use the /scripts/run_from_dockerhub.sh script to run the latest pre-built dockerimage directly form dockerhub
