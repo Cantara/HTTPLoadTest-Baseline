@@ -30,7 +30,7 @@ public class LoadTestExecutorServiceTest {
         LoadTestExecutorService.executeLoadTest(fileLoadtest);
         long endTime = System.currentTimeMillis();
 
-        Thread.sleep(2000);
+        Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
 
 //        log.info("Results from test:"+LoadTestExecutorService.getResultSizeAsJson());
         log.info("Run-time: {} ms", endTime - startTime);

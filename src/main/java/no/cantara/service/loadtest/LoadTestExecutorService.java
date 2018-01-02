@@ -95,7 +95,7 @@ public class LoadTestExecutorService {
                     loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
                     loadTestResult.setTest_name(loadTestConfig.getTest_name());
                     loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyReadRunnable(url, loadTestResult);
+                    Runnable worker = new MyReadRunnable(url, loadTestConfig, loadTestResult);
                     threadExecutor.execute(worker);
 
                 } else {
@@ -104,7 +104,7 @@ public class LoadTestExecutorService {
                     loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
                     loadTestResult.setTest_name(loadTestConfig.getTest_name());
                     loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyWriteRunnable(url, loadTestResult);
+                    Runnable worker = new MyWriteRunnable(url, loadTestConfig, loadTestResult);
                     threadExecutor.execute(worker);
 
                 }
