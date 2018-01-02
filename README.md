@@ -26,10 +26,13 @@ A typical simple baseline for building LoadTest for continous deploy/continous p
 
 # Example on load test result
 ```text
-08:38:12.202 [main] INFO  n.c.s.loadtest.LoadTestResource -  98 read tests resulted in 42 successfull runs where 6 was marked as deviations.
-08:38:12.202 [main] INFO  n.c.s.loadtest.LoadTestResource -  12 write tests resulted in 3 successfull runs where 1 was marked as deviations.
-08:38:12.202 [main] INFO  n.c.s.loadtest.LoadTestResource -  0 unmarked tests resulted in 0 successfull runs where 0 was marked as deviations.
-08:38:12.202 [main] INFO  n.c.s.loadtest.LoadTestResource -  110 total tests resulted in 45 successfull runs where 7 was marked as deviations.
+Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 seconds.
+
+
+  203 read tests resulted in 202 successfull runs where 1 was marked as deviations.
+   22 write tests resulted in 22 successfull runs where 0 was marked as deviations.
+    0 unmarked tests resulted in 0 successfull runs where 0 was marked as deviations.
+  225 total tests resulted in 224 successfull runs where 1 was marked as deviations.
 
 ```
 
