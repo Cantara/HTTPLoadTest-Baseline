@@ -30,7 +30,7 @@ public class LoadTestExecutorServiceTest {
         LoadTestExecutorService.executeLoadTest(fileLoadtest);
         long endTime = System.currentTimeMillis();
 
-        Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
+        //Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
 
         List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
         log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
