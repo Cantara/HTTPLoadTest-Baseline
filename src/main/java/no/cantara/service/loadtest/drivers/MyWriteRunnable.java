@@ -1,26 +1,29 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.commands.CommandGetURL;
+import no.cantara.commands.CommandGetURLWithTemplate;
+import no.cantara.commands.CommandPostURLWithTemplate;
 import no.cantara.service.LoadTestConfig;
 import no.cantara.service.LoadTestResult;
+import no.cantara.service.TestSpecification;
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Random;
 
 public class MyWriteRunnable implements Runnable {
-    private final String url;
+    private final List<TestSpecification> testSpecificationList;
     private static Random r = new Random();
     private final LoadTestResult loadTestResult;
     private final LoadTestConfig loadTestConfig;
     private static final Logger log = LoggerFactory.getLogger(MyWriteRunnable.class);
 
-    public MyWriteRunnable(String url, LoadTestConfig loadTestConfig, LoadTestResult loadTestResult) {
-        this.url = url;
+    public MyWriteRunnable(List<TestSpecification> testSpecificationList, LoadTestConfig loadTestConfig, LoadTestResult loadTestResult) {
+        this.testSpecificationList = testSpecificationList;
         this.loadTestResult = loadTestResult;
         this.loadTestConfig = loadTestConfig;
-        this.loadTestResult.setTest_tags("URL: " + url);
+        this.loadTestResult.setTest_tags("testSpecificationList: " + testSpecificationList);
     }
 
     @Override
@@ -41,14 +44,33 @@ public class MyWriteRunnable implements Runnable {
 
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
 
-        CommandGetURL command = new CommandGetURL(url, 9000);
-        String returned_data = command.execute();
-        if (command.isSuccessfulExecution()) {
+        for (TestSpecification testSpecification : testSpecificationList) {
+            if (testSpecification.getCommand_url().length() > 0) {
+
+            }
+            log.trace("Calling {}", testSpecification.getCommand_url());
             loadTestResult.setTest_success(true);
-        }
-        ;
-        if (command.isResponseRejected()) {
-            loadTestResult.setTest_deviation_flag(true);
+            String result;
+            if (testSpecification.isCommand_http_post()) {
+                CommandPostURLWithTemplate command = new CommandPostURLWithTemplate(testSpecification);
+                result = command.execute();
+                if (!command.isSuccessfulExecution()) {
+                    loadTestResult.setTest_success(false);
+                }
+                if (command.isResponseRejected()) {
+                    loadTestResult.setTest_deviation_flag(true);
+                }
+            } else {
+                CommandGetURLWithTemplate command = new CommandGetURLWithTemplate(testSpecification);
+                result = command.execute();
+                if (!command.isSuccessfulExecution()) {
+                    loadTestResult.setTest_success(false);
+                }
+                if (command.isResponseRejected()) {
+                    loadTestResult.setTest_deviation_flag(true);
+                }
+            }
+//            log.debug("Returned result: " + result);
         }
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");

@@ -1,0 +1,13 @@
+[
+  {
+    "command_url": "https://gmail.com",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 5000,
+    "command_contenttype": "text/html",
+    "command_template": "",
+    "command_replacement_map": {
+      "#Passord": "TestPassord",
+      "#BrukerID": "TestBruker"
+    }
+  }
+]

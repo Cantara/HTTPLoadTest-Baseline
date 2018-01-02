@@ -50,6 +50,58 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 }
 ```
 
+# Example on read test specification
+```json
+
+[ {
+  "command_url" : "https://gmail.com",
+  "command_contenttype" : "text/html",
+  "command_http_post" : false,
+  "command_timeout_milliseconds" : 5000,
+  "command_template" : "",
+  "command_replacement_map" : {
+    "#Passord" : "TestPassord",
+    "#BrukerID" : "TestBruker"
+  }
+}, {
+  "command_url" : "http://test.tull.no",
+  "command_contenttype" : "application/json",
+  "command_http_post" : true,
+  "command_timeout_milliseconds" : 5000,
+  "command_template" : "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#Passord\\\",\n  \\\"admin\\\": true\n}",
+  "command_replacement_map" : {
+    "#Passord" : "TestPassord",
+    "#BrukerID" : "TestBruker"
+  }
+} ]
+```
+
+
+# Example on write test specification
+```json
+
+[ {
+  "command_url" : "https://gmail.com",
+  "command_contenttype" : "text/html",
+  "command_http_post" : false,
+  "command_timeout_milliseconds" : 5000,
+  "command_template" : "",
+  "command_replacement_map" : {
+    "#Passord" : "TestPassord",
+    "#BrukerID" : "TestBruker"
+  }
+}, {
+  "command_url" : "http://test.tull.no",
+  "command_contenttype" : "application/json",
+  "command_http_post" : true,
+  "command_timeout_milliseconds" : 5000,
+  "command_template" : "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#Passord\\\",\n  \\\"admin\\\": true\n}",
+  "command_replacement_map" : {
+    "#Passord" : "TestPassord",
+    "#BrukerID" : "TestBruker"
+  }
+} ]
+```
 
 Quick build and verify
 '''

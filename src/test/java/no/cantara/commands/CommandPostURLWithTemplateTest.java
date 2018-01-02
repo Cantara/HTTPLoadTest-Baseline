@@ -91,4 +91,28 @@ public class CommandPostURLWithTemplateTest {
         }
 
     }
+
+    @Test
+    public void testDefaultConfigCommandPostURLWithTemplate() throws Exception {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
+        List<TestSpecification> readTestSpec = new ArrayList<>();
+        readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+        });
+        for (TestSpecification testSpecification : readTestSpec) {
+            assertTrue(testSpecification.getCommand_url().length() > 0);
+            log.trace("Calling {}", testSpecification.getCommand_url());
+            String result;
+            if (testSpecification.isCommand_http_post()) {
+                result = new CommandPostURLWithTemplate(testSpecification).execute();
+            } else {
+                result = new CommandGetURLWithTemplate(testSpecification).execute();
+            }
+            log.debug("Returned result: " + result);
+            assertTrue(result.length() > 0);
+        }
+
+    }
+
 }

@@ -88,4 +88,12 @@ public class TestSpecification {
     public void setCommand_timeout_milliseconds(int command_timeout_milliseconds) {
         this.command_timeout_milliseconds = command_timeout_milliseconds;
     }
+
+    @Override
+    public String toString() {
+        return "TestSpecification{" +
+                "command_url='" + command_url + '\'' +
+                ", command_http_post=" + command_http_post +
+                '}';
+    }
 }

@@ -1,10 +1,12 @@
 package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import no.cantara.service.LoadTestConfig;
+import no.cantara.service.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 
@@ -24,6 +28,8 @@ import static no.cantara.service.Main.CONTEXT_PATH;
 public class LoadTestResource {
     public static final String APPLICATION_PATH = "/loadTest";
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
+    public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
+    public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -55,7 +61,6 @@ public class LoadTestResource {
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
             return Response.ok(json).build();
-//            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -88,6 +93,59 @@ public class LoadTestResource {
         }
     }
 
+    @POST
+    @Path("/form/read")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json) {
+        log.trace("Invoked updateReadTestSpecificationForm with {}", json);
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+        String testId = JsonPath.read(document, "$.command_url");
+        if (testId == null) {
+            Response.Status status = Response.Status.BAD_REQUEST;
+            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
+            return Response.status(status).build();
+        }
+
+        try {
+
+            List<TestSpecification> readTestSpec = new ArrayList<>();
+            readTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
+            });
+            LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {}", json.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("/form/write")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json) {
+        log.trace("Invoked updateWriteTestSpecificationForm with {}", json);
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+        String testId = JsonPath.read(document, "$.command_url");
+        if (testId == null) {
+            Response.Status status = Response.Status.BAD_REQUEST;
+            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
+            return Response.status(status).build();
+        }
+
+        try {
+
+            List<TestSpecification> writeTestSpec = new ArrayList<>();
+            writeTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
+            });
+            LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {}", json.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GET
     @Path("/status")

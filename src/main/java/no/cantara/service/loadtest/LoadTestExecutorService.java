@@ -1,14 +1,17 @@
 package no.cantara.service.loadtest;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.LoadTestConfig;
 import no.cantara.service.LoadTestResult;
+import no.cantara.service.TestSpecification;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
 import no.cantara.service.loadtest.drivers.MyWriteRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,14 +21,73 @@ public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static List<LoadTestResult> unsafeList = new ArrayList<>();
-    //private static  List<LoadTestResult> resultList = new LinkedList<>();
     private static List<LoadTestResult> resultList = Collections.synchronizedList(unsafeList);
+    private static List<TestSpecification> readTestSpecificationList;
+    private static List<TestSpecification> writeTestSpecificationList;
     private static final ObjectMapper mapper = new ObjectMapper();
     private static Random r = new Random();
     private static long startTime;
     private static int loadTestRunNo = 1;
     private static LoadTestConfig activeLoadTestConfig;
 
+    static {
+        try {
+
+            ClassLoader classLoader = LoadTestExecutorService.class.getClassLoader();
+            File rfile = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
+            readTestSpecificationList = mapper.readValue(rfile, new TypeReference<List<TestSpecification>>() {
+            });
+            String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
+            log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
+            File wfile = new File(classLoader.getResource("DefaultWriteTestSpecification.json").getFile());
+            writeTestSpecificationList = mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
+            });
+            String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
+            log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
+
+        } catch (Exception e) {
+            log.error("Unable to read default configuration for LoadTest.", e);
+        }
+
+    }
+
+    public static List<TestSpecification> getReadTestSpecificationList() {
+        return readTestSpecificationList;
+    }
+
+    public static String getReadTestSpecificationListJson() {
+        String result = "[]";
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
+
+        } catch (Exception e) {
+            log.error("Unable to create json of readTestSpecification", e);
+            return result;
+        }
+    }
+
+    public static String getWriteTestSpecificationListJson() {
+        String result = "[]";
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
+
+        } catch (Exception e) {
+            log.error("Unable to create json of writeTestSpecification", e);
+            return result;
+        }
+    }
+
+    public static void setReadTestSpecificationList(List<TestSpecification> readTestSpecificationList) {
+        LoadTestExecutorService.readTestSpecificationList = readTestSpecificationList;
+    }
+
+    public static List<TestSpecification> getWriteTestSpecificationList() {
+        return writeTestSpecificationList;
+    }
+
+    public static void setWriteTestSpecificationList(List<TestSpecification> writeTestSpecificationList) {
+        LoadTestExecutorService.writeTestSpecificationList = writeTestSpecificationList;
+    }
 
     public static void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
@@ -136,7 +198,7 @@ public class LoadTestExecutorService {
                         loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
                         loadTestResult.setTest_run_no(runNo++);
-                        Runnable worker = new MyReadRunnable(url, loadTestConfig, loadTestResult);
+                        Runnable worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult);
                         try {
                             runWithTimeout(new Callable<String>() {
                                 @Override
@@ -156,7 +218,7 @@ public class LoadTestExecutorService {
                         loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
                         loadTestResult.setTest_run_no(runNo++);
-                        Runnable worker = new MyWriteRunnable(url, loadTestConfig, loadTestResult);
+                        Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
                         try {
                             runWithTimeout(new Callable<String>() {
                                 @Override

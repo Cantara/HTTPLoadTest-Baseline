@@ -62,7 +62,8 @@ public class TestSpecificationMappingTest {
 
         readTestSpec.add(testSpecification);
         String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
-        TestSpecification testSpecification1 = mapper.readValue(loadTestJson, TestSpecification.class);
+        List<TestSpecification> testSpecification1 = mapper.readValue(loadTestJson, new TypeReference<List<TestSpecification>>() {
+        });
 
 //        assertTrue(loadTestConfig.getTest_id().equalsIgnoreCase(mappedLoadtest.getTest_id()));
 
