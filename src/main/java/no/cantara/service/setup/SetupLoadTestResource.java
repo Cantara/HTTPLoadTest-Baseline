@@ -88,7 +88,7 @@ public class SetupLoadTestResource {
                         "  <body>\n" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        ReadTestSpecification:\n" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonreadconfig + "</textarea><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"40\" cols=\"80\">" + jsonreadconfig + "</textarea><br/>" +
                         "        <input type=\"submit\">\n" +
                         "    </form>\n" +
                         "\n" +
@@ -123,7 +123,7 @@ public class SetupLoadTestResource {
                         "  <body>\n" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        WriteTestSpecification:\n" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"40\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/>" +
                         "        <input type=\"submit\">\n" +
                         "    </form>\n" +
                         "\n" +
