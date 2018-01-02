@@ -22,7 +22,7 @@ public class CommandAuthorizeOAuth2Application extends BaseHttpPostHystrixComman
 
 
     public CommandAuthorizeOAuth2Application(String uri) {
-        super(URI.create(uri), "hystrixGroupKey");
+        super(URI.create(uri), "hystrixGroupKey", 3000);
         this.uri = uri;
     }
 
