@@ -21,7 +21,7 @@ public class LoadTestConfigTest {
         LoadTestConfig loadTestConfig = new LoadTestConfig();
         loadTestConfig.setTest_id("TestID");
 
-        String loadTestJson = mapper.writeValueAsString(loadTestConfig);
+        String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig);
         LoadTestConfig mappedLoadtest = mapper.readValue(loadTestJson, LoadTestConfig.class);
 
         assertTrue(loadTestConfig.getTest_id().equalsIgnoreCase(mappedLoadtest.getTest_id()));
