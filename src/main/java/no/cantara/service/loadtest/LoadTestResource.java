@@ -101,14 +101,17 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllLoadTests() {
         log.trace("getAllLoadTests");
-        String jsonResponse = LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
+        String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
         try {
             jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
         } catch (JsonProcessingException e) {
             log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        return Response.ok(jsonResponse).build();
+        String response = String.format("{ \"HTTPLoadTest-status\": \n\"%s\", \n\n\"test-run-results\": %s}",
+                LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList()), jsonResponse);
+
+        return Response.ok(response).build();
     }
 
     @GET
