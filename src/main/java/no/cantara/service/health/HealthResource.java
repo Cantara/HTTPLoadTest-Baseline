@@ -1,5 +1,6 @@
 package no.cantara.service.health;
 
+import no.cantara.service.loadtest.LoadTestExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,8 @@ public class HealthResource {
     @GET
     public Response healthCheck() {
         log.trace("healthCheck");
-        String response = String.format("{ \"HTTPLoadTest-health\": \"OK\", \"version\": \"%s\", \"now\":\"%s\", \"running since\": \"%s\"}",
-                getVersion(), Instant.now(), getRunningSince());
+        String response = String.format("{ \"HTTPLoadTest-health\": \"OK\", \n\"version\": \"%s\", \n\"now\":\"%s\", \n\"running since\": \"%s\", \n\n\"statistics\": \n\"%s\"}",
+                getVersion(), Instant.now(), getRunningSince(), LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList()));
         return Response.ok(response).build();
     }
 

@@ -237,14 +237,15 @@ public class LoadTestExecutorService {
         stats = stats + "\n" + String.format(" %4d total tests resulted in %d successfull runs where %d was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
 
         String loadTestJson = "";
-        try {
-            loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(activeLoadTestConfig);
-            loadTestJson = loadTestJson + "\n\n";
+        if (activeLoadTestConfig != null) {
+            try {
+                loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(activeLoadTestConfig);
+                loadTestJson = loadTestJson + "\n\n";
 
-        } catch (Exception e) {
-            log.warn("Unable to serialize loadTestConfig to json", e);
+            } catch (Exception e) {
+                log.warn("Unable to serialize loadTestConfig to json", e);
+            }
         }
-
         return stats + "\n\n" + loadTestJson;
     }
 
