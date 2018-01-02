@@ -9,10 +9,9 @@ import no.cantara.service.loadtest.drivers.MyWriteRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class LoadTestExecutorService {
@@ -220,18 +219,20 @@ public class LoadTestExecutorService {
                 }
             }
         }
-        String stats = "";
+        DateFormat df = new SimpleDateFormat("dd/MM-yyyy  HH:mm:ss");
+        long nowTimestamp = System.currentTimeMillis();
+        String stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 100 + " seconds.\n\n";
         log.info(" {} read tests resulted in {} successfull runs where {} was marked as deviations.", r_results, r_success, r_deviations);
-        stats = stats + "\n" + String.format(" %4d read tests resulted in %4d successfull runs where %4d was marked as deviations.", r_results, r_success, r_deviations);
+        stats = stats + "\n" + String.format(" %4d read tests resulted in %d successfull runs where %d was marked as deviations.", r_results, r_success, r_deviations);
 
         log.info(" {} write tests resulted in {} successfull runs where {} was marked as deviations.", w_results, w_success, w_deviations);
-        stats = stats + "\n" + String.format(" %4d write tests resulted in %4d successfull runs where %4d was marked as deviations.", w_results, w_success, w_deviations);
+        stats = stats + "\n" + String.format(" %4d write tests resulted in %d successfull runs where %d was marked as deviations.", w_results, w_success, w_deviations);
 
         log.info(" {} unmarked tests resulted in {} successfull runs where {} was marked as deviations.", results, success, deviations);
-        stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %4d successfull runs where %4d was marked as deviations.", results, success, deviations);
+        stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successfull runs where %d was marked as deviations.", results, success, deviations);
 
         log.info(" {} total tests resulted in {} successfull runs where {} was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
-        stats = stats + "\n" + String.format(" %4d total tests resulted in %4d successfull runs where %4d was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
+        stats = stats + "\n" + String.format(" %4d total tests resulted in %d successfull runs where %d was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
 
         return stats + "\n\n";
     }

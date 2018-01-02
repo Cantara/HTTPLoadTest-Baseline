@@ -54,7 +54,8 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
-            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
+            return Response.ok(json).build();
+//            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -79,20 +80,14 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
-            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
+            return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
+//            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @POST
-    @Path("/status")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllLoadTestsJson() {
-        return getAllLoadTests();
-    }
 
     @GET
     @Path("/status")

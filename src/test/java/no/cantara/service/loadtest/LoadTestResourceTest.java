@@ -65,7 +65,7 @@ public class LoadTestResourceTest {
                 .header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED)
                 .formParam("jsonConfig", loadTestJson)
                 .expect()
-                .statusCode(HttpURLConnection.HTTP_OK)
+                .statusCode(HttpURLConnection.HTTP_MOVED_TEMP)
                 .log().everything()
                 .when()
                 .post(LoadTestResource.APPLICATION_PATH_FORM);
