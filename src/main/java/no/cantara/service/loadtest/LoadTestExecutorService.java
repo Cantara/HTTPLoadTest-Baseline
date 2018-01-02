@@ -20,6 +20,7 @@ public class LoadTestExecutorService {
     private static List<LoadTestResult> resultList = Collections.synchronizedList(unsafeList);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static Random r = new Random();
+    private static long startTime;
 
 
     public synchronized static void addResult(LoadTestResult loadTestResult) {
@@ -39,7 +40,7 @@ public class LoadTestExecutorService {
 
     public static void executeLoadTest(LoadTestConfig loadTestConfig) {
 
-        long startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         try {
             runWithTimeout(new Callable<String>() {
                 @Override
@@ -80,33 +81,54 @@ public class LoadTestExecutorService {
 
             for (int i = 0; i < hostList.length; i++) {
                 int chance = r.nextInt(100);
-                if (read_ratio == 0) {
-                    String url = hostList[i];
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id(loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyRunnable(url, loadTestResult);
-                    threadExecutor.execute(worker);
+                long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
+                if (maxRunTimeMs > 500) {
+                    // We stop a little before known timeout
+                    log.trace("MaxRunInMilliSeconds: {}", maxRunTimeMs);
+                    if (read_ratio == 0) {
+                        String url = hostList[i];
+                        LoadTestResult loadTestResult = new LoadTestResult();
+                        loadTestResult.setTest_id(loadTestConfig.getTest_id());
+                        loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                        loadTestResult.setTest_run_no(runNo++);
+                        Runnable worker = new MyRunnable(url, loadTestResult);
+                        try {
+                            runWithTimeout(worker, maxRunTimeMs, TimeUnit.MILLISECONDS, threadExecutor);
+                        } catch (Exception e) {
+                            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        }
 
-                } else if (chance <= read_ratio) {
-                    String url = hostList[i];
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyReadRunnable(url, loadTestConfig, loadTestResult);
-                    threadExecutor.execute(worker);
+//                    threadExecutor.execute(worker);
 
-                } else {
-                    String url = hostList[i];
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyWriteRunnable(url, loadTestConfig, loadTestResult);
-                    threadExecutor.execute(worker);
+                    } else if (chance <= read_ratio) {
+                        String url = hostList[i];
+                        LoadTestResult loadTestResult = new LoadTestResult();
+                        loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
+                        loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                        loadTestResult.setTest_run_no(runNo++);
+                        Runnable worker = new MyReadRunnable(url, loadTestConfig, loadTestResult);
+                        try {
+                            runWithTimeout(worker, maxRunTimeMs, TimeUnit.MILLISECONDS, threadExecutor);
+                        } catch (Exception e) {
+                            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        }
+//                    threadExecutor.execute(worker);
 
+                    } else {
+                        String url = hostList[i];
+                        LoadTestResult loadTestResult = new LoadTestResult();
+                        loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
+                        loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                        loadTestResult.setTest_run_no(runNo++);
+                        Runnable worker = new MyWriteRunnable(url, loadTestConfig, loadTestResult);
+                        try {
+                            runWithTimeout(worker, maxRunTimeMs, TimeUnit.MILLISECONDS, threadExecutor);
+                        } catch (Exception e) {
+                            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        }
+//                    threadExecutor.execute(worker);
+
+                    }
                 }
             }
 
@@ -177,6 +199,38 @@ public class LoadTestExecutorService {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final Future<T> future = executor.submit(callable);
         executor.shutdown(); // This does not cancel the already-scheduled task.
+        try {
+            return future.get(timeout, timeUnit);
+        } catch (TimeoutException e) {
+            //remove this if you do not want to cancel the job in progress
+            //or set the argument to 'false' if you do not want to interrupt the thread
+            future.cancel(true);
+            throw e;
+        } catch (ExecutionException e) {
+            //unwrap the root cause
+            Throwable t = e.getCause();
+            if (t instanceof Error) {
+                throw (Error) t;
+            } else if (t instanceof Exception) {
+                throw (Exception) t;
+            } else {
+                throw new IllegalStateException(t);
+            }
+        }
+    }
+
+    public static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit, ExecutorService executor) throws Exception {
+        runWithTimeout(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                runnable.run();
+                return null;
+            }
+        }, timeout, timeUnit, executor);
+    }
+
+    public static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit, ExecutorService executor) throws Exception {
+        final Future<T> future = executor.submit(callable);
         try {
             return future.get(timeout, timeUnit);
         } catch (TimeoutException e) {

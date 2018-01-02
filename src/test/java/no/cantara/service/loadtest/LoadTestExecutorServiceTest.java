@@ -32,13 +32,11 @@ public class LoadTestExecutorServiceTest {
 
         Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
 
-//        log.info("Results from test:"+LoadTestExecutorService.getResultSizeAsJson());
-        log.info("Run-time: {} ms", endTime - startTime);
-
         List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
         log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
         LoadTestExecutorService.printStats(resultList);
+        log.info("Run-time: {} ms, configured run-time: {}", endTime - startTime, fileLoadtest.getTest_duration_in_seconds() * 1000);
 
     }
 
