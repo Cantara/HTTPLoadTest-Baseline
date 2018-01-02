@@ -28,11 +28,10 @@ A typical simple baseline for building LoadTest for continous deploy/continous p
 ```text
 Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 seconds.
 
-
-  203 read tests resulted in 202 successfull runs where 1 was marked as deviations.
-   22 write tests resulted in 22 successfull runs where 0 was marked as deviations.
-    0 unmarked tests resulted in 0 successfull runs where 0 was marked as deviations.
-  225 total tests resulted in 224 successfull runs where 1 was marked as deviations.
+  203 read tests resulted in 202 successful runs where 1 was marked as deviation(s).
+   22 write tests resulted in 22 successful runs where 0 was marked as deviation(s).
+    0 unmarked tests resulted in 0 successful runs where 0 was marked as deviation(s).
+  225 total tests resulted in 224 successful runs where 1 was marked as deviation(s).
 
 ```
 
