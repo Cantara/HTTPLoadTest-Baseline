@@ -1,6 +1,8 @@
 # HTTPLoadTest-baseline
 
-A simple baseline for building LoadTests to be used for continous deploy/continous production QA pipelines.
+A simple baseline for building LoadTests to be used for continous deploy/continous production QA pipelines.  Baseline projects are meant to be a git clone starting 
+point for for software which are expected to grow and flourish in different ways which are not easy to parameterize in early stages. It should be usable for quite 
+a few settings, but is expected to grow in different directions. We would love to receive pull-request for enhancements both on current codebase and extensibillity features.
 
 
 ![Build Status](https://jenkins.capraconsulting.no/buildStatus/icon?job=Cantara-HTTPLoadTest-baseline) - [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
