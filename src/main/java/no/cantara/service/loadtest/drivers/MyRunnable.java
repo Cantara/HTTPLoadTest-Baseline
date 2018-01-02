@@ -1,7 +1,7 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.LoadTestResult;
 import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.model.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,10 +2,10 @@ package no.cantara.service.loadtest.drivers;
 
 import no.cantara.commands.CommandGetURLWithTemplate;
 import no.cantara.commands.CommandPostURLWithTemplate;
-import no.cantara.service.LoadTestConfig;
-import no.cantara.service.LoadTestResult;
-import no.cantara.service.TestSpecification;
 import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.model.LoadTestConfig;
+import no.cantara.service.model.LoadTestResult;
+import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,7 +1,7 @@
-package no.cantara.service.loadtest;
+package no.cantara.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.cantara.service.LoadTestConfig;
+import no.cantara.service.model.LoadTestConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;

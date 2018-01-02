@@ -2,8 +2,8 @@ package no.cantara.service.setup;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.cantara.service.LoadTestConfig;
-import no.cantara.service.TestSpecification;
+import no.cantara.service.model.LoadTestConfig;
+import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

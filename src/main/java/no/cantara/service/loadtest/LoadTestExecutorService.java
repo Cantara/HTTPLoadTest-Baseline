@@ -2,12 +2,12 @@ package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.cantara.service.LoadTestConfig;
-import no.cantara.service.LoadTestResult;
-import no.cantara.service.TestSpecification;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
 import no.cantara.service.loadtest.drivers.MyWriteRunnable;
+import no.cantara.service.model.LoadTestConfig;
+import no.cantara.service.model.LoadTestResult;
+import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

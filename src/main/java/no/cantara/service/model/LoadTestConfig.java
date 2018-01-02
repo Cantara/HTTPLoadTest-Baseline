@@ -1,4 +1,4 @@
-package no.cantara.service;
+package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -2,7 +2,7 @@ package no.cantara.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import no.cantara.base.command.BaseHttpGetHystrixCommand;
-import no.cantara.service.TestSpecification;
+import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
 import java.util.Map;
