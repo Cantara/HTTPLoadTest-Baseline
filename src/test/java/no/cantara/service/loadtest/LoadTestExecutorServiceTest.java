@@ -2,6 +2,7 @@ package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.LoadTestConfig;
+import no.cantara.service.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -34,9 +35,12 @@ public class LoadTestExecutorServiceTest {
 //        log.info("Results from test:"+LoadTestExecutorService.getResultSizeAsJson());
         log.info("Run-time: {} ms", endTime - startTime);
 
-        List resultList = LoadTestExecutorService.getResultList();
+        List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
         log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
+        LoadTestExecutorService.printStats(resultList);
+
     }
+
 
 }

@@ -3,30 +3,37 @@ package no.cantara.service.loadtest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.LoadTestConfig;
 import no.cantara.service.LoadTestResult;
+import no.cantara.service.loadtest.drivers.MyReadRunnable;
+import no.cantara.service.loadtest.drivers.MyRunnable;
+import no.cantara.service.loadtest.drivers.MyWriteRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
-    public static Random random = new Random();
-    private static List<LoadTestResult> resultList = new LinkedList<>();
+    private static List<LoadTestResult> unsafeList = new ArrayList<>();
+    //private static  List<LoadTestResult> resultList = new LinkedList<>();
+    private static List<LoadTestResult> resultList = Collections.synchronizedList(unsafeList);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static Random r = new Random();
 
 
-    public static void addResult(LoadTestResult loadTestResult) {
+    public synchronized static void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
-        log.info("ResultMapSize: {}", resultList.size());
+        //log.info("ResultMapSize: {}", resultList.size());
     }
 
 
     public static List getResultList() {
+        List<LoadTestResult> copyList = new LinkedList<>();
+        //for (LoadTestResult loadTestResult : resultList) {
+        //    copyList.add(loadTestResult);
+        //}
+
         return resultList;
     }
 
@@ -55,7 +62,7 @@ public class LoadTestExecutorService {
         int runNo = 1;
         ExecutorService threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
-        String[] hostList = {"http://crunchify.com"}; /**, "http://yahoo.com",
+        String[] hostList = {"http://crunchify.com", "http://yahoo.com",
          "http://www.ebay.com", "http://google.com",
          "http://www.example.co", "https://paypal.com",
          "http://bing.com/", "http://techcrunch.com/",
@@ -65,16 +72,24 @@ public class LoadTestExecutorService {
          "http://ebay.co.uk/", "http://google.co.uk/",
          "http://www.wikipedia.org/",
          "http://en.wikipedia.org/wiki/Main_Page"};
-         **/
+
         int read_ratio = loadTestConfig.getTest_read_write_ratio();
-//        int write_ratio = 100 - loadTestConfig.getTest_read_write_ratio();
 
         while (true) {
 
-            int chance = r.nextInt(100);
 
             for (int i = 0; i < hostList.length; i++) {
-                if (chance <= read_ratio) {
+                int chance = r.nextInt(100);
+                if (read_ratio == 0) {
+                    String url = hostList[i];
+                    LoadTestResult loadTestResult = new LoadTestResult();
+                    loadTestResult.setTest_id(loadTestConfig.getTest_id());
+                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                    loadTestResult.setTest_run_no(runNo++);
+                    Runnable worker = new MyRunnable(url, loadTestResult);
+                    threadExecutor.execute(worker);
+
+                } else if (chance <= read_ratio) {
                     String url = hostList[i];
                     LoadTestResult loadTestResult = new LoadTestResult();
                     loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
@@ -100,6 +115,53 @@ public class LoadTestExecutorService {
 //        System.out.println("\nFinished all threads");
     }
 
+    public static void printStats(List<LoadTestResult> loadTestResults) {
+        int r_deviations = 0;
+        int r_success = 0;
+        int r_results = 0;
+        int w_deviations = 0;
+        int w_success = 0;
+        int w_results = 0;
+        int deviations = 0;
+        int success = 0;
+        int results = 0;
+        for (LoadTestResult loadTestResult : loadTestResults) {
+            if (loadTestResult.getTest_id().startsWith("r-")) {
+                r_results++;
+                if (loadTestResult.isTest_deviation_flag()) {
+                    r_deviations++;
+                }
+                if (loadTestResult.isTest_success()) {
+                    r_success++;
+                }
+
+            } else {
+                if (loadTestResult.getTest_id().startsWith("w-")) {
+                    w_results++;
+                    if (loadTestResult.isTest_deviation_flag()) {
+                        w_deviations++;
+                    }
+                    if (loadTestResult.isTest_success()) {
+                        w_success++;
+                    }
+
+                } else {
+                    results++;
+                    if (loadTestResult.isTest_deviation_flag()) {
+                        deviations++;
+                    }
+                    if (loadTestResult.isTest_success()) {
+                        success++;
+                    }
+
+                }
+            }
+        }
+        log.info(" {} read tests resulted in {} successfull runs where {} was marked as deviations.", r_results, r_success, r_deviations);
+        log.info(" {} write tests resulted in {} successfull runs where {} was marked as deviations.", w_results, w_success, w_deviations);
+        log.info(" {} unmarked tests resulted in {} successfull runs where {} was marked as deviations.", results, success, deviations);
+        log.info(" {} total tests resulted in {} successfull runs where {} was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
+    }
 
     public static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
         runWithTimeout(new Callable<Object>() {

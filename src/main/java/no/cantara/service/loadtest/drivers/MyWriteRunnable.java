@@ -1,18 +1,19 @@
-package no.cantara.service.loadtest;
+package no.cantara.service.loadtest.drivers;
 
 import no.cantara.service.LoadTestResult;
+import no.cantara.service.loadtest.LoadTestExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MyReadRunnable implements Runnable {
+public class MyWriteRunnable implements Runnable {
     private final String url;
     private final LoadTestResult loadTestResult;
-    private static final Logger log = LoggerFactory.getLogger(MyReadRunnable.class);
+    private static final Logger log = LoggerFactory.getLogger(MyRunnable.class);
 
-    MyReadRunnable(String url, LoadTestResult loadTestResult) {
+    public MyWriteRunnable(String url, LoadTestResult loadTestResult) {
         this.url = url;
         this.loadTestResult = loadTestResult;
         this.loadTestResult.setTest_tags("URL: " + url);

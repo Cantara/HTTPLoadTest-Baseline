@@ -1,6 +1,7 @@
-package no.cantara.service.loadtest;
+package no.cantara.service.loadtest.drivers;
 
 import no.cantara.service.LoadTestResult;
+import no.cantara.service.loadtest.LoadTestExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,7 @@ public class MyRunnable implements Runnable {
     private final LoadTestResult loadTestResult;
     private static final Logger log = LoggerFactory.getLogger(MyRunnable.class);
 
-    MyRunnable(String url, LoadTestResult loadTestResult) {
+    public MyRunnable(String url, LoadTestResult loadTestResult) {
         this.url = url;
         this.loadTestResult = loadTestResult;
         this.loadTestResult.setTest_tags("URL: " + url);
