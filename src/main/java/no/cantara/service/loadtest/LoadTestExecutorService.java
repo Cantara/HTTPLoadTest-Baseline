@@ -9,7 +9,10 @@ import no.cantara.service.loadtest.drivers.MyWriteRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.*;
 
 public class LoadTestExecutorService {
@@ -24,14 +27,14 @@ public class LoadTestExecutorService {
     private static int loadTestRunNo = 1;
 
 
-    public synchronized static void addResult(LoadTestResult loadTestResult) {
+    public static void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
         //log.info("ResultMapSize: {}", resultList.size());
     }
 
 
     public static List getResultList() {
-        List<LoadTestResult> copyList = new LinkedList<>();
+        //List<LoadTestResult> copyList = new LinkedList<>();
         //for (LoadTestResult loadTestResult : resultList) {
         //    copyList.add(loadTestResult);
         //}
@@ -39,17 +42,21 @@ public class LoadTestExecutorService {
         return resultList;
     }
 
-    public static void executeLoadTest(LoadTestConfig loadTestConfig) {
+    public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         loadTestRunNo++;
-        ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
-        loadTestExecutor.submit(new Callable<Object>() {
-                                    @Override
-                                    public Object call() throws Exception {
-                                        runLoadTest(loadTestConfig);  //runnable.run();
-                                        return null;
+        if (asNewThread) {
+            ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
+            loadTestExecutor.submit(new Callable<Object>() {
+                                        @Override
+                                        public Object call() throws Exception {
+                                            runLoadTest(loadTestConfig);  //runnable.run();
+                                            return null;
+                                        }
                                     }
-                                }
-        );
+            );
+        } else {
+            runLoadTest(loadTestConfig);
+        }
     }
 
 
@@ -79,7 +86,7 @@ public class LoadTestExecutorService {
         int runNo = 1;
         ExecutorService threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
-        String[] hostList = {"http://crunchify.com"}; /**, "http://yahoo.com",
+        String[] hostList = {"http://google.com"}; /**, "http://yahoo.com",
          "http://www.ebay.com", "http://google.com",
          "http://www.example.co", "https://paypal.com",
          "http://bing.com/", "http://techcrunch.com/",

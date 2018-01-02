@@ -52,7 +52,7 @@ public class LoadTestResource {
         try {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
-            LoadTestExecutorService.executeLoadTest(loadTestConfig);
+            LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
             return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
@@ -80,7 +80,7 @@ public class LoadTestResource {
         try {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
-            LoadTestExecutorService.executeLoadTest(loadTestConfig);
+            LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
             return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());

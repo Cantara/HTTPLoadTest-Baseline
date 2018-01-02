@@ -27,7 +27,7 @@ public class LoadTestExecutorServiceTest {
         assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
         long startTime = System.currentTimeMillis();
 
-        LoadTestExecutorService.executeLoadTest(fileLoadtest);
+        LoadTestExecutorService.executeLoadTest(fileLoadtest, false);
         long endTime = System.currentTimeMillis();
 
         //Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());

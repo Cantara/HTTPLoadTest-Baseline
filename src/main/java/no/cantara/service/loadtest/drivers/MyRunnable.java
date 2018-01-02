@@ -44,7 +44,7 @@ public class MyRunnable implements Runnable {
             loadTestResult.setTest_deviation_flag(true);
         }
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
-        System.out.println(url + "\t\tStatus:" + result);
+        log.trace(url + "\t\tStatus:" + result);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
         LoadTestExecutorService.addResult(loadTestResult);
