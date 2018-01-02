@@ -27,7 +27,7 @@ public class TestServer {
             main.start();
         }).start();
         do {
-            Thread.sleep(10);
+            Thread.sleep(100);
         } while (main == null || !main.isStarted());
         RestAssured.port = main.getPort();
 

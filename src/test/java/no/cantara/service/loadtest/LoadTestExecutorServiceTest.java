@@ -38,6 +38,7 @@ public class LoadTestExecutorServiceTest {
         LoadTestExecutorService.printStats(resultList);
         log.info("Run-time: {} ms, configured run-time: {}", endTime - startTime, fileLoadtest.getTest_duration_in_seconds() * 1000);
 
+
     }
 
 
