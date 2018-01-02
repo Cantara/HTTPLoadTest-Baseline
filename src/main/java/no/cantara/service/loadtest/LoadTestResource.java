@@ -8,7 +8,7 @@ import no.cantara.service.LoadTestConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -21,6 +21,7 @@ import java.io.IOException;
 @Path(LoadTestResource.APPLICATION_PATH)
 public class LoadTestResource {
     public static final String APPLICATION_PATH = "/loadTest";
+    public static final String APPLICATION_PATH_FORM = "/loadTest/form";
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -36,7 +37,9 @@ public class LoadTestResource {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response startLoadTest(@RequestParam("test_id") String json) {
+    public Response startLoadTest(@RequestBody String json) {
+        //String json = request.getParameter("jsonConfig");
+
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String testId = JsonPath.read(document, "$.test_id");
@@ -58,6 +61,35 @@ public class LoadTestResource {
 //        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
+    @POST
+    @Path("/form")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response startLoadTestForm(@FormParam("jsonConfig") String json) {
+        //String json = request.getParameter("jsonConfig");
+
+        log.trace("Invoked startLoadTest with {}", json);
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+        String testId = JsonPath.read(document, "$.test_id");
+        if (testId == null) {
+            Response.Status status = Response.Status.BAD_REQUEST;
+            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
+            return Response.status(status).build();
+        }
+
+        try {
+
+            LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
+            LoadTestExecutorService.executeLoadTest(loadTestConfig);
+            return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig)).build();
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {}", json.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -65,7 +97,7 @@ public class LoadTestResource {
         log.trace("getAllLoadTests");
         String jsonResponse;
         try {
-            jsonResponse = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTests);
+            jsonResponse = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
         } catch (JsonProcessingException e) {
             log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

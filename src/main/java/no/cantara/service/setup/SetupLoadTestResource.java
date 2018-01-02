@@ -31,15 +31,27 @@ public class SetupLoadTestResource {
         try {
 
             ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource("loadtestconfig.json").getFile());
+            File file = new File(classLoader.getResource("DefaultLoadTestConfig.json").getFile());
             LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
             jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
+            log.trace("Loaded defaultconfig: {}", jsonconfig);
 
         } catch (Exception e) {
             log.error("Unable to read default configuration for LoadTest.", e);
         }
 
-        String response = "<html><body>" + jsonconfig + "</body></html>";
+        String response =
+                "<html>" +
+                        "  <body>\n" +
+                        "    <form action=\"loadTest/form\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                        "        LoadTestConfig:\n" +
+                        "   <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea>" +
+
+                        "        <br/><input type=\"submit\">\n" +
+                        "    </form>\n" +
+                        "\n" +
+                        "  </body>" +
+                        "</html>";
         return Response.ok(response).build();
     }
 

@@ -21,6 +21,7 @@ public class LoadTestExecutorService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static Random r = new Random();
     private static long startTime;
+    private static int loadTestRunNo = 1;
 
 
     public synchronized static void addResult(LoadTestResult loadTestResult) {
@@ -39,6 +40,20 @@ public class LoadTestExecutorService {
     }
 
     public static void executeLoadTest(LoadTestConfig loadTestConfig) {
+        loadTestRunNo++;
+        ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
+        loadTestExecutor.submit(new Callable<Object>() {
+                                    @Override
+                                    public Object call() throws Exception {
+                                        runLoadTest(loadTestConfig);  //runnable.run();
+                                        return null;
+                                    }
+                                }
+        );
+    }
+
+
+    private static void runLoadTest(LoadTestConfig loadTestConfig) {
 
         startTime = System.currentTimeMillis();
         try {
@@ -54,9 +69,10 @@ public class LoadTestExecutorService {
         } catch (Exception e) {
             logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
         }
-
-
     }
+
+
+
 
 
     private static void runTask(LoadTestConfig loadTestConfig) {

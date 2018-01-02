@@ -9,6 +9,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.net.HttpURLConnection;
 
@@ -41,7 +42,7 @@ public class LoadTestResourceTest {
 
         given()
                 .log().everything()
-                .header("Content-Type", "application/json")
+                .header("Content-Type", MediaType.APPLICATION_JSON)
                 .body(loadTestJson)
                 .expect()
                 .statusCode(HttpURLConnection.HTTP_OK)
@@ -52,6 +53,25 @@ public class LoadTestResourceTest {
 
     }
 
+    @Test
+    public void testStartLoadTestForm() throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("loadtestconfig.json").getFile());
+        LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+        String loadTestJson = mapper.writeValueAsString(fileLoadtest);
+
+        given()
+                .log().everything()
+                .header("Content-Type", MediaType.APPLICATION_FORM_URLENCODED)
+                .formParam("jsonConfig", loadTestJson)
+                .expect()
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().everything()
+                .when()
+                .post(LoadTestResource.APPLICATION_PATH_FORM);
+
+
+    }
     @Test
     public void testGetAllLoadTests() throws Exception {
     }
