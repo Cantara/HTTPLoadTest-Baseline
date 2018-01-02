@@ -114,4 +114,6 @@ Quick build and verify
 '''
 
 Open in browser:  
-* http://localhost:8086/HTTPLoadTest-baseline/config
+* To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
+* To configure the read-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/read   
+* To configure the write-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/write   

@@ -99,14 +99,6 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateReadTestSpecificationForm with {}", json);
-        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
-        String testId = JsonPath.read(document, "$.command_url");
-        if (testId == null) {
-            Response.Status status = Response.Status.BAD_REQUEST;
-            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
-            return Response.status(status).build();
-        }
-
         try {
 
             List<TestSpecification> readTestSpec = new ArrayList<>();
@@ -116,7 +108,7 @@ public class LoadTestResource {
             return Response.ok(json).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -126,13 +118,6 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateWriteTestSpecificationForm with {}", json);
-        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
-        String testId = JsonPath.read(document, "$.command_url");
-        if (testId == null) {
-            Response.Status status = Response.Status.BAD_REQUEST;
-            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
-            return Response.status(status).build();
-        }
 
         try {
 
@@ -143,7 +128,7 @@ public class LoadTestResource {
             return Response.ok(json).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 
