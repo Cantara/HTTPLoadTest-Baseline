@@ -29,5 +29,8 @@ This script can be run with `./test-docker.sh local` to also run `mvn package` a
 
 #### Quickly verify the image
 ```bash
-wget http://localhost:8086/HTTPLoadTest-baseline/health
+wget http://localhost:18086/HTTPLoadTest-baseline/health
 ```
+
+Open in browser:  
+* http://localhost:18086/HTTPLoadTest-baseline/config
