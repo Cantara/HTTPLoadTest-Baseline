@@ -32,7 +32,7 @@ public class MyReadRunnable implements Runnable {
             sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms() * chance / 100;
         }
         try {
-            log.trace("Sleeping {} ms before test as configured in the loadTestConfig", sleeptime);
+            //log.trace("Sleeping {} ms before test as configured in the loadTestConfig", sleeptime);
             Thread.sleep(sleeptime);
         } catch (Exception e) {
             log.warn("Thread interrupted in wait sleep", e);
@@ -50,30 +50,7 @@ public class MyReadRunnable implements Runnable {
         if (command.isResponseRejected()) {
             loadTestResult.setTest_deviation_flag(true);
         }
-        ;
-
-        /**
-         String result = "";
-         int code = 200;
-         try {
-         URL siteURL = new URL(url);
-         HttpURLConnection connection = (HttpURLConnection) siteURL
-         .openConnection();
-         connection.setRequestMethod("GET");
-         connection.connect();
-
-         code = connection.getResponseCode();
-         if (code == 200) {
-         result = "Green\t";
-         loadTestResult.setTest_success(true);
-         }
-         } catch (Exception e) {
-         result = "->Red<-\t";
-         loadTestResult.setTest_deviation_flag(true);
-         }
-         **/
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
-        //log.trace(url + "\t\tStatus:" + result);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
         LoadTestExecutorService.addResult(loadTestResult);
@@ -82,7 +59,7 @@ public class MyReadRunnable implements Runnable {
 
     private static void logTimedCode(long startTime, String msg) {
         long elapsedSeconds = (System.currentTimeMillis() - startTime);
-        log.trace("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
+        //log.trace("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
     }
 
 }

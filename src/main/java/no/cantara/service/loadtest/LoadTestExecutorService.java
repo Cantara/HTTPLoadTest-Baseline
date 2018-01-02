@@ -24,6 +24,7 @@ public class LoadTestExecutorService {
     private static Random r = new Random();
     private static long startTime;
     private static int loadTestRunNo = 1;
+    private static LoadTestConfig activeLoadTestConfig;
 
 
     public static void addResult(LoadTestResult loadTestResult) {
@@ -43,6 +44,7 @@ public class LoadTestExecutorService {
 
     public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         loadTestRunNo++;
+        activeLoadTestConfig = loadTestConfig;
         if (asNewThread) {
             ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
             loadTestExecutor.submit(new Callable<Object>() {
@@ -234,7 +236,16 @@ public class LoadTestExecutorService {
         log.info(" {} total tests resulted in {} successfull runs where {} was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
         stats = stats + "\n" + String.format(" %4d total tests resulted in %d successfull runs where %d was marked as deviations.", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
 
-        return stats + "\n\n";
+        String loadTestJson = "";
+        try {
+            loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(activeLoadTestConfig);
+            loadTestJson = loadTestJson + "\n\n";
+
+        } catch (Exception e) {
+            log.warn("Unable to serialize loadTestConfig to json", e);
+        }
+
+        return stats + "\n\n" + loadTestJson;
     }
 
     public static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
