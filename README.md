@@ -8,6 +8,12 @@ A typical simple baseline for building LoadTest for continous deploy/continous p
 [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
 
 
+# Quick test-run in docker
+
+```
+sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
+```
+
 ![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
 
 
