@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
+import static no.cantara.service.Main.CONTEXT_PATH;
+
 /**
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-09-12.
  */
@@ -22,6 +24,7 @@ import java.io.IOException;
 public class LoadTestResource {
     public static final String APPLICATION_PATH = "/loadTest";
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
+    public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -38,8 +41,6 @@ public class LoadTestResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response startLoadTest(@RequestBody String json) {
-        //String json = request.getParameter("jsonConfig");
-
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String testId = JsonPath.read(document, "$.test_id");
@@ -53,12 +54,11 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
-            return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig)).build();
+            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
     @POST
@@ -66,8 +66,6 @@ public class LoadTestResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response startLoadTestForm(@FormParam("jsonConfig") String json) {
-        //String json = request.getParameter("jsonConfig");
-
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String testId = JsonPath.read(document, "$.test_id");
@@ -81,23 +79,36 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
-            return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig)).build();
+            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-//        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 
+    @POST
+    @Path("/status")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllLoadTestsJson() {
+        return getAllLoadTests();
+    }
+
+    @GET
+    @Path("/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllLoadTestsStatusJson() {
+        return getAllLoadTests();
+    }
 
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllLoadTests() {
         log.trace("getAllLoadTests");
-        String jsonResponse;
+        String jsonResponse = LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
         try {
-            jsonResponse = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
+            jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
         } catch (JsonProcessingException e) {
             log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

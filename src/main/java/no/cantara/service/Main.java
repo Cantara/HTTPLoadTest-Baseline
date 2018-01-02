@@ -177,6 +177,12 @@ public class Main {
         loadTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM);
         securityHandler.addConstraintMapping(loadTestFormEndpointConstraintMapping);
 
+        // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+        ConstraintMapping loadTestStatusEndpointConstraintMapping = new ConstraintMapping();
+        loadTestStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        loadTestStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STATUS);
+        securityHandler.addConstraintMapping(loadTestStatusEndpointConstraintMapping);
+
         // Allow OAuth2StubbedServerResource to be accessed without authentication
         ConstraintMapping oauthserverEndpointConstraintMapping = new ConstraintMapping();
         oauthserverEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));

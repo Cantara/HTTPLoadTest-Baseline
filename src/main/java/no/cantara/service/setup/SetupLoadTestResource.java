@@ -12,6 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 
+import static no.cantara.service.Main.CONTEXT_PATH;
+import static no.cantara.service.loadtest.LoadTestResource.APPLICATION_PATH_FORM;
 import static no.cantara.service.setup.SetupLoadTestResource.CONFIG_PATH;
 
 @Path(CONFIG_PATH)
@@ -43,11 +45,10 @@ public class SetupLoadTestResource {
         String response =
                 "<html>" +
                         "  <body>\n" +
-                        "    <form action=\"loadTest/form\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        LoadTestConfig:\n" +
-                        "   <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea>" +
-
-                        "        <br/><input type=\"submit\">\n" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea><br/>" +
+                        "        <input type=\"submit\">\n" +
                         "    </form>\n" +
                         "\n" +
                         "  </body>" +
