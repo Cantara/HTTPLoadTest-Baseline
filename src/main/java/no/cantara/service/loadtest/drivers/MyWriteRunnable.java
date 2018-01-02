@@ -1,13 +1,12 @@
 package no.cantara.service.loadtest.drivers;
 
+import no.cantara.commands.CommandGetURL;
 import no.cantara.service.LoadTestConfig;
 import no.cantara.service.LoadTestResult;
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Random;
 
 public class MyWriteRunnable implements Runnable {
@@ -42,26 +41,39 @@ public class MyWriteRunnable implements Runnable {
 
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
 
-        String result = "";
-        int code = 200;
-        try {
-            URL siteURL = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) siteURL
-                    .openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-
-            code = connection.getResponseCode();
-            if (code == 200) {
-                result = "Green\t";
-                loadTestResult.setTest_success(true);
-            }
-        } catch (Exception e) {
-            result = "->Red<-\t";
+        CommandGetURL command = new CommandGetURL(url, 9000);
+        String returned_data = command.execute();
+        if (command.isSuccessfulExecution()) {
+            loadTestResult.setTest_success(true);
+        }
+        ;
+        if (command.isResponseRejected()) {
             loadTestResult.setTest_deviation_flag(true);
         }
+        ;
+
+        /**
+         String result = "";
+         int code = 200;
+         try {
+         URL siteURL = new URL(url);
+         HttpURLConnection connection = (HttpURLConnection) siteURL
+         .openConnection();
+         connection.setRequestMethod("GET");
+         connection.connect();
+
+         code = connection.getResponseCode();
+         if (code == 200) {
+         result = "Green\t";
+         loadTestResult.setTest_success(true);
+         }
+         } catch (Exception e) {
+         result = "->Red<-\t";
+         loadTestResult.setTest_deviation_flag(true);
+         }
+         **/
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
-        log.trace(url + "\t\tStatus:" + result);
+//        log.trace(url + "\t\tStatus:" + result);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
         LoadTestExecutorService.addResult(loadTestResult);
