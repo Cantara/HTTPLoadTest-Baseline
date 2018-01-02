@@ -12,6 +12,7 @@ A typical simple baseline for building LoadTest for continous deploy/continous p
 
 ```
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
+wget http://localhost:8086/HTTPLoadTest-baseline/health
 ```
 
 ![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
@@ -108,15 +109,15 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 } ]
 ```
 
-Quick build and verify
-'''
-* mvn clean install
-* java -jar target/HTTPLoadTest-baseline-0.1-SNAPSHOT.jar
-* wget http://localhost:8086/HTTPLoadTest-baseline/health
-* wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
-* wget http://localhost:8086/HTTPLoadTest-baseline/loadTest                    // return all loadTests with statuses
-* wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/loadtestId/status  // return status for loadtest with loadTestid
-'''
+# Quick build and verify
+```
+mvn clean install
+java -jar target/HTTPLoadTest-baseline-0.1-SNAPSHOT.jar
+wget http://localhost:8086/HTTPLoadTest-baseline/health
+wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest                    // return all loadTests with statuses
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/loadtestId/status  // return status for loadtest with loadTestid
+```
 
 Open in browser:  
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
