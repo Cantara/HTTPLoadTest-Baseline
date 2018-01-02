@@ -1,6 +1,6 @@
 # HTTPLoadTest-baseline
 
-A typical simple baseline for building LoadTest for continous deploy/continous production QA pipelines
+A simple baseline for building LoadTests to be used for continous deploy/continous production QA pipelines.
 
 
 ![Build Status](https://jenkins.capraconsulting.no/buildStatus/icon?job=Cantara-HTTPLoadTest-baseline) - [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
@@ -14,6 +14,20 @@ A typical simple baseline for building LoadTest for continous deploy/continous p
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
+
+
+# Pipeline usage example
+
+```
+wget -post-data "jsonConfig=@loadTestReadSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/read"
+wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/write"
+wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
+##  wait and get the result
+sleep 40s
+wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/status
+## check the results.txt against QA rules
+```
+
 
 # Work-in-progress - nice vizualisation of running loadtests
 
