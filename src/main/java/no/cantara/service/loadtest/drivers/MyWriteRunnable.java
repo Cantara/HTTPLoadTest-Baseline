@@ -14,7 +14,7 @@ public class MyWriteRunnable implements Runnable {
     private static Random r = new Random();
     private final LoadTestResult loadTestResult;
     private final LoadTestConfig loadTestConfig;
-    private static final Logger log = LoggerFactory.getLogger(MyRunnable.class);
+    private static final Logger log = LoggerFactory.getLogger(MyWriteRunnable.class);
 
     public MyWriteRunnable(String url, LoadTestConfig loadTestConfig, LoadTestResult loadTestResult) {
         this.url = url;
