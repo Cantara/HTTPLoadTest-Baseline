@@ -23,8 +23,6 @@ public class CommandPostFromTestSpecificationTest {
 
     private final static Logger log = LoggerFactory.getLogger(CommandVerifyTokenTest.class);
 
-    private final String http_template = "";
-    private final String http_conenttype = "";
     private static final ObjectMapper mapper = new ObjectMapper();
 
 
