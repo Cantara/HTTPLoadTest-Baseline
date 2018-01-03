@@ -1,10 +1,12 @@
 package no.cantara.service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestSpecification {
     private String command_url;
     private String command_contenttype = "application/json";

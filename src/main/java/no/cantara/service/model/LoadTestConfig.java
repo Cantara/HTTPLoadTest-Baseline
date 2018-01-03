@@ -1,7 +1,10 @@
 package no.cantara.service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LoadTestConfig {
     private String test_id;
     private String test_name;
