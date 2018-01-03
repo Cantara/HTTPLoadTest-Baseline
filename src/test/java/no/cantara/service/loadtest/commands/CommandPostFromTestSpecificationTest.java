@@ -1,7 +1,8 @@
-package no.cantara.commands;
+package no.cantara.service.loadtest.commands;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.commands.CommandVerifyTokenTest;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
-public class CommandPostURLWithTemplateTest {
+public class CommandPostFromTestSpecificationTest {
 
     private final static Logger log = LoggerFactory.getLogger(CommandVerifyTokenTest.class);
 
@@ -65,13 +66,13 @@ public class CommandPostURLWithTemplateTest {
         Map<String, String> replacements = new HashMap<>();
         replacements.put("#BrukerID", "TestBruker");
         replacements.put("#Passord", "TestPassord");
-        assertTrue(CommandPostURLWithTemplate.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestBruker"));
-        assertTrue(CommandPostURLWithTemplate.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestPassord"));
+        assertTrue(CommandPostFromTestSpecification.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestBruker"));
+        assertTrue(CommandPostFromTestSpecification.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestPassord"));
 
     }
 
     @Test
-    public void testCommandPostURLWithTemplate() throws Exception {
+    public void testCommandPostFromTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("readconfig.json").getFile());
@@ -83,9 +84,9 @@ public class CommandPostURLWithTemplateTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                result = new CommandPostURLWithTemplate(testSpecification).execute();
+                result = new CommandPostFromTestSpecification(testSpecification).execute();
             } else {
-                result = new CommandGetURLWithTemplate(testSpecification).execute();
+                result = new CommandGetFromTestSpecification(testSpecification).execute();
             }
             log.debug("Returned result: " + result);
         }
@@ -93,7 +94,7 @@ public class CommandPostURLWithTemplateTest {
     }
 
     @Test
-    public void testDefaultConfigCommandPostURLWithTemplate() throws Exception {
+    public void testDefaultConfigCommandPostFromTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
@@ -105,9 +106,9 @@ public class CommandPostURLWithTemplateTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                result = new CommandPostURLWithTemplate(testSpecification).execute();
+                result = new CommandPostFromTestSpecification(testSpecification).execute();
             } else {
-                result = new CommandGetURLWithTemplate(testSpecification).execute();
+                result = new CommandGetFromTestSpecification(testSpecification).execute();
             }
             log.debug("Returned result: " + result);
             assertTrue(result.length() > 0);

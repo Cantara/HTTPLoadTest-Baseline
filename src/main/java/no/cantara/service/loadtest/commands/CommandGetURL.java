@@ -1,4 +1,4 @@
-package no.cantara.commands;
+package no.cantara.service.loadtest.commands;
 
 import no.cantara.base.command.BaseHttpGetHystrixCommand;
 

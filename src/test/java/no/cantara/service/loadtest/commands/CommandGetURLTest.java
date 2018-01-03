@@ -1,4 +1,4 @@
-package no.cantara.commands;
+package no.cantara.service.loadtest.commands;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

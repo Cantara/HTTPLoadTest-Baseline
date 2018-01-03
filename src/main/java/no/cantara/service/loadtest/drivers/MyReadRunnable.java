@@ -1,8 +1,8 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.commands.CommandGetURLWithTemplate;
-import no.cantara.commands.CommandPostURLWithTemplate;
 import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
+import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -52,7 +52,7 @@ public class MyReadRunnable implements Runnable {
             loadTestResult.setTest_success(true);
             String result;
             if (testSpecification.isCommand_http_post()) {
-                CommandPostURLWithTemplate command = new CommandPostURLWithTemplate(testSpecification);
+                CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
                 result = command.execute();
                 if (!command.isSuccessfulExecution()) {
                     loadTestResult.setTest_success(false);
@@ -61,7 +61,7 @@ public class MyReadRunnable implements Runnable {
                     loadTestResult.setTest_deviation_flag(true);
                 }
             } else {
-                CommandGetURLWithTemplate command = new CommandGetURLWithTemplate(testSpecification);
+                CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
                 result = command.execute();
                 if (!command.isSuccessfulExecution()) {
                     loadTestResult.setTest_success(false);
