@@ -5,6 +5,7 @@ import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -18,6 +19,7 @@ public class LoadTestExecutorServiceTest {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
+    @Ignore
     public void executeTestConfigFromFile() throws Exception {
 
 
@@ -30,7 +32,7 @@ public class LoadTestExecutorServiceTest {
         LoadTestExecutorService.executeLoadTest(fileLoadtest, false);
         long endTime = System.currentTimeMillis();
 
-        //Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
+        Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
 
         List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
         log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));

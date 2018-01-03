@@ -242,6 +242,9 @@ public class LoadTestExecutorService {
     }
 
     public static String printStats(List<LoadTestResult> loadTestResults) {
+        if (loadTestResults == null) {
+            return "";
+        }
         int r_deviations = 0;
         int r_success = 0;
         int r_results = 0;
