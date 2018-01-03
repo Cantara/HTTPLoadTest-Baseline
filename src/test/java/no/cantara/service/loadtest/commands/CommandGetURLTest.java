@@ -12,7 +12,7 @@ public class CommandGetURLTest {
     private static String testURL = "https://gmail.com";
 
 
-    @Test
+    @Test(priority = 1, enabled = false)
     public void testCommandGetURLTest() throws Exception {
 
 
