@@ -5,7 +5,6 @@ import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.File;
@@ -18,8 +17,7 @@ public class LoadTestExecutorServiceTest {
     private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorServiceTest.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    @Test
-    @Ignore
+    @Test(priority = 99)
     public void executeTestConfigFromFile() throws Exception {
 
 
