@@ -2,10 +2,10 @@ package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import no.cantara.base.command.BaseHttpGetHystrixCommand;
+import no.cantara.service.loadtest.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
-import java.util.Map;
 
 public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<String> {
 
@@ -34,27 +34,13 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
 
     public CommandGetFromTestSpecification(TestSpecification testSpecification) {
         super(URI.create(testSpecification.getCommand_url()), "hystrixGroupKey", testSpecification.getCommand_timeout_milliseconds());
-        this.template = updateTemplateWithvaluesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
+        this.template = TemplateUtil.updateTemplateWithvaluesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();
         this.uri = testSpecification.getCommand_url();
     }
 
 
-    public static String updateTemplateWithvaluesFromMap(String template, Map<String, String> templatereplacementMap) {
-        if (template == null) {
-            return "";
-        }
-        if (templatereplacementMap == null) {
-            return template;
-        }
-        for (String key : templatereplacementMap.keySet()) {
-            if (template.contains(key)) {
-                template = template.replaceAll(key, templatereplacementMap.get(key));
-            }
-        }
-        return template;
-    }
 
     @Override
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {

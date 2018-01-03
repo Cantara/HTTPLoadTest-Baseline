@@ -3,6 +3,7 @@ package no.cantara.service.loadtest.commands;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.commands.CommandVerifyTokenTest;
+import no.cantara.service.loadtest.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;
@@ -64,8 +65,8 @@ public class CommandPostFromTestSpecificationTest {
         Map<String, String> replacements = new HashMap<>();
         replacements.put("#BrukerID", "TestBruker");
         replacements.put("#Passord", "TestPassord");
-        assertTrue(CommandPostFromTestSpecification.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestBruker"));
-        assertTrue(CommandPostFromTestSpecification.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestPassord"));
+        assertTrue(TemplateUtil.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestBruker"));
+        assertTrue(TemplateUtil.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestPassord"));
 
     }
 
