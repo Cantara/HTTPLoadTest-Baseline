@@ -76,7 +76,6 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 
 # Example on read test specification
 ```json
-
 [ {
   "command_url" : "https://gmail.com",
   "command_contenttype" : "text/html",
@@ -100,6 +99,12 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 } ]
 ```
 
+# Template special operations
+
+```
+#fizzle(chars:replaceMe) =>  tEftohTdS
+#fizzle(digits:67643)    =>  32632
+```
 
 # Example on write test specification
 ```json
