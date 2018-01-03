@@ -8,28 +8,23 @@ import java.util.Map;
 public class TestSpecification {
     private String command_url;
     private String command_contenttype = "application/json";
+    private String command_http_authstring;
     private boolean command_http_post = false;
     private int command_timeout_milliseconds = 2000;
     private String command_template = "";
     private Map<String, String> command_replacement_map = new HashMap<>();
 
 
-    /**
-     * {
-     * "command_url": "http://test.tull.no",
-     * "command_contenttype": "application/json",
-     * "command_template": "",
-     * "command_replacement_map": ""
-     * }
-     */
     public TestSpecification(@JsonProperty("command_url") String command_url,
                              @JsonProperty("command_contenttype") String command_contenttype,
+                             @JsonProperty("command_http_authstring") String command_http_authstring,
                              @JsonProperty("command_http_post") String command_http_post,
                              @JsonProperty("command_timeout_milliseconds") String command_timeout_milliseconds,
                              @JsonProperty("command_template") String command_template,
                              @JsonProperty("command_replacement_map") Map<String, String> command_replacement_map) {
         this.command_url = command_url;
         this.command_http_post = Boolean.parseBoolean(command_http_post);
+        this.command_http_authstring = command_http_authstring;
         this.command_timeout_milliseconds = Integer.valueOf(command_timeout_milliseconds);
         this.command_contenttype = command_contenttype;
         this.command_template = command_template;
@@ -87,6 +82,14 @@ public class TestSpecification {
 
     public void setCommand_timeout_milliseconds(int command_timeout_milliseconds) {
         this.command_timeout_milliseconds = command_timeout_milliseconds;
+    }
+
+    public String getCommand_http_authstring() {
+        return command_http_authstring;
+    }
+
+    public void setCommand_http_authstring(String command_http_authstring) {
+        this.command_http_authstring = command_http_authstring;
     }
 
     @Override

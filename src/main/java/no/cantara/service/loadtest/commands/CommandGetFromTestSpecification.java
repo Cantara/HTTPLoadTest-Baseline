@@ -11,6 +11,7 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
 
     String uri;
     String contentType = "text/xml;charset=UTF-8";
+    String httpAuthorizationString;
     String template = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:aut=\"http://dbonline.no/webservices/xsd/Autorisasjon\" xmlns:per=\"http://dbonline.no/webservices/xsd/PersonInfo\">\n" +
             "   <soapenv:Header>\n" +
             "      <aut:UserAuthorization>\n" +
@@ -35,9 +36,9 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
         super(URI.create(testSpecification.getCommand_url()), "hystrixGroupKey", testSpecification.getCommand_timeout_milliseconds());
         this.template = updateTemplateWithvaluesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
         this.contentType = testSpecification.getCommand_contenttype();
+        this.httpAuthorizationString = testSpecification.getCommand_http_authstring();
         this.uri = testSpecification.getCommand_url();
     }
-
 
 
     public static String updateTemplateWithvaluesFromMap(String template, Map<String, String> templatereplacementMap) {
@@ -58,6 +59,10 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
     @Override
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
         super.dealWithRequestBeforeSend(request);
+        if (httpAuthorizationString == null || httpAuthorizationString.length() < 10) {
+            request.authorization(httpAuthorizationString);
+        }
+
         if (template.contains("soapenv:Envelope")) {
             //request.getConnection().addRequestProperty("SOAPAction", SOAP_ACTION);
         }
