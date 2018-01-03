@@ -17,7 +17,7 @@ public class CommandGetURLTest {
 
 
         log.trace("Calling {}", testURL);
-        CommandGetURL command = new CommandGetURL(testURL, 3000);
+        CommandGetURL command = new CommandGetURL(testURL, 7000);
         String returned_data = command.execute();
         log.debug("Returned: " + returned_data);
         assertTrue(!command.isFailedExecution());
