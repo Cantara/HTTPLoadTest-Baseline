@@ -9,6 +9,8 @@ public class TemplateUtil {
     public static final List<String> fizzleKeyList = new ArrayList<String>() {{
         add("#fizzle(chars:");
         add("#fizzle(digits:");
+        add("#fizzle(U_chars:");
+        add("#fizzle(L_chars:");
     }};
 
     public static String updateTemplateWithvaluesFromMap(String template, Map<String, String> templatereplacementMap) {
@@ -42,6 +44,12 @@ public class TemplateUtil {
         }
         if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(1))) {
             return frontTemplate + Fizzler.getRandomDigits(fizzSize) + backTemplate;
+        }
+        if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(2))) {
+            return frontTemplate + Fizzler.getRandomUppercaseCharacter(fizzSize) + backTemplate;
+        }
+        if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(3))) {
+            return frontTemplate + Fizzler.getRandomLowercaseCharacter(fizzSize) + backTemplate;
         }
         return template;
     }

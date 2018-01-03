@@ -48,5 +48,22 @@ public class Fizzler {
         }
         return result;
     }
+
+    public static String getRandomLowercaseCharacter(int noOfChars) {
+        String result = "";
+        for (int n = 0; n < noOfChars; n++) {
+            result = result + getRandomLowercaseCharacter();
+        }
+        return result;
+    }
+
+    public static String getRandomUppercaseCharacter(int noOfChars) {
+        String result = "";
+        for (int n = 0; n < noOfChars; n++) {
+            result = result + getRandomUppercaseCharacter();
+        }
+        return result;
+    }
+
 }
 
