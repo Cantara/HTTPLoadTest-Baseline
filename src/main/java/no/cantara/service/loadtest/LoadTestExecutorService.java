@@ -28,7 +28,7 @@ public class LoadTestExecutorService {
     private static Random r = new Random();
     private static long startTime = System.currentTimeMillis();
     ;
-    private static int loadTestRunNo = 1;
+    private static int loadTestRunNo = 0;
     private static LoadTestConfig activeLoadTestConfig;
 
     static {
@@ -297,7 +297,13 @@ public class LoadTestExecutorService {
         }
         DateFormat df = new SimpleDateFormat("dd/MM-yyyy  HH:mm:ss");
         long nowTimestamp = System.currentTimeMillis();
-        String stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
+        String stats;
+        if (loadTestRunNo > 0) {
+            stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
+
+        } else {
+            stats = "Started: " + df.format(new Date(nowTimestamp)) + "  Now: " + df.format(new Date(nowTimestamp)) + "\n";
+        }
         log.info(" {} read tests resulted in {} successful runs where {} was marked as deviation(s).", r_results, r_success, r_deviations);
         stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked as deviation(s).", r_results, r_success, r_deviations);
 
