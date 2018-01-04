@@ -8,6 +8,10 @@
     "command_replacement_map": {
       "#Passord": "TestPassord",
       "#BrukerID": "TestBruker"
+    },
+    "command_response_map": {
+      "#randomizeName": "$..test_randomize_sleeptime",
+      "#testName": "$..test_name"
     }
   },
   {
