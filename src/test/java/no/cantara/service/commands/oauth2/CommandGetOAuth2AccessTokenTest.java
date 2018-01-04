@@ -1,4 +1,4 @@
-package no.cantara.commands.oauth2;
+package no.cantara.service.commands.oauth2;
 
 import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;

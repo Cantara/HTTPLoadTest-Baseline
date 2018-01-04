@@ -1,6 +1,6 @@
 package no.cantara.simulator.oauth2stubbedserver;
 
-import no.cantara.commands.config.ConstantValue;
+import no.cantara.service.commands.config.ConstantValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

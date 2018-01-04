@@ -1,6 +1,6 @@
 package no.cantara.service.oauth2ping;
 
-import no.cantara.commands.config.ConstantValue;
+import no.cantara.service.commands.config.ConstantValue;
 import no.cantara.service.testsupport.TestServer;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

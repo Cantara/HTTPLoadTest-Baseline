@@ -1,0 +1,13 @@
+---
+ apiVersion: v1
+ kind: Pod
+ metadata:
+   name: httploadtest
+   labels:
+     app: web
+ spec:
+   containers:
+     - name: httploadtest
+       image: cantara/httploadtest-baseline
+       ports:
+         - containerPort: 8086

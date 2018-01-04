@@ -1,4 +1,4 @@
-package no.cantara.commands.oauth2;
+package no.cantara.service.commands.oauth2;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import no.cantara.base.command.BaseHttpGetHystrixCommand;

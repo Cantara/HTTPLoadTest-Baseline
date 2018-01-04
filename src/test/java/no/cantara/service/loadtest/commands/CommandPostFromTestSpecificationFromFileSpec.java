@@ -18,7 +18,7 @@ public class CommandPostFromTestSpecificationFromFileSpec {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    String filenameIntestResourcesToCreateAndRunTestFrom = "readconfig.json";
+    String filenameIntestResourcesToCreateAndRunTestFrom = "readdconfig.json";
 
 
     @Test
@@ -29,16 +29,20 @@ public class CommandPostFromTestSpecificationFromFileSpec {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
+        CommandGetFromTestSpecification myGetCommand = null;
+        CommandPostFromTestSpecification myPostCommand = null;
         for (TestSpecification testSpecification : readTestSpec) {
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                result = new CommandPostFromTestSpecification(testSpecification).execute();
+                myPostCommand = new CommandPostFromTestSpecification(testSpecification);
+                result = myPostCommand.execute();
             } else {
-                result = new CommandGetFromTestSpecification(testSpecification).execute();
+                myGetCommand = new CommandGetFromTestSpecification(testSpecification);
+                result = myGetCommand.execute();
             }
-            log.debug("Returned result: " + result);
+            log.debug("Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
         }
 
     }
