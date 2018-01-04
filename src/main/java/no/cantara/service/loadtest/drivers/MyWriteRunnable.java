@@ -26,7 +26,8 @@ public class MyWriteRunnable implements Runnable {
         this.testSpecificationList = testSpecificationList;
         this.loadTestResult = loadTestResult;
         this.loadTestConfig = loadTestConfig;
-        this.loadTestResult.setTest_tags("testSpecificationList: " + testSpecificationList);
+        //this.loadTestResult.setTest_tags("testSpecificationList: " + testSpecificationList);
+        this.loadTestResult.setTest_tags("LoadTestId: " + loadTestConfig.getTest_id());
     }
 
     @Override
@@ -48,11 +49,13 @@ public class MyWriteRunnable implements Runnable {
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
+        int writeCommandNo = 1;
         for (TestSpecification testSpecification : testSpecificationList) {
             testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
             if (testSpecification.getCommand_url().length() > 0) {
                 log.trace("Calling {}", testSpecification.getCommand_url());
                 loadTestResult.setTest_success(true);
+                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + " " + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
                 String result;
                 if (testSpecification.isCommand_http_post()) {
                     CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
