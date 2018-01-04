@@ -11,7 +11,7 @@ import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,14 +33,18 @@ public class LoadTestExecutorService {
     static {
         try {
 
-            ClassLoader classLoader = LoadTestExecutorService.class.getClassLoader();
-            File rfile = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
-            readTestSpecificationList = mapper.readValue(rfile, new TypeReference<List<TestSpecification>>() {
+            //ClassLoader classLoader = LoadTestExecutorService.class.getClassLoader();
+            InputStream is = LoadTestExecutorService.class.getClassLoader().getResourceAsStream("DefaultReadTestSpecification.json");
+
+//            File rfile = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
+            readTestSpecificationList = mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
             });
             String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
             log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-            File wfile = new File(classLoader.getResource("DefaultWriteTestSpecification.json").getFile());
-            writeTestSpecificationList = mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
+//            File wfile = new File(classLoader.getResource("DefaultWriteTestSpecification.json").getFile());
+            InputStream wis = LoadTestExecutorService.class.getClassLoader().getResourceAsStream("DefaultReadTestSpecification.json");
+
+            writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
             });
             String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
             log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
