@@ -1,4 +1,4 @@
-package no.cantara.service.setup;
+package no.cantara.service.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,17 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
-import static no.cantara.service.loadtest.LoadTestResource.APPLICATION_PATH_FORM_READ;
-import static no.cantara.service.loadtest.LoadTestResource.APPLICATION_PATH_FORM_WRITE;
-import static no.cantara.service.setup.SetupLoadTestResource.CONFIG_PATH;
+import static no.cantara.service.config.ConfigLoadTestResource.CONFIG_PATH;
+import static no.cantara.service.loadtest.LoadTestResource.*;
 
 @Path(CONFIG_PATH)
 @Produces(MediaType.TEXT_HTML)
-public class SetupLoadTestResource {
+public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
-    private static final Logger log = LoggerFactory.getLogger(SetupLoadTestResource.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigLoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
 
@@ -52,7 +51,7 @@ public class SetupLoadTestResource {
                 "<html>" +
                         "  <body>\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration</h3><br/><br/>" +
-                        "    <form action=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
+                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\">" +

@@ -1,9 +1,10 @@
 package no.cantara.service;
 
+import no.cantara.service.config.ConfigLoadTestResource;
+import no.cantara.service.config.SetupLoadTestResource;
 import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.LoadTestResource;
 import no.cantara.service.oauth2ping.PingResource;
-import no.cantara.service.setup.SetupLoadTestResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedTokenVerifyResource;
 import no.cantara.util.Configuration;
@@ -162,19 +163,25 @@ public class Main {
         // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
         ConstraintMapping configEndpointConstraintMapping = new ConstraintMapping();
         configEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-        configEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH);
+        configEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH);
         securityHandler.addConstraintMapping(configEndpointConstraintMapping);
+
+        // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+        ConstraintMapping configEndpoint2ConstraintMapping = new ConstraintMapping();
+        configEndpoint2ConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        configEndpoint2ConstraintMapping.setPathSpec(SetupLoadTestResource.SETUP_PATH);
+        securityHandler.addConstraintMapping(configEndpoint2ConstraintMapping);
 
         // Allow configresource read-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
         ConstraintMapping configReadEndpointConstraintMapping = new ConstraintMapping();
         configReadEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-        configReadEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH_READ);
+        configReadEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_READ);
         securityHandler.addConstraintMapping(configReadEndpointConstraintMapping);
 
         // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
         ConstraintMapping configWriteEndpointConstraintMapping = new ConstraintMapping();
         configWriteEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-        configWriteEndpointConstraintMapping.setPathSpec(SetupLoadTestResource.CONFIG_PATH_WRITE);
+        configWriteEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_WRITE);
         securityHandler.addConstraintMapping(configWriteEndpointConstraintMapping);
 
         // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))

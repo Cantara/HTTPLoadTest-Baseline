@@ -146,7 +146,7 @@ public class LoadTestResource {
         log.trace("getAllLoadTests");
         String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
         try {
-            jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
+            jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getLatestResultList());
         } catch (JsonProcessingException e) {
             log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

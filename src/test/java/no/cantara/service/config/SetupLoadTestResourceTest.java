@@ -1,4 +1,4 @@
-package no.cantara.service.setup;
+package no.cantara.service.config;
 
 import no.cantara.service.testsupport.TestServer;
 import org.testng.annotations.AfterClass;
@@ -32,7 +32,7 @@ public class SetupLoadTestResourceTest {
                 .statusCode(HttpURLConnection.HTTP_OK)
                 .log().everything()
                 .when()
-                .get(SetupLoadTestResource.CONFIG_PATH);
+                .get(ConfigLoadTestResource.CONFIG_PATH);
     }
 
 }

@@ -28,6 +28,7 @@
 
 
     <logger name="no.cantara.service" level="TRACE" />
+    <logger name="no.cantara.service.loadtest" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

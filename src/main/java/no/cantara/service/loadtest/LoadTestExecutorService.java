@@ -109,6 +109,10 @@ public class LoadTestExecutorService {
         return resultList;
     }
 
+    public static List getLatestResultList() {
+        return resultList.subList(Math.max(resultList.size() - 50, 0), resultList.size());
+    }
+
     public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         loadTestRunNo++;
         activeLoadTestConfig = loadTestConfig;
@@ -293,7 +297,7 @@ public class LoadTestExecutorService {
         }
         DateFormat df = new SimpleDateFormat("dd/MM-yyyy  HH:mm:ss");
         long nowTimestamp = System.currentTimeMillis();
-        String stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 100 + " seconds.\n";
+        String stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
         log.info(" {} read tests resulted in {} successful runs where {} was marked as deviation(s).", r_results, r_success, r_deviations);
         stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked as deviation(s).", r_results, r_success, r_deviations);
 
