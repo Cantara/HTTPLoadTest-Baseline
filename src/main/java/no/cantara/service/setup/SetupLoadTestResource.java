@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
-import static no.cantara.service.loadtest.LoadTestResource.*;
+import static no.cantara.service.loadtest.LoadTestResource.APPLICATION_PATH_FORM_READ;
+import static no.cantara.service.loadtest.LoadTestResource.APPLICATION_PATH_FORM_WRITE;
 import static no.cantara.service.setup.SetupLoadTestResource.CONFIG_PATH;
 
 @Path(CONFIG_PATH)
@@ -47,16 +48,20 @@ public class SetupLoadTestResource {
         } catch (Exception e) {
             log.error("Unable to read default configuration for LoadTest.", e);
         }
-
         String response =
                 "<html>" +
                         "  <body>\n" +
-                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
-                        "        LoadTestConfig:\n" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea><br/>" +
-                        "        <input type=\"submit\">\n" +
-                        "    </form>\n" +
-                        "\n" +
+                        "  <h3>HTTPLoadTest - LoadTestRun Configuration</h3><br/><br/>" +
+                        "    <form action=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
+                        "        LoadTestConfig:<br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                        "        <input type=\"submit\">" +
+                        "    </form>" +
+                        "  <br/><br/>" +
+                        "  <ul>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "  </ul><br/><br/>\n" +
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();
@@ -86,10 +91,11 @@ public class SetupLoadTestResource {
         String response =
                 "<html>" +
                         "  <body>\n" +
+                        "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
-                        "        ReadTestSpecification:\n" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"40\" cols=\"80\">" + jsonreadconfig + "</textarea><br/>" +
-                        "        <input type=\"submit\">\n" +
+                        "        ReadTestSpecification:<br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonreadconfig + "</textarea><br/><br/>" +
+                        "        <input type=\"submit\">" +
                         "    </form>\n" +
                         "\n" +
                         "  </body>" +
@@ -121,10 +127,11 @@ public class SetupLoadTestResource {
         String response =
                 "<html>" +
                         "  <body>\n" +
+                        "  <h3>HTTPLoadTest - Write TestSpecification Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
-                        "        WriteTestSpecification:\n" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"40\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/>" +
-                        "        <input type=\"submit\">\n" +
+                        "        WriteTestSpecification:<br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/><br/>" +
+                        "        <input type=\"submit\"><br/>" +
                         "    </form>\n" +
                         "\n" +
                         "  </body>" +
