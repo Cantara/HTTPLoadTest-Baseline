@@ -107,11 +107,12 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 # Template special operations
 
 ```
-#fizzle(chars:replaceMe) =>  tEftohTdS
-#fizzle(digits:67643)    =>  32632
-#fizzle(U_chars:(TEST)   =>  WRVY
-#fizzle(L_chars:(lower)  =>  tgewt
-
+#fizzle(chars:replaceMe)                          =>  tEftohTdS
+#fizzle(digits:67643)                             =>  32632
+#fizzle(U_chars:(TEST)                            =>  WRVY
+#fizzle(L_chars:(lower)                           =>  tgewt
+#fizzle(HEX:(a hexvalue)                          =>  4E7AD3B084
+ #fizzle(option:yes, no, here, there)             =>  here
 ```
 
 # Example on write test specification

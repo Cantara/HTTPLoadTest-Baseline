@@ -10,13 +10,13 @@ import java.util.Map;
 public class TemplateUtil {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateUtil.class);
-
     public static final List<String> fizzleKeyList = new ArrayList<String>() {{
         add("#fizzle(chars:");
         add("#fizzle(digits:");
         add("#fizzle(U_chars:");
         add("#fizzle(L_chars:");
         add("#fizzle(HEX:");
+        add("#fizzle(option:");
     }};
 
     public static String updateTemplateWithvaluesFromMap(String template, Map<String, String> templatereplacementMap) {
@@ -56,6 +56,12 @@ public class TemplateUtil {
         }
         if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(3))) {
             return frontTemplate + Fizzler.getRandomLowercaseCharacter(fizzSize) + backTemplate;
+        }
+        if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(4))) {
+            return frontTemplate + Fizzler.getRandomHEXCharacter(fizzSize) + backTemplate;
+        }
+        if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(5))) {
+            return frontTemplate + Fizzler.getRandomSetValue(backtemp.substring(0, backtemp.indexOf(")"))) + backTemplate;
         }
         return template;
     }

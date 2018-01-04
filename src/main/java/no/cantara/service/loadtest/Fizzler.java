@@ -69,5 +69,19 @@ public class Fizzler {
         return result;
     }
 
+    public static String getRandomHEXCharacter(int noOfChars) {
+        String result = "";
+        for (int n = 0; n < noOfChars; n++) {
+            result = result + getRandomHEX();
+        }
+        return result;
+    }
+
+    public static String getRandomSetValue(String options) {
+        String[] values = options.split(",");
+        int selected = r.nextInt(values.length);
+        return values[selected].trim();
+
+    }
 }
 

@@ -41,4 +41,29 @@ public class TemplateUtilTest {
 
     }
 
+    @Test
+    public void testTemplateUtilWithHEXFizzling() {
+        replacements.put("#BrukerID", "TestBruker");
+        replacements.put("#Passord", "TestPassord");
+        String template = "Text to be replaced #fizzle(HEX:3234) before this";
+
+        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        log.trace("Fizzled result: {}", result);
+        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
+
+
+    }
+
+    @Test
+    public void testTemplateUtilWithSetFizzling() {
+        replacements.put("#BrukerID", "TestBruker");
+        replacements.put("#Passord", "TestPassord");
+        String template = "Text to be replaced #fizzle(option:yes, no, here, there) before this";
+
+        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        log.trace("Fizzled result: {}", result);
+        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
+
+
+    }
 }
