@@ -16,6 +16,7 @@ public class TemplateUtil {
         add("#fizzle(digits:");
         add("#fizzle(U_chars:");
         add("#fizzle(L_chars:");
+        add("#fizzle(HEX:");
     }};
 
     public static String updateTemplateWithvaluesFromMap(String template, Map<String, String> templatereplacementMap) {

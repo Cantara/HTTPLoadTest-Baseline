@@ -26,6 +26,10 @@ public class Fizzler {
         return abc.charAt(r.nextInt(abc.length()));
     }
 
+    public static char getRandomHEX() {
+        String abc = "0123456789ABCDEF";
+        return abc.charAt(r.nextInt(abc.length()));
+    }
     public static char getRandomUppercaseCharacter() {
         String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return abc.charAt(r.nextInt(abc.length()));
