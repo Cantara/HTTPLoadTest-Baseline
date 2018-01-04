@@ -53,31 +53,32 @@ public class MyReadRunnable implements Runnable {
 
             if (testSpecification.getCommand_url().length() > 0) {
 
+
+                log.trace("Calling {}", testSpecification.getCommand_url());
+                loadTestResult.setTest_success(true);
+                String result;
+                if (testSpecification.isCommand_http_post()) {
+                    CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+                    result = command.execute();
+                    if (!command.isSuccessfulExecution()) {
+                        loadTestResult.setTest_success(false);
+                    }
+                    if (command.isResponseRejected()) {
+                        loadTestResult.setTest_deviation_flag(true);
+                    }
+                } else {
+                    CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
+                    result = command.execute();
+                    if (!command.isSuccessfulExecution()) {
+                        loadTestResult.setTest_success(false);
+                    }
+                    if (command.isResponseRejected()) {
+                        loadTestResult.setTest_deviation_flag(true);
+                    }
+                }
+//            log.trace("Returned result: " + result);
+                resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
             }
-            log.trace("Calling {}", testSpecification.getCommand_url());
-            loadTestResult.setTest_success(true);
-            String result;
-            if (testSpecification.isCommand_http_post()) {
-                CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
-                result = command.execute();
-                if (!command.isSuccessfulExecution()) {
-                    loadTestResult.setTest_success(false);
-                }
-                if (command.isResponseRejected()) {
-                    loadTestResult.setTest_deviation_flag(true);
-                }
-            } else {
-                CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
-                result = command.execute();
-                if (!command.isSuccessfulExecution()) {
-                    loadTestResult.setTest_success(false);
-                }
-                if (command.isResponseRejected()) {
-                    loadTestResult.setTest_deviation_flag(true);
-                }
-            }
-            resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
-//            log.debug("Returned result: " + result);
         }
 
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
