@@ -26,7 +26,8 @@ public class LoadTestExecutorService {
     private static List<TestSpecification> writeTestSpecificationList;
     private static final ObjectMapper mapper = new ObjectMapper();
     private static Random r = new Random();
-    private static long startTime;
+    private static long startTime = System.currentTimeMillis();
+    ;
     private static int loadTestRunNo = 1;
     private static LoadTestConfig activeLoadTestConfig;
 
