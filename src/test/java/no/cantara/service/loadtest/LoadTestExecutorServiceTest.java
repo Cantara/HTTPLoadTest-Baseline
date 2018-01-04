@@ -1,9 +1,16 @@
 package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.model.LoadTestConfig;
+import no.cantara.service.model.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.util.List;
+
+import static org.testng.Assert.assertTrue;
 
 public class LoadTestExecutorServiceTest {
 
@@ -13,7 +20,6 @@ public class LoadTestExecutorServiceTest {
     @Test(priority = 99, enabled = false)
     public void executeTestConfigFromFile() throws Exception {
 
-/**
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("loadtestconfig.json").getFile());
         LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
@@ -30,7 +36,6 @@ public class LoadTestExecutorServiceTest {
 
         LoadTestExecutorService.printStats(resultList);
         log.info("Run-time: {} ms, configured run-time: {}", endTime - startTime, fileLoadtest.getTest_duration_in_seconds() * 1000);
- **/
 
     }
 

@@ -54,7 +54,7 @@ public class LoadTestResourceTest {
 
     }
 
-    @Test
+    @Test(priority = 98, enabled = false)
     public void testStartLoadTestForm() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("loadtestconfig.json").getFile());

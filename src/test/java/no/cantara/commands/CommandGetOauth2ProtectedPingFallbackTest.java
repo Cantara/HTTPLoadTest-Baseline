@@ -3,7 +3,6 @@ package no.cantara.commands;
 import no.cantara.service.commands.CommandGetOauth2ProtectedPing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -15,7 +14,6 @@ public class CommandGetOauth2ProtectedPingFallbackTest {
     private static String pingURL = "http://195.204.7.28";
 
     @Test
-    @Ignore
     public void testCommandGetOauth2ProtectdPing() throws Exception {
 
 

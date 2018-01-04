@@ -60,7 +60,7 @@ public class TestSpecificationMappingTest {
 
 
         testSpecification.setCommand_url("http://test.tull.no");
-        testSpecification.setCommand_contenttype("applications.xml");
+        testSpecification.setCommand_contenttype("applications/xml");
         testSpecification.setCommand_template(soaptemplate);
         testSpecification.setCommand_template(jsonTemplate);
 
