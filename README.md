@@ -145,6 +145,16 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 } ]
 ```
 
+
+# If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
+```properties
+TestSpecification.1.read.filename=./specifications/FirstReadTestSpecification.json
+TestSpecification.1.write.filename=./specifications/FirstWriteTestSpecification.json
+TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.json
+TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
+```
+
+
 # Quick build and verify
 ```
 mvn clean install
