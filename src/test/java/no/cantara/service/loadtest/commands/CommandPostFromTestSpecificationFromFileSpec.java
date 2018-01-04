@@ -18,7 +18,7 @@ public class CommandPostFromTestSpecificationFromFileSpec {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    String filenameIntestResourcesToCreateAndRunTestFrom = "readdconfig.json";
+    String filenameIntestResourcesToCreateAndRunTestFrom = "readconfig.json";
 
 
     @Test
