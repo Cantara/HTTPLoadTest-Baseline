@@ -13,7 +13,7 @@ public class CommandGetOauth2ProtectedPingFallbackTest {
 
     private static String pingURL = "http://195.204.7.28";
 
-    @Test
+    @Test(priority = 3, enabled = false)
     public void testCommandGetOauth2ProtectdPing() throws Exception {
 
 
