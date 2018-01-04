@@ -27,7 +27,7 @@ public class CommandGetOauth2ProtectdPingTest {
         testServer.stop();
     }
 
-    @Test
+    @Test(priority = 3, enabled = false)
     public void testCommandGetOauth2ProtectdPing() throws Exception {
 
 

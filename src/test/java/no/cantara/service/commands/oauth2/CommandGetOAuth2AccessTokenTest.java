@@ -27,7 +27,7 @@ public class CommandGetOAuth2AccessTokenTest {
         testServer.stop();
     }
 
-    @Test
+    @Test(priority = 3, enabled = false)
     public void testCommandOAuth2TokenVerifier() throws Exception {
 
         log.trace("Calling {}",testServer.getUrl());
