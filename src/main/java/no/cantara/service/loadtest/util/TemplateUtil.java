@@ -1,5 +1,6 @@
-package no.cantara.service.loadtest;
+package no.cantara.service.loadtest.util;
 
+import no.cantara.service.loadtest.Fizzler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

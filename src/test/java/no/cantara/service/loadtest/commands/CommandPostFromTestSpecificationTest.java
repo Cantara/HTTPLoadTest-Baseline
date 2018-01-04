@@ -2,8 +2,8 @@ package no.cantara.service.loadtest.commands;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.cantara.commands.oauth2.CommandVerifyTokenTest;
-import no.cantara.service.loadtest.TemplateUtil;
+import no.cantara.service.commands.oauth2.CommandVerifyTokenTest;
+import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;

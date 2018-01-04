@@ -1,4 +1,4 @@
-package no.cantara.service.loadtest;
+package no.cantara.service.loadtest.util;
 
 import no.cantara.base.util.json.JsonPathHelper;
 import org.slf4j.Logger;

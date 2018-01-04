@@ -1,4 +1,4 @@
-package no.cantara.service.loadtest;
+package no.cantara.service.model;
 
 import no.cantara.service.util.Configuration;
 import org.apache.commons.lang.StringUtils;

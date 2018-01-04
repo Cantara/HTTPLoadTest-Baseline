@@ -1,6 +1,6 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.loadtest.HTTPResultUtil;
+import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;

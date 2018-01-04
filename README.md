@@ -36,7 +36,7 @@ wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/status
 ![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
 
 
-# Example LoadTestConfig
+### Example LoadTestConfig
 ```json
 {
   "test_id": "MyTestID",
@@ -49,7 +49,7 @@ wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/status
 }
 ```
 
-# Example on load test result
+## Example on load test result
 ```text
 Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 seconds.
 
@@ -60,7 +60,7 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 
 ```
 
-# Example on test invocation result
+### Example on test invocation result
 ```json
 {
   "test_id" : "r-MyTestID",
@@ -74,7 +74,7 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 }
 ```
 
-# Example on read test specification
+## Example on read test specification
 ```json
 [ {
   "command_url" : "https://gmail.com",
@@ -104,7 +104,7 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 } ]
 ```
 
-# Template special operations
+#### Template special operations
 
 ```
 #fizzle(chars:replaceMe)                          =>  tEftohTdS
@@ -115,7 +115,7 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
  #fizzle(option:yes, no, here, there)             =>  here
 ```
 
-# Example on write test specification
+### Example on write test specification
 ```json
 
 [ {
@@ -146,7 +146,7 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
 ```
 
 
-# If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
+#### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
 ```properties
 TestSpecification.1.read.filename=./specifications/FirstReadTestSpecification.json
 TestSpecification.1.write.filename=./specifications/FirstWriteTestSpecification.json
@@ -154,8 +154,9 @@ TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.j
 TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
 ```
 
+# Development and Contribution
 
-# Quick build and verify
+### Quick build and verify
 ```
 mvn clean install
 java -jar target/HTTPLoadTest-baseline-0.1-SNAPSHOT.jar
@@ -169,3 +170,4 @@ Open in browser:
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
 * To configure the read-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/read   
 * To configure the write-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/write   
+* To select between pre-configured TestSpecificationsr: http://localhost:8086/HTTPLoadTest-baseline/config/select   

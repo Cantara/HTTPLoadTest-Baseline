@@ -1,6 +1,5 @@
-package no.cantara.commands;
+package no.cantara.service.commands;
 
-import no.cantara.service.commands.CommandGetOauth2ProtectedPing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;

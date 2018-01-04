@@ -1,6 +1,5 @@
-package no.cantara.commands;
+package no.cantara.service.commands.oauth2;
 
-import no.cantara.service.commands.CommandGetOauth2ProtectedPing;
 import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,10 +7,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertTrue;
-
-public class CommandGetOauth2ProtectdPingTest {
-    private final static Logger log = LoggerFactory.getLogger(CommandGetOauth2ProtectdPingTest.class);
+public class CommandVerifyTokenTest {
+    private final static Logger log = LoggerFactory.getLogger(CommandVerifyTokenTest.class);
 
 
     private TestServer testServer;
@@ -27,14 +24,14 @@ public class CommandGetOauth2ProtectdPingTest {
         testServer.stop();
     }
 
-    @Test(priority = 3, enabled = false)
+    @Test
     public void testCommandGetOauth2ProtectdPing() throws Exception {
 
 
         log.trace("Calling {}", testServer.getUrl());
-        String returned_data = new CommandGetOauth2ProtectedPing(testServer.getUrl()).execute();
+        /**       String returned_data = new CommandVerifyToken(testServer.getUrl(), ConstantValue.ATOKEN).execute();
         log.debug("Returned: " + returned_data);
         assertTrue(returned_data != null);
-        assertTrue(returned_data.contains("PONG"));
+         assertTrue(returned_data.contains("auth_user_id")); **/
     }
 }
