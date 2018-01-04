@@ -186,6 +186,12 @@ public class Main {
         configWriteEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_WRITE);
         securityHandler.addConstraintMapping(configWriteEndpointConstraintMapping);
 
+        // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+        ConstraintMapping configSelectEndpointConstraintMapping = new ConstraintMapping();
+        configSelectEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        configSelectEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_SELECT_TESTSPECIFICATIONSET);
+        securityHandler.addConstraintMapping(configSelectEndpointConstraintMapping);
+
         // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
         ConstraintMapping loadTestEndpointConstraintMapping = new ConstraintMapping();
         loadTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
@@ -209,6 +215,12 @@ public class Main {
         loadWriteTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
         loadWriteTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_WRITE);
         securityHandler.addConstraintMapping(loadWriteTestFormEndpointConstraintMapping);
+
+        // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+        ConstraintMapping loadSelectTestFormEndpointConstraintMapping = new ConstraintMapping();
+        loadSelectTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        loadSelectTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_SELECT);
+        securityHandler.addConstraintMapping(loadSelectTestFormEndpointConstraintMapping);
 
         // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
         ConstraintMapping loadTestStatusEndpointConstraintMapping = new ConstraintMapping();

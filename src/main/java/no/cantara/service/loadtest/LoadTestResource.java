@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 
@@ -30,6 +32,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
     public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
+    public static final String APPLICATION_PATH_FORM_SELECT = "/loadTest/form/select";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -128,6 +131,49 @@ public class LoadTestResource {
             return Response.ok(json).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json {}", json.toString());
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+    @POST
+    @Path("/form/select")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
+        log.trace("Invoked updatSelectedTestSpecificationForm with {}", testSpecificationNumber);
+
+        String jsonResponse = "";
+        try {
+            Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpacificationFilenameMap();
+
+            for (String testSpecificationEntry : configuredTests.keySet()) {
+                if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
+                    File file = new File(configuredTests.get(testSpecificationEntry));
+                    List<TestSpecification> readTestSpec = new ArrayList<>();
+                    readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                    });
+                    String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
+
+                    jsonResponse = "[{\"Read_TestSpecification\": \n" + loadTestJson + "}";
+                    LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
+                    log.trace("Loaded Configured TestSpecification: {}", configuredTests.get(testSpecificationEntry));
+                }
+                if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
+                    File file = new File(configuredTests.get(testSpecificationEntry));
+                    List<TestSpecification> writeTestSpec = new ArrayList<>();
+                    writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                    });
+                    String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
+
+                    jsonResponse = jsonResponse + ",{\n\n\"Write_TestSpecification\": \n" + loadTestJson + "}]";
+
+                    LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
+                    log.trace("Loaded Configured TestSpecification: {}", configuredTests.get(testSpecificationEntry));
+                }
+            }
+            return Response.ok(jsonResponse).build();
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {}", testSpecificationNumber.toString());
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }

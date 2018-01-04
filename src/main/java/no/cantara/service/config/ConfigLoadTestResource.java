@@ -2,6 +2,7 @@ package no.cantara.service.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.loadtest.TestSpecificationLoader;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.config.ConfigLoadTestResource.CONFIG_PATH;
@@ -26,6 +28,7 @@ public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
+    public static final String CONFIG_PATH_SELECT_TESTSPECIFICATIONSET = "/config/select";
     private static final Logger log = LoggerFactory.getLogger(ConfigLoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -58,6 +61,7 @@ public class ConfigLoadTestResource {
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <ul>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  </ul><br/><br/>" +
@@ -138,5 +142,40 @@ public class ConfigLoadTestResource {
                         "</html>";
         return Response.ok(response).build();
     }
+
+
+    @Path("/select")
+    @GET
+    public Response selectTestSpecificationSet() {
+        log.trace("selectTestSpecificationSet");
+
+        String jsonconfig = "{}";
+
+        Map<String, String> configuredTestSpecifications = TestSpecificationLoader.getPersistedTestSpacificationFilenameMap();
+
+        String optionString = "";
+        for (int n = 0; n < configuredTestSpecifications.size() / 2; n++) {
+            int displayvalue = 1 + n;
+            optionString = optionString + "        <option value=\"" + displayvalue + "\">" + displayvalue + "</option>";
+        }
+
+        String response =
+                "<html>" +
+                        "  <body>\n" +
+                        "  <h3>HTTPLoadTest - Select pre-configured TestSpecification Configuration</h3><br/><br/>" +
+                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_SELECT + "\" method=\"POST\" '>" +
+                        "        <select name=\"jsonConfig\">" +
+                        "        " + optionString +
+                        "        </select>" +
+                        "        <br/><br/>" +
+                        "        <input type=\"submit\">" +
+                        "    </form>" +
+                        "  <br/><br/>" +
+                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a>" +
+                        "  </body>" +
+                        "</html>";
+        return Response.ok(response).build();
+    }  //
+
 
 }
