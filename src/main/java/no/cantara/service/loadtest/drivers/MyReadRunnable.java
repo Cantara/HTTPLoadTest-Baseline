@@ -1,5 +1,6 @@
 package no.cantara.service.loadtest.drivers;
 
+import no.cantara.service.loadtest.HTTPResultUtil;
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
@@ -9,7 +10,9 @@ import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MyReadRunnable implements Runnable {
@@ -43,8 +46,11 @@ public class MyReadRunnable implements Runnable {
         long startTime = System.currentTimeMillis();
 
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
+        Map<String, String> resolvedResultVariables = new HashMap<>();
 
         for (TestSpecification testSpecification : testSpecificationList) {
+            testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
+
             if (testSpecification.getCommand_url().length() > 0) {
 
             }
@@ -70,6 +76,7 @@ public class MyReadRunnable implements Runnable {
                     loadTestResult.setTest_deviation_flag(true);
                 }
             }
+            resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
 //            log.debug("Returned result: " + result);
         }
 

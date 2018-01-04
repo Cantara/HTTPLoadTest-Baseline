@@ -51,12 +51,18 @@ public class TestSpecificationMappingTest {
         Map<String, String> replacements = new HashMap<>();
         replacements.put("#BrukerID", "TestBruker");
         replacements.put("#Passord", "TestPassord");
+        testSpecification.setCommand_replacement_map(replacements);
+
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#testName", "$..test_name");
+        regexpSelectorMap.put("#randomizeName", "$..test_randomize_sleeptime");
+        testSpecification.setCommand_response_map(regexpSelectorMap);
+
 
         testSpecification.setCommand_url("http://test.tull.no");
         testSpecification.setCommand_contenttype("applications.xml");
         testSpecification.setCommand_template(soaptemplate);
         testSpecification.setCommand_template(jsonTemplate);
-        testSpecification.setCommand_replacement_map(replacements);
 
         List<TestSpecification> readTestSpec = new ArrayList<>();
 

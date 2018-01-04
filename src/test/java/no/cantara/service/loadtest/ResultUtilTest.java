@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResultRegexpUtilTest {
+public class ResultUtilTest {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestConfigTest.class);
     private static final ObjectMapper mapper = new ObjectMapper();

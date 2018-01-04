@@ -15,6 +15,7 @@ public class TestSpecification {
     private int command_timeout_milliseconds = 2000;
     private String command_template = "";
     private Map<String, String> command_replacement_map = new HashMap<>();
+    private Map<String, String> command_response_map = new HashMap<>();
 
 
     public TestSpecification(@JsonProperty("command_url") String command_url,
@@ -23,7 +24,8 @@ public class TestSpecification {
                              @JsonProperty("command_http_post") String command_http_post,
                              @JsonProperty("command_timeout_milliseconds") String command_timeout_milliseconds,
                              @JsonProperty("command_template") String command_template,
-                             @JsonProperty("command_replacement_map") Map<String, String> command_replacement_map) {
+                             @JsonProperty("command_replacement_map") Map<String, String> command_replacement_map,
+                             @JsonProperty("command_response_map") Map<String, String> command_response_map) {
         this.command_url = command_url;
         this.command_http_post = Boolean.parseBoolean(command_http_post);
         this.command_http_authstring = command_http_authstring;
@@ -31,6 +33,7 @@ public class TestSpecification {
         this.command_contenttype = command_contenttype;
         this.command_template = command_template;
         this.command_replacement_map = command_replacement_map;
+        this.command_response_map = command_response_map;
 
     }
 
@@ -70,6 +73,13 @@ public class TestSpecification {
         this.command_replacement_map = command_replacement_map;
     }
 
+    public void addMapToCommand_replacement_map(Map<String, String> map_to_add) {
+
+        map_to_add.forEach(this.command_replacement_map::putIfAbsent);
+        //this.command_replacement_map.putAll(Maps.difference(command_replacement_map, map_to_add).entriesOnlyOnLeft());
+    }
+
+
     public boolean isCommand_http_post() {
         return command_http_post;
     }
@@ -92,6 +102,14 @@ public class TestSpecification {
 
     public void setCommand_http_authstring(String command_http_authstring) {
         this.command_http_authstring = command_http_authstring;
+    }
+
+    public Map<String, String> getCommand_response_map() {
+        return command_response_map;
+    }
+
+    public void setCommand_response_map(Map<String, String> command_response_map) {
+        this.command_response_map = command_response_map;
     }
 
     @Override

@@ -86,7 +86,8 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
     "#Passord" : "TestPassord",
     "#BrukerID" : "TestBruker"
   }
-}, {
+  },
+  {
   "command_url" : "http://test.tull.no",
   "command_contenttype" : "application/json",
   "command_http_post" : true,
@@ -95,6 +96,10 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
   "command_replacement_map" : {
     "#Passord" : "TestPassord",
     "#BrukerID" : "TestBruker"
+  },
+   "command_response_map" : {
+     "#randomizeName" : "$..test_randomize_sleeptime",
+      "#testName" : "$..test_name"
   }
 } ]
 ```
@@ -131,6 +136,10 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
   "command_replacement_map" : {
     "#Passord" : "TestPassord",
     "#BrukerID" : "TestBruker"
+  },
+   "command_response_map" : {
+     "#randomizeName" : "$..test_randomize_sleeptime",
+     "#testName" : "$..test_name"
   }
 } ]
 ```
