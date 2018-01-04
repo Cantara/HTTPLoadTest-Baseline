@@ -55,7 +55,7 @@ public class MyWriteRunnable implements Runnable {
             if (testSpecification.getCommand_url().length() > 0) {
                 log.trace("Calling {}", testSpecification.getCommand_url());
                 loadTestResult.setTest_success(true);
-                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + " " + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
+                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + "/" + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
                 String result;
                 if (testSpecification.isCommand_http_post()) {
                     CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);

@@ -57,7 +57,7 @@ public class MyReadRunnable implements Runnable {
 
                 log.trace("Calling {}", testSpecification.getCommand_url());
                 loadTestResult.setTest_success(true);
-                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Read-URL:" + readCommandNo++ + " " + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
+                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Read-URL:" + readCommandNo++ + "/" + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
 
                 String result;
                 if (testSpecification.isCommand_http_post()) {
