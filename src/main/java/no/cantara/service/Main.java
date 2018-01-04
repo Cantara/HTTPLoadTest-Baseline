@@ -115,6 +115,8 @@ public class Main {
         }
         webappPort = connector.getLocalPort();
         log.info("HTTPLoadTest-baseline started on http://localhost:{}{}", webappPort, CONTEXT_PATH);
+        log.info("Starting, use ./config_override/application.properties to override default properties");
+
         try {
             server.join();
         } catch (InterruptedException e) {

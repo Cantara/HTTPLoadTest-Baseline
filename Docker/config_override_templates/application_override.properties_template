@@ -3,3 +3,5 @@ service.port=8086
 login.user=read
 login.password=baretillesing
 
+TestSpecification.1.read.filename=/src/cantara/HTTPLoadTest-Baseline/src/main/resources/DefaultReadTestSpecification.json
+TestSpecification.1.write.filename=/src/cantara/HTTPLoadTest-Baseline/src/main/resources/DefaultWriteTestSpecification.json

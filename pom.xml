@@ -77,6 +77,11 @@
             <version>6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>no.cantara.pathwatcher</groupId>
+            <artifactId>pathwatch</artifactId>
+            <version>1.8.1</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
