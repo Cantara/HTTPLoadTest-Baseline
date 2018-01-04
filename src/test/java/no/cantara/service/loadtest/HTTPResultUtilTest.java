@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ResultUtilTest {
+public class HTTPResultUtilTest {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestConfigTest.class);
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -25,14 +25,28 @@ public class ResultUtilTest {
                 "  \"test_randomize_sleeptime\": true,\n" +
                 "  \"test_duration_in_seconds\": 10\n" +
                 "}";
+        String testResult = "This is Chaitanya from Beginnersbook.com.";
         Map<String, String> regexpSelectorMap = new HashMap<>();
         regexpSelectorMap.put("#testName", "$..test_name");
         regexpSelectorMap.put("#randomizeName", "$..test_randomize_sleeptime");
 
-        Map parseResults = HTTPResultUtil.parseWithJsonPath(exampleResult, regexpSelectorMap);
+        Map parseResults = HTTPResultUtil.parseWithJsonPath(testResult, regexpSelectorMap);
 
         log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
 
     }
 
+    @Test
+    public void testRegExpElementsFromHTTPResult() throws Exception {
+        String exampleResult = "FOO[DOG] = DOG\n" +
+                "FOO[CAT] = CAT";
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#FOO[BAR]", "\".*DOG.*\"");
+        //regexpSelectorMap.put("#FOO[BAR]", "\\\\(.*?)\\\\]");
+
+        Map parseResults = HTTPResultUtil.parseWithRegexp(exampleResult, regexpSelectorMap);
+
+        log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
+
+    }
 }

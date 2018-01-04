@@ -26,7 +26,7 @@ public class MyReadRunnable implements Runnable {
         this.testSpecificationList = testSpecificationList;
         this.loadTestResult = loadTestResult;
         this.loadTestConfig = loadTestConfig;
-        this.loadTestResult.setTest_tags("testSpecificationList: " + testSpecificationList);
+        //this.loadTestResult.setTest_tags("testSpecificationList: " + testSpecificationList);
     }
 
     @Override
