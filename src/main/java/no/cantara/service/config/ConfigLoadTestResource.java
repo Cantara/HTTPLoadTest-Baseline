@@ -60,11 +60,12 @@ public class ConfigLoadTestResource {
                         "  <ul>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
-                        "  </ul><br/><br/>\n" +
+                        "  </ul><br/><br/>" +
+                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a>" +
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();
-    }
+    }  //
 
     @Path("/read")
     @GET
