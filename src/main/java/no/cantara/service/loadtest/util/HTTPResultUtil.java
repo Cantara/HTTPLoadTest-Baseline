@@ -40,7 +40,7 @@ public class HTTPResultUtil {
         return resultsMap;
     }
 
-    public static Map parseWithJsonPath(String resultToParse, Map<String, String> jsonpaths) {
+    public static Map<String, String> parseWithJsonPath(String resultToParse, Map<String, String> jsonpaths) {
         Map<String, String> resultsMap = new HashMap<>();
         if (resultToParse == null) {
             log.trace("resultToParse was empty, so returning empty .");
@@ -49,11 +49,13 @@ public class HTTPResultUtil {
 
         for (String jsonPathKey : jsonpaths.keySet()) {
             List<String> resultStrings = JsonPathHelper.findJsonpathList(resultToParse, jsonpaths.get(jsonPathKey));
-            if (resultStrings == null) {
+            if (resultStrings == null || resultStrings.size() == 0) {
                 log.debug("jsonpath returned zero hits");
-                break;
+                //break;
+            } else {
+                String result = resultStrings.toString();
+                resultsMap.put(jsonPathKey, result.substring(2, result.length() - 2));
             }
-            resultsMap.put(jsonPathKey, resultStrings.toString());
         }
         return resultsMap;
     }

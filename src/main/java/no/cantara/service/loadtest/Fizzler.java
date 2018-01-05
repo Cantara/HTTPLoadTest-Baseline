@@ -78,6 +78,9 @@ public class Fizzler {
     }
 
     public static String getRandomSetValue(String options) {
+        if (options.startsWith("#")) {
+            //options=options.
+        }
         String[] values = options.split(",");
         int selected = r.nextInt(values.length);
         return values[selected].trim();

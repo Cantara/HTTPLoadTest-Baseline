@@ -24,17 +24,18 @@ public class TemplateUtil {
         if (template == null) {
             return "";
         }
+        // We do variable replacements first
+        if (templatereplacementMap != null) {
+            for (String key : templatereplacementMap.keySet()) {
+                if (template.contains(key)) {
+                    template = template.replaceAll(key, templatereplacementMap.get(key));
+                }
+            }
+        }
+        // and then fizzle
         for (String fizzlekey : fizzleKeyList) {
             if (template.contains(fizzlekey)) {
                 template = fizzleTemplate(template, fizzlekey);
-            }
-        }
-        if (templatereplacementMap == null) {
-            return template;
-        }
-        for (String key : templatereplacementMap.keySet()) {
-            if (template.contains(key)) {
-                template = template.replaceAll(key, templatereplacementMap.get(key));
             }
         }
         return template;
