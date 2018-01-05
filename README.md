@@ -13,8 +13,11 @@ Why another load-test OpenSource project?  We think this is a reasonable questio
 
 Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase the quality of produces software by making it less "expensive" to add this type of quality processes into your software development process.
 
+#### The process-flow of load-testing
 
-## A quick intro/test-run - Check it in docker
+![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/HTTPLoadTest-FullProcessFlow.png)
+
+#### A quick intro/test-run - Check it in docker
 
 ```
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
@@ -23,10 +26,8 @@ wget http://localhost:28086/HTTPLoadTest-baseline/health
 Open in browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
-![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/HTTPLoadTest-FullProcessFlow.png)
 
-
-# Example-oriented documentation to get familiar with the application
+### Example-oriented documentation to get familiar with the application
 
 Since the main goal for this codebase is to simplify Companies efforts in ensuring that a agile or continous investment into software development does not compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a Company's contonous CI/CD processes. This means that the application have two modi:  a) exploration modi - where you (as in any normal QA åprocess, can analyzy the load-characteristics of your application and b) easily add the baseline characteristics to the deployment QA pipelines.
 
