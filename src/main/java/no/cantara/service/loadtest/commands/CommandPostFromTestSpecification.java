@@ -33,7 +33,7 @@ public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand
 
 
     public CommandPostFromTestSpecification(TestSpecification testSpecification) {
-        super(URI.create(testSpecification.getCommand_url()), "hystrixGroupKey");
+        super(URI.create(TemplateUtil.updateTemplateWithvaluesFromMap(testSpecification.getCommand_url(), testSpecification.getCommand_replacement_map())), "hystrixGroupKey");
         this.template = TemplateUtil.updateTemplateWithvaluesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();

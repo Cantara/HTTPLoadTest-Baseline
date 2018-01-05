@@ -14,6 +14,19 @@ public class TemplateUtilTest {
     Map<String, String> replacements = new HashMap<>();
     private final static Logger log = LoggerFactory.getLogger(TemplateUtilTest.class);
 
+    @Test
+    public void testTemplateUtilSimple() {
+        replacements.put("#BrukerID", "TestBruker");
+        replacements.put("#Passord", "TestPassord");
+        String template = "Text to be replaced #BrukerID before this";
+
+        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        log.trace("Fizzled result: {}", result);
+        assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
+
+
+    }
+
 
     @Test
     public void testTemplateUtilWithCharacterFizzling() {
