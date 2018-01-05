@@ -35,10 +35,6 @@ wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/status
 ```
 
 
-# Work-in-progress - nice vizualisation of running loadtests
-
-![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
-
 
 ### Example LoadTestConfig
 ```json
@@ -207,6 +203,12 @@ Open in browser:
 * To configure the read-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/read   
 * To configure the write-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/write   
 * To select between pre-configured TestSpecificationsr: http://localhost:8086/HTTPLoadTest-baseline/config/select
+
+
+# Work-in-progress - nice vizualisation of running loadtests
+
+![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
+
 
 ### Troubleshoting   
 
