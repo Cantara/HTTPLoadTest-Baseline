@@ -16,6 +16,9 @@ a few settings, but is expected to grow in different directions. We would love t
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
+Open in browser:  
+* To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
+
 
 
 # Pipeline usage example

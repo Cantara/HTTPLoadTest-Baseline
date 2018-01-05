@@ -1,0 +1,36 @@
+{
+  "application": "loadtest-http",
+  "services": [
+    {
+      "name": "httploadtest",
+      "group": "loadtest",
+      "type": "loadtest",
+      "imageName": "cantara/httploadtest-baseline",
+      "ports": {
+        "external": {
+          "http": 80
+        },
+        "internal": {
+          "http": 8086
+        }
+      },
+      "readiness": {
+        "path": "/HTTPLoadTest-baseline/health",
+        "port": 8086,
+        "initialDelaySeconds": 10,
+        "periodSeconds": 15,
+        "failureThreshold": 3,
+        "timeoutSeconds": 5,
+        "successThreshold": 1
+      },
+      "health": {
+        "path": "/HTTPLoadTest-baseline/health",
+        "port": 8086,
+        "initialDelaySeconds": 10,
+        "periodSeconds": 15,
+        "failureThreshold": 3,
+        "timeoutSeconds": 5
+      }
+    }
+  ]
+}
