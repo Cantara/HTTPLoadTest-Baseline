@@ -39,5 +39,26 @@ public class LoadTestExecutorServiceTest {
 
     }
 
+    @Test(priority = 99, enabled = false)
+    public void executeAsyncTestConfigFromFile() throws Exception {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("loadtestconfig.json").getFile());
+        LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+        assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
+        long startTime = System.currentTimeMillis();
+
+        LoadTestExecutorService.executeLoadTest(fileLoadtest, true);
+        long endTime = System.currentTimeMillis();
+
+        Thread.sleep(20000);
+
+        List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
+//        log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
+
+        LoadTestExecutorService.printStats(resultList);
+        log.info("Run-time: {} ms, configured run-time: {}", endTime - startTime, fileLoadtest.getTest_duration_in_seconds() * 1000);
+
+    }
 
 }

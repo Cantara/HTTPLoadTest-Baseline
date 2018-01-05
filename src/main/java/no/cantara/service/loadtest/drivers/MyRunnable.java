@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
+
 public class MyRunnable implements Runnable {
     private final String url;
     private final LoadTestResult loadTestResult;
@@ -21,6 +23,10 @@ public class MyRunnable implements Runnable {
 
     @Override
     public void run() {
+        if (!isRunning) {
+            return;
+        }
+
         long startTime = System.currentTimeMillis();
 
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");

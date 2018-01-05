@@ -1,9 +1,9 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
+import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
 
 public class MyReadRunnable implements Runnable {
     private static Random r = new Random();
@@ -31,6 +33,9 @@ public class MyReadRunnable implements Runnable {
 
     @Override
     public void run() {
+        if (!isRunning) {
+            return;
+        }
         long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();
         // Check if we should randomize sleeptime
         if (loadTestConfig.isTest_randomize_sleeptime()) {

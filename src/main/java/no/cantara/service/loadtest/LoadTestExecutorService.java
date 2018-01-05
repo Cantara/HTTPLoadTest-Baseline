@@ -29,20 +29,18 @@ public class LoadTestExecutorService {
     private static long startTime = System.currentTimeMillis();
     ;
     private static int loadTestRunNo = 0;
+    public static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
+    private static ExecutorService threadExecutor;
 
     static {
         try {
 
-            //ClassLoader classLoader = LoadTestExecutorService.class.getClassLoader();
             InputStream is = LoadTestExecutorService.class.getClassLoader().getResourceAsStream("DefaultReadTestSpecification.json");
-
-//            File rfile = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
             readTestSpecificationList = mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
             });
             String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
             log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-//            File wfile = new File(classLoader.getResource("DefaultWriteTestSpecification.json").getFile());
             InputStream wis = LoadTestExecutorService.class.getClassLoader().getResourceAsStream("DefaultReadTestSpecification.json");
 
             writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
@@ -116,6 +114,9 @@ public class LoadTestExecutorService {
     public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         loadTestRunNo++;
         activeLoadTestConfig = loadTestConfig;
+        long loadtestStartTimestamp = System.currentTimeMillis();
+        isRunning = true;
+        log.info("LoadTest {} started, max running time: {} secomnds", activeLoadTestConfig.getTest_id(), activeLoadTestConfig.getTest_duration_in_seconds());
         if (asNewThread) {
             ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
             loadTestExecutor.submit(new Callable<Object>() {
@@ -129,6 +130,7 @@ public class LoadTestExecutorService {
         } else {
             runLoadTest(loadTestConfig);
         }
+        log.info("LoadTest {} completed, ran for {} seconds, max running time: {} seconds", activeLoadTestConfig.getTest_id(), (System.currentTimeMillis() - loadtestStartTimestamp) / 1000, activeLoadTestConfig.getTest_duration_in_seconds());
     }
 
 
@@ -148,15 +150,15 @@ public class LoadTestExecutorService {
         } catch (Exception e) {
             logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
         }
+        log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", activeLoadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, activeLoadTestConfig.getTest_duration_in_seconds());
+        isRunning = false;
+        threadExecutor.shutdown();
     }
-
-
-
 
 
     private static void runTask(LoadTestConfig loadTestConfig) {
         int runNo = 1;
-        ExecutorService threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
+        threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
         String[] hostList = {"http://google.com"}; /**, "http://yahoo.com",
          "http://www.ebay.com", "http://google.com",
@@ -171,13 +173,13 @@ public class LoadTestExecutorService {
          **/
         int read_ratio = loadTestConfig.getTest_read_write_ratio();
 
-        while (true) {
+        while (isRunning) {
 
 
             for (int i = 0; i < hostList.length; i++) {
                 int chance = r.nextInt(100);
                 long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
-                if (maxRunTimeMs > 500) {
+                if (maxRunTimeMs > 50 && isRunning) {
                     // We stop a little before known timeout
                     log.trace("MaxRunInMilliSeconds: {}", maxRunTimeMs);
                     if (read_ratio == 0) {
@@ -202,7 +204,6 @@ public class LoadTestExecutorService {
 //                    threadExecutor.execute(worker);
 
                     } else if (chance <= read_ratio) {
-                        String url = hostList[i];
                         LoadTestResult loadTestResult = new LoadTestResult();
                         loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
@@ -222,7 +223,6 @@ public class LoadTestExecutorService {
 //                    threadExecutor.execute(worker);
 
                     } else {
-                        String url = hostList[i];
                         LoadTestResult loadTestResult = new LoadTestResult();
                         loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
@@ -248,6 +248,7 @@ public class LoadTestExecutorService {
 
         }
 //        System.out.println("\nFinished all threads");
+        threadExecutor.shutdown();
     }
 
     public static String printStats(List<LoadTestResult> loadTestResults) {
@@ -340,27 +341,31 @@ public class LoadTestExecutorService {
     }
 
     public static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
-        final ExecutorService executor = Executors.newSingleThreadExecutor();
-        final Future<T> future = executor.submit(callable);
-        executor.shutdown(); // This does not cancel the already-scheduled task.
-        try {
-            return future.get(timeout, timeUnit);
-        } catch (TimeoutException e) {
-            //remove this if you do not want to cancel the job in progress
-            //or set the argument to 'false' if you do not want to interrupt the thread
-            future.cancel(true);
-            throw e;
-        } catch (ExecutionException e) {
-            //unwrap the root cause
-            Throwable t = e.getCause();
-            if (t instanceof Error) {
-                throw (Error) t;
-            } else if (t instanceof Exception) {
-                throw (Exception) t;
-            } else {
-                throw new IllegalStateException(t);
+        if (isRunning) {
+            final ExecutorService executor = Executors.newSingleThreadExecutor();
+            final Future<T> future = executor.submit(callable);
+            executor.shutdown(); // This does not cancel the already-scheduled task.
+            try {
+                return future.get(timeout, timeUnit);
+            } catch (TimeoutException e) {
+                //remove this if you do not want to cancel the job in progress
+                //or set the argument to 'false' if you do not want to interrupt the thread
+                future.cancel(true);
+                throw e;
+            } catch (ExecutionException e) {
+                //unwrap the root cause
+                Throwable t = e.getCause();
+                if (t instanceof Error) {
+                    throw (Error) t;
+                } else if (t instanceof Exception) {
+                    throw (Exception) t;
+                } else {
+                    throw new IllegalStateException(t);
+                }
             }
+
         }
+        return null;
     }
 
 
