@@ -160,9 +160,10 @@ TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification
 # Development and Contribution
 
 ### Quick build and verify
+
 ```
 mvn clean install
-java -jar target/HTTPLoadTest-baseline-0.1-SNAPSHOT.jar
+java -jar target/HTTPLoadTest-baseline-0.9.2-SNAPSHOT.jar
 wget http://localhost:8086/HTTPLoadTest-baseline/health
 wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest                    // return all loadTests with statuses
@@ -173,4 +174,14 @@ Open in browser:
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
 * To configure the read-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/read   
 * To configure the write-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/write   
-* To select between pre-configured TestSpecificationsr: http://localhost:8086/HTTPLoadTest-baseline/config/select   
+* To select between pre-configured TestSpecificationsr: http://localhost:8086/HTTPLoadTest-baseline/config/select
+
+### Troubleshoting   
+
+*Maven fails*
+```
+> mvn -version
+Requires Java 8
+> export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+> mvn clean install
+```
