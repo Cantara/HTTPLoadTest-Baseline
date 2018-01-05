@@ -53,6 +53,12 @@ wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/status
 }
 ```
 
+The LoadTestConfig is the configuration of the top-level parameters of a load test and control the behaviour of the two (read/write) TestSpesifications
+(see further down for more information and examples of how to configure TestSpecifications). The LoadTestConfig also consist of the load-time, which is 
+the longest allowed time the tests are allowed to run.
+ 
+
+
 ## Example on load test result
 ```text
 Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 seconds.
@@ -61,8 +67,12 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
    22 write tests resulted in 22 successful runs where 0 was marked as deviation(s).
     0 unmarked tests resulted in 0 successful runs where 0 was marked as deviation(s).
   225 total tests resulted in 224 successful runs where 1 was marked as deviation(s).
-
 ```
+
+If we look at the example output above, we see that we have a load-test with a read/write ratio of 90, 
+which mean that we have almost 10 times more runs of the read TestConfiguration than we have invocations of the write TestSpecification. 
+In this run, we have recorded one failed read run, which was a result of a timeout. (If we got non 2xx HTTP codes, the result would be failed test.)
+
 
 ### Example on test invocation result
 ```json
@@ -73,10 +83,16 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
   "test_run_no" : 43,
   "test_duration" : 429,
   "test_success" : true,
-  "test_deviation_flag" : false,
+  "test_deviation_flag" : true,
   "test_timestamp" : 1514878656855
 }
 ```
+
+This example show that we have received an HTTP 2xx code, but something unexpected happened and the response was marked as an deviation. The most 
+common cause of deviations in HTTPLoadTest is timeout, as we use an underlaying icuit-breaker framework called hystrix to avoid blocking and dangeling 
+HTTP requests and internal threads.
+
+
 
 ## Example on read test specification
 ```json
@@ -94,6 +110,7 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
   {
   "command_url" : "http://test.tull.no/#MySite",
   "command_contenttype" : "application/json",
+  "command_http_authstring": "Basic ZGV2ZWxvcG1lbnQtbWVkaWNhdGlvbjoxT09jTEpoR01oSyMxMHUhRDMzUw==",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 5000,
   "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(digits:67643)\\\",\n  \\\"name\\\": \\\"#BrukerID\\\",\n  \\\"admin\\\": true\n}",
@@ -108,6 +125,19 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
   }
 } ]
 ```
+From the example above, we can see use of several of HTTPLoadTest features. The command_replacement_map is a supplied variable-set for the given command. This is used
+to replace parts of an URL or parts of an HTTP payload. The command_response_map consist of JsonPath expression which is matched against the response and put into the
+corresponding named variable. These gererated variables can then be used in consequitive commands alond with the variables in the command_replacement_map. If you need 
+a list as a result, you might find the #fizzle(option:#testName) feature handy. This will pick a random value from the returned response and substitute it in the next
+command.  As of now, only simple, pre-calculated http badic-auth is supported.
+
+
+
+
+
+
+
+
 
 #### Template special operations
 
