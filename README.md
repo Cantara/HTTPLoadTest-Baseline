@@ -91,14 +91,15 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
   }
   },
   {
-  "command_url" : "http://test.tull.no",
+  "command_url" : "http://test.tull.no/#MySite",
   "command_contenttype" : "application/json",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 5000,
   "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(digits:67643)\\\",\n  \\\"name\\\": \\\"#BrukerID\\\",\n  \\\"admin\\\": true\n}",
   "command_replacement_map" : {
     "#Passord" : "TestPassord",
-    "#BrukerID" : "TestBruker"
+    "#BrukerID" : "TestBruker",
+    "#MySite" : "demo"
   },
    "command_response_map" : {
      "#randomizeName" : "$..test_randomize_sleeptime",
