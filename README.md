@@ -19,6 +19,7 @@ wget http://localhost:28086/HTTPLoadTest-baseline/health
 Open in browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
+![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/HTTPLoadTest-FullProcessFlow.jpg)
 
 
 # Pipeline usage example
