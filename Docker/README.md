@@ -7,11 +7,11 @@ Why another load-test OpenSource project?  We think this is a reasonable questio
 
 Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase the quality of produces software by making it less "expensive" to add this type of quality processes into your software development process.
 
-#### The process-flow of load-testing
+### The process-flow of load-testing
 
 ![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/HTTPLoadTest-FullProcessFlow.png)
 
-#### A quick intro/test-run 
+### A quick intro/test-run 
 
 ```jshelllanguage
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
@@ -21,7 +21,7 @@ wget http://localhost:28086/HTTPLoadTest-baseline/health
 Open in browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
-# Protecting the LoadTest WebUI
+## Protecting the LoadTest WebUI
 
 If you want to add basic authentication to HTTLLoadTest, just add the following to config_override/application_override.properties
 ```properties
