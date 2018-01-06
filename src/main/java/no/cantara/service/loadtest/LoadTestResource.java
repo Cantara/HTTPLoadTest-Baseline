@@ -35,6 +35,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
     public static final String APPLICATION_PATH_FORM_SELECT = "/loadTest/form/select";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
+    public static final String APPLICATION_PATH_STOP = "/loadTest/stop";
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -203,6 +204,15 @@ public class LoadTestResource {
 
         return Response.ok(response).build();
     }
+
+    @GET
+    @Path("/stop")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response stopLoadTests() {
+        LoadTestExecutorService.isRunning = false;
+        return Response.ok().build();
+    }
+
 
     @GET
     @Path("/{test_id}/status")

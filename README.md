@@ -196,6 +196,17 @@ TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.j
 TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
 ```
 
+# Protecting the LoadTest WebUI
+
+If you want to add basic authentication to HTTLLoadTest, just add the following to config_override/application_override.properties
+```properties
+loadtest.basicauth=true
+
+login.admin.user=admin
+login.admin.password=adminservice
+```
+
+
 # Development and Contribution
 
 ### Quick build and verify
@@ -206,6 +217,7 @@ java -jar target/HTTPLoadTest-baseline-0.9.2-SNAPSHOT.jar
 wget http://localhost:8086/HTTPLoadTest-baseline/health
 wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest                    // return all loadTests with statuses
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/stop               // stop all loadTests
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/loadtestId/status  // return status for loadtest with loadTestid
 ```
 
