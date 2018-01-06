@@ -228,7 +228,11 @@ Open in browser:
 * To select between pre-configured TestSpecificationsr: http://localhost:8086/HTTPLoadTest-baseline/config/select
 
 
-# Work-in-progress - nice vizualisation of running loadtests
+### Work-in-progress - nice vizualisation of running loadtests
+
+Since the main use meant for HTTPLoadTest is in automated QA pipelines, we have initially not spent much effort in 
+nice WebUI and result vizualizations. We hope to address this shortcoming some time in the future and will be glad 
+for any helping hands.
 
 ![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
 
@@ -236,7 +240,7 @@ Open in browser:
 ### Troubleshoting   
 
 *Maven fails*
-```
+```jshelllanguage
 > mvn -version
 Requires Java 8
 > export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
