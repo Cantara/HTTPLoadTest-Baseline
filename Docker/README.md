@@ -37,17 +37,17 @@ login.admin.password=adminservice
 
 
 
-# Building the Docker container 
+## Building the Docker container 
 
-## How it works
+### How it works
 * The configuration override of the application is volume mounted when running the Docker image
 
-## Prerequisites
+#### Prerequisites
 * Docker daemon running (see https://wiki.cantara.no/display/FPP/Docker+cheat+sheet)
 
-## Set up
+### Set up
 
-### Initial install
+#### Initial install
 
 #### Building config
 Create a configuration file, e.g. `config_override.properties`.
