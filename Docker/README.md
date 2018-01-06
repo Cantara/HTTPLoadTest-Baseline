@@ -11,17 +11,18 @@ Coming from development backgrounds, we hope that a baseline you might contribut
 
 ![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/HTTPLoadTest-FullProcessFlow.png)
 
-#### A quick intro/test-run - Check it in docker
+#### A quick intro/test-run 
 
-```
+```bash
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
+
 Open in browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
 
-##n More documentation
+### More documentation
 * https://github.com/Cantara/HTTPLoadTest-Baseline/blob/master/README.md
 
 
