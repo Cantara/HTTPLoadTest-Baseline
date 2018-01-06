@@ -13,13 +13,23 @@ Coming from development backgrounds, we hope that a baseline you might contribut
 
 #### A quick intro/test-run 
 
-```bash
+```jshelllanguage
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
 
 Open in browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
+
+# Protecting the LoadTest WebUI
+
+If you want to add basic authentication to HTTLLoadTest, just add the following to config_override/application_override.properties
+```properties
+loadtest.basicauth=true
+
+login.admin.user=admin
+login.admin.password=adminservice
+```
 
 
 ### More documentation
@@ -47,7 +57,7 @@ Create a configuration file, e.g. `config_override.properties`.
 * Skip `--restart=always` if doing this locally to avoid it to start with your computer.
 
 Connecting to instance for debugging:
-```bash
+```jshelllanguage
 docker exec -it -u HTTPLoadTest-baseline HTTPLoadTest-baseline bash
 ```
 
@@ -57,7 +67,7 @@ See [test-docker.sh](test-docker.sh).
 This script can be run with `./test-docker.sh local` to also run `mvn package` and use jar from development.
 
 #### Quickly verify the image
-```bash
+```jshelllanguage
 wget http://localhost:18086/HTTPLoadTest-baseline/health
 ```
 

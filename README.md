@@ -19,7 +19,7 @@ Coming from development backgrounds, we hope that a baseline you might contribut
 
 #### A quick intro/test-run
 
-```bash
+```jshelllanguage
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
@@ -35,7 +35,7 @@ Let's have a look at the details...
 
 ### Pipeline usage example
 
-```
+```jshelllanguage
 wget -post-data "jsonConfig=@loadTestReadSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/read"
 wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/write"
 wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
@@ -148,13 +148,13 @@ command.  As of now, only simple, pre-calculated http badic-auth is supported.
 
 #### Template special operations
 
-```
+```jshelllanguage
 #fizzle(chars:replaceMe)                          =>  tEftohTdS
 #fizzle(digits:67643)                             =>  32632
 #fizzle(U_chars:(TEST)                            =>  WRVY
 #fizzle(L_chars:(lower)                           =>  tgewt
 #fizzle(HEX:(a hexvalue)                          =>  4E7AD3B084
- #fizzle(option:yes, no, here, there)             =>  here
+#fizzle(option:yes, no, here, there)              =>  here
 ```
 
 ### Example on write test specification
