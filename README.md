@@ -41,7 +41,7 @@ wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28
 wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
 ##  wait and get the result
 sleep 40s
-wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/status
+wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
 ```
 
@@ -219,9 +219,9 @@ mvn clean install
 java -jar target/HTTPLoadTest-baseline-0.9.2-SNAPSHOT.jar
 wget http://localhost:8086/HTTPLoadTest-baseline/health
 wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
-wget http://localhost:8086/HTTPLoadTest-baseline/loadTest                    // return all loadTests with statuses
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/status                    // return all loadTests with statuses
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/stop               // stop all loadTests
-wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/loadtestId/status  // return status for loadtest with loadTestid
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus         // return alle the loadTest resukts
 ```
 
 Open in browser:  

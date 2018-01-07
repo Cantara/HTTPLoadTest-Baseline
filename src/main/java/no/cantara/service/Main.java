@@ -34,6 +34,7 @@ import java.util.logging.LogManager;
  */
 public class Main {
     public static final String CONTEXT_PATH = "/HTTPLoadTest-baseline";
+    public static String PORT_NO = "8086";
     public static final String ADMIN_ROLE = "admin";
     public static final String USER_ROLE = "user";
 
@@ -59,6 +60,7 @@ public class Main {
         LogManager.getLogManager().getLogger("").setLevel(Level.INFO);
 
         Integer webappPort = Configuration.getInt("service.port");
+        PORT_NO = Integer.toString(webappPort);
 
         try {
 
@@ -230,6 +232,12 @@ public class Main {
             loadTestStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             loadTestStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STATUS);
             securityHandler.addConstraintMapping(loadTestStatusEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadTestFullStatusEndpointConstraintMapping = new ConstraintMapping();
+            loadTestFullStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestFullStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FULLSTATUS);
+            securityHandler.addConstraintMapping(loadTestFullStatusEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestStopEndpointConstraintMapping = new ConstraintMapping();

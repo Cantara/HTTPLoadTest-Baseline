@@ -2,6 +2,7 @@ package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.Main;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
 import no.cantara.service.loadtest.drivers.MyWriteRunnable;
@@ -25,15 +26,15 @@ public class LoadTestExecutorService {
     private static List<TestSpecification> readTestSpecificationList;
     private static List<TestSpecification> writeTestSpecificationList;
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static Random r = new Random();
+    private static final Random r = new Random();
     private static long startTime = System.currentTimeMillis();
-    ;
     private static int loadTestRunNo = 0;
     private static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
     private static ExecutorService threadExecutor;
 
     private static int threadsScheduled = 0;
+    private static int threadPoolSize = 0;
 
     static {
         try {
@@ -94,7 +95,7 @@ public class LoadTestExecutorService {
         LoadTestExecutorService.writeTestSpecificationList = writeTestSpecificationList;
     }
 
-    public static void addResult(LoadTestResult loadTestResult) {
+    public static synchronized void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
         threadsScheduled--;
 //        LoadTestExecutorService.reduceThreadsScheduled();
@@ -116,9 +117,10 @@ public class LoadTestExecutorService {
         return resultList.subList(Math.max(resultList.size() - 50, 0), resultList.size());
     }
 
-    public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
+    public static synchronized void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         loadTestRunNo++;
         activeLoadTestConfig = loadTestConfig;
+        resultList = Collections.synchronizedList(unsafeList);
         long loadtestStartTimestamp = System.currentTimeMillis();
         isRunning = true;
         log.info("LoadTest {} started, max running time: {} secomnds", activeLoadTestConfig.getTest_id(), activeLoadTestConfig.getTest_duration_in_seconds());
@@ -163,25 +165,14 @@ public class LoadTestExecutorService {
 
     private static void runTask(LoadTestConfig loadTestConfig) {
         int runNo = 1;
-        threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
 
-        String[] hostList = {"http://google.com"}; /**, "http://yahoo.com",
-         "http://www.ebay.com", "http://google.com",
-         "http://www.example.co", "https://paypal.com",
-         "http://bing.com/", "http://techcrunch.com/",
-         "http://mashable.com/", "http://thenextweb.com/",
-         "http://wordpress.com/", "http://wordpress.org/",
-         "http://example.com/", "http://sjsu.edu/",
-         "http://ebay.co.uk/", "http://google.co.uk/",
-         "http://www.wikipedia.org/",
-         "http://en.wikipedia.org/wiki/Main_Page"};
-         **/
+        threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
+        threadPoolSize = loadTestConfig.getTest_no_of_threads();
         int read_ratio = loadTestConfig.getTest_read_write_ratio();
 
         while (isRunning) {
 
 
-            for (int i = 0; i < hostList.length; i++) {
                 int chance = r.nextInt(100);
                 long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
                 if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * 10)) {
@@ -189,7 +180,7 @@ public class LoadTestExecutorService {
                     // for long (endurance) loadtest runs
                     log.info("MaxRunInMilliSeconds: {}, threadsScheduled: {}", maxRunTimeMs, threadsScheduled);
                     if (read_ratio == 0) {
-                        String url = hostList[i];
+                        String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
                         LoadTestResult loadTestResult = new LoadTestResult();
                         loadTestResult.setTest_id(loadTestConfig.getTest_id());
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
@@ -260,13 +251,13 @@ public class LoadTestExecutorService {
             }
 
 
-        }
+//        }
 //        System.out.println("\nFinished all threads");
-        threadsScheduled = 0;
+//        threadsScheduled = 0;
         threadExecutor.shutdown();
     }
 
-    public static String printStats(List<LoadTestResult> loadTestResults) {
+    public static synchronized String printStats(List<LoadTestResult> loadTestResults) {
         if (loadTestResults == null) {
             return "";
         }
@@ -331,7 +322,7 @@ public class LoadTestExecutorService {
 
         log.info(" {} total tests resulted in {} successful runs where {} was marked as deviations(s)", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
         stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, (r_results + w_results + results) - (r_success + w_success + success), r_success + w_success + success, r_deviations + w_deviations + deviations);
-        stats = stats + "\n" + String.format(" %4d active tests threads sceduled, isRunning: %b ", threadsScheduled, isRunning);
+        stats = stats + "\n" + String.format(" %4d active tests threads scheduled, number of threads configured: %d,  isRunning: %b ", threadsScheduled, threadPoolSize, isRunning);
 
         String loadTestJson = "";
         if (activeLoadTestConfig != null) {
@@ -346,7 +337,7 @@ public class LoadTestExecutorService {
         return stats + "\n\n" + loadTestJson;
     }
 
-    public static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
+    private static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
         runWithTimeout(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -356,7 +347,7 @@ public class LoadTestExecutorService {
         }, timeout, timeUnit);
     }
 
-    public static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
+    private static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
         if (isRunning) {
             final ExecutorService executor = Executors.newSingleThreadExecutor();
             final Future<T> future = executor.submit(callable);
@@ -367,9 +358,11 @@ public class LoadTestExecutorService {
                 //remove this if you do not want to cancel the job in progress
                 //or set the argument to 'false' if you do not want to interrupt the thread
                 future.cancel(true);
+                threadsScheduled--;
                 throw e;
             } catch (ExecutionException e) {
                 //unwrap the root cause
+                threadsScheduled--;
                 Throwable t = e.getCause();
                 if (t instanceof Error) {
                     throw (Error) t;
@@ -392,11 +385,8 @@ public class LoadTestExecutorService {
         isRunning = false;
     }
 
-    public static int getThreadsScheduled() {
-        return threadsScheduled;
-    }
 
-    private static void reduceThreadsScheduled() {
+    private static synchronized void reduceThreadsScheduled() {
         threadsScheduled = threadsScheduled - 1;
     }
 
