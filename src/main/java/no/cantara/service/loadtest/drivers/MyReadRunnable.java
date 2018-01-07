@@ -17,6 +17,7 @@ import java.util.Random;
 
 import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
 
+
 public class MyReadRunnable implements Runnable {
     private static Random r = new Random();
     private final LoadTestResult loadTestResult;
@@ -33,7 +34,7 @@ public class MyReadRunnable implements Runnable {
 
     @Override
     public void run() {
-        if (!isRunning) {
+        if (!isRunning()) {
             return;
         }
         long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();

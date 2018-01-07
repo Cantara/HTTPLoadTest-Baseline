@@ -209,7 +209,7 @@ public class LoadTestResource {
     @Path("/stop")
     @Produces(MediaType.APPLICATION_JSON)
     public Response stopLoadTests() {
-        LoadTestExecutorService.isRunning = false;
+        LoadTestExecutorService.stop();
         return Response.ok().build();
     }
 

@@ -34,7 +34,7 @@ public class MyWriteRunnable implements Runnable {
 
     @Override
     public void run() {
-        if (!isRunning) {
+        if (!isRunning()) {
             return;
         }
 

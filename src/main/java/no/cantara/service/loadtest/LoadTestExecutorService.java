@@ -29,9 +29,11 @@ public class LoadTestExecutorService {
     private static long startTime = System.currentTimeMillis();
     ;
     private static int loadTestRunNo = 0;
-    public static boolean isRunning = false;
+    private static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
     private static ExecutorService threadExecutor;
+
+    private static int threadsScheduled = 0;
 
     static {
         try {
@@ -94,6 +96,9 @@ public class LoadTestExecutorService {
 
     public static void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
+        threadsScheduled--;
+//        LoadTestExecutorService.reduceThreadsScheduled();
+
         //log.info("ResultMapSize: {}", resultList.size());
     }
 
@@ -179,9 +184,10 @@ public class LoadTestExecutorService {
             for (int i = 0; i < hostList.length; i++) {
                 int chance = r.nextInt(100);
                 long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
-                if (maxRunTimeMs > 50 && isRunning) {
-                    // We stop a little before known timeout
-                    log.trace("MaxRunInMilliSeconds: {}", maxRunTimeMs);
+                if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * 10)) {
+                    // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
+                    // for long (endurance) loadtest runs
+                    log.info("MaxRunInMilliSeconds: {}, threadsScheduled: {}", maxRunTimeMs, threadsScheduled);
                     if (read_ratio == 0) {
                         String url = hostList[i];
                         LoadTestResult loadTestResult = new LoadTestResult();
@@ -189,16 +195,19 @@ public class LoadTestExecutorService {
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
                         loadTestResult.setTest_run_no(runNo++);
                         Runnable worker = new MyRunnable(url, loadTestResult);
+                        threadsScheduled++;
                         try {
                             runWithTimeout(new Callable<String>() {
                                 @Override
                                 public String call() {
                                     threadExecutor.execute(worker);
                                     return "";
+
                                 }
                             }, maxRunTimeMs, TimeUnit.MILLISECONDS);
                         } catch (Exception e) {
                             logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                            LoadTestExecutorService.reduceThreadsScheduled();
                         }
 
 //                    threadExecutor.execute(worker);
@@ -209,6 +218,8 @@ public class LoadTestExecutorService {
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
                         loadTestResult.setTest_run_no(runNo++);
                         Runnable worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult);
+                        threadsScheduled++;
+
                         try {
                             runWithTimeout(new Callable<String>() {
                                 @Override
@@ -219,6 +230,7 @@ public class LoadTestExecutorService {
                             }, maxRunTimeMs, TimeUnit.MILLISECONDS);
                         } catch (Exception e) {
                             logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                            LoadTestExecutorService.reduceThreadsScheduled();
                         }
 //                    threadExecutor.execute(worker);
 
@@ -228,6 +240,7 @@ public class LoadTestExecutorService {
                         loadTestResult.setTest_name(loadTestConfig.getTest_name());
                         loadTestResult.setTest_run_no(runNo++);
                         Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
+                        threadsScheduled++;
                         try {
                             runWithTimeout(new Callable<String>() {
                                 @Override
@@ -238,6 +251,7 @@ public class LoadTestExecutorService {
                             }, maxRunTimeMs, TimeUnit.MILLISECONDS);
                         } catch (Exception e) {
                             logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                            LoadTestExecutorService.reduceThreadsScheduled();
                         }
 //                    threadExecutor.execute(worker);
 
@@ -248,6 +262,7 @@ public class LoadTestExecutorService {
 
         }
 //        System.out.println("\nFinished all threads");
+        threadsScheduled = 0;
         threadExecutor.shutdown();
     }
 
@@ -306,16 +321,17 @@ public class LoadTestExecutorService {
             stats = "Started: " + df.format(new Date(nowTimestamp)) + "  Now: " + df.format(new Date(nowTimestamp)) + "\n";
         }
         log.info(" {} read tests resulted in {} successful runs where {} was marked as deviation(s).", r_results, r_success, r_deviations);
-        stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked as deviation(s).", r_results, r_success, r_deviations);
+        stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results, r_success, (r_results - r_success), r_deviations);
 
         log.info(" {} write tests resulted in {} successful runs where {} was marked as deviation(s).", w_results, w_success, w_deviations);
-        stats = stats + "\n" + String.format(" %4d write tests resulted in %d successful runs where %d was marked as deviation(s).", w_results, w_success, w_deviations);
+        stats = stats + "\n" + String.format(" %4d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
 
         log.info(" {} unmarked tests resulted in {} successful runs where {} was marked as deviation(s).", results, success, deviations);
-        stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successful runs where %d was marked as deviation(s).", results, success, deviations);
+        stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
 
         log.info(" {} total tests resulted in {} successful runs where {} was marked as deviations(s)", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
-        stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked as deviation(s).", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
+        stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, (r_results + w_results + results) - (r_success + w_success + success), r_success + w_success + success, r_deviations + w_deviations + deviations);
+        stats = stats + "\n" + String.format(" %4d active tests threads sceduled, isRunning: %b ", threadsScheduled, isRunning);
 
         String loadTestJson = "";
         if (activeLoadTestConfig != null) {
@@ -366,6 +382,22 @@ public class LoadTestExecutorService {
 
         }
         return null;
+    }
+
+    public static boolean isRunning() {
+        return isRunning;
+    }
+
+    public static void stop() {
+        isRunning = false;
+    }
+
+    public static int getThreadsScheduled() {
+        return threadsScheduled;
+    }
+
+    private static void reduceThreadsScheduled() {
+        threadsScheduled = threadsScheduled - 1;
     }
 
 

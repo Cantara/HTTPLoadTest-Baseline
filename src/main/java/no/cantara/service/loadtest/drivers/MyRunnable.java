@@ -23,7 +23,7 @@ public class MyRunnable implements Runnable {
 
     @Override
     public void run() {
-        if (!isRunning) {
+        if (!isRunning()) {
             return;
         }
 
