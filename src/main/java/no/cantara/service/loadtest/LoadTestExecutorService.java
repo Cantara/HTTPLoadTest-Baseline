@@ -28,6 +28,7 @@ public class LoadTestExecutorService {
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final Random r = new Random();
     private static long startTime = System.currentTimeMillis();
+    private static long stopTime = 0;
     private static int loadTestRunNo = 0;
     private static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
@@ -144,6 +145,7 @@ public class LoadTestExecutorService {
     private static void runLoadTest(LoadTestConfig loadTestConfig) {
 
         startTime = System.currentTimeMillis();
+        stopTime = 0;
         try {
             runWithTimeout(new Callable<String>() {
                 @Override
@@ -255,6 +257,7 @@ public class LoadTestExecutorService {
 //        System.out.println("\nFinished all threads");
 //        threadsScheduled = 0;
         threadExecutor.shutdown();
+        stopTime = System.currentTimeMillis();
     }
 
     public static synchronized String printStats(List<LoadTestResult> loadTestResults) {
@@ -306,21 +309,20 @@ public class LoadTestExecutorService {
         long nowTimestamp = System.currentTimeMillis();
         String stats;
         if (loadTestRunNo > 0) {
-            stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
+            if (stopTime == 0) {
+                stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
+
+            } else {
+                stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Ran for " + df.format(new Date(stopTime)) + " seconds.\n";
+
+            }
 
         } else {
             stats = "Started: " + df.format(new Date(nowTimestamp)) + "  Now: " + df.format(new Date(nowTimestamp)) + "\n";
         }
-        log.info(" {} read tests resulted in {} successful runs where {} was marked as deviation(s).", r_results, r_success, r_deviations);
         stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results, r_success, (r_results - r_success), r_deviations);
-
-        log.info(" {} write tests resulted in {} successful runs where {} was marked as deviation(s).", w_results, w_success, w_deviations);
         stats = stats + "\n" + String.format(" %4d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
-
-        log.info(" {} unmarked tests resulted in {} successful runs where {} was marked as deviation(s).", results, success, deviations);
         stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
-
-        log.info(" {} total tests resulted in {} successful runs where {} was marked as deviations(s)", r_results + w_results + results, r_success + w_success + success, r_deviations + w_deviations + deviations);
         stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, (r_results + w_results + results) - (r_success + w_success + success), r_success + w_success + success, r_deviations + w_deviations + deviations);
         stats = stats + "\n" + String.format(" %4d active tests threads scheduled, number of threads configured: %d,  isRunning: %b ", threadsScheduled, threadPoolSize, isRunning);
 
@@ -383,6 +385,8 @@ public class LoadTestExecutorService {
 
     public static void stop() {
         isRunning = false;
+        stopTime = System.currentTimeMillis();
+        threadsScheduled = 0;
     }
 
 
