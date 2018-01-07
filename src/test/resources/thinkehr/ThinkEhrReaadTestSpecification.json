@@ -1,0 +1,27 @@
+[
+  {
+    "command_url": "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/query",
+    "command_contenttype": "application/json",
+    "command_http_post": true,
+    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_timeout_milliseconds": 5000,
+    "command_template": "{ \"aql\": \"select count(a/uid/value) as count from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\", \"aqlParameters\": { \"ehrId\": \"#ehr\" }\t}",
+    "command_replacement_map": {
+      "#ehr": "f19473e5-fb8a-42cf-b5e8-50ff0deed766"
+    }
+  },
+  {
+    "command_url": "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/query",
+    "command_contenttype": "application/json",
+    "command_http_post": true,
+    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_timeout_milliseconds": 5000,
+    "command_template": "{ \"aql\": \"select a/uid/value as id from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\", \"aqlParameters\": { \"ehrId\": \"#ehr\" }\t}",
+    "command_replacement_map": {
+      "#ehr": "f19473e5-fb8a-42cf-b5e8-50ff0deed766"
+    },
+    "command_response_map": {
+      "#compositionIds": "$.resultSet[*].id"
+    }
+  }
+]

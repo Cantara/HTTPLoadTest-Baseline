@@ -119,9 +119,11 @@ public class LoadTestExecutorService {
     }
 
     public static synchronized void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
+        unsafeList = new ArrayList<>();
+        resultList = Collections.synchronizedList(unsafeList);
         loadTestRunNo++;
         activeLoadTestConfig = loadTestConfig;
-        resultList = Collections.synchronizedList(unsafeList);
+
         long loadtestStartTimestamp = System.currentTimeMillis();
         isRunning = true;
         log.info("LoadTest {} started, max running time: {} secomnds", activeLoadTestConfig.getTest_id(), activeLoadTestConfig.getTest_duration_in_seconds());
