@@ -27,6 +27,19 @@ public class TemplateUtilTest {
 
     }
 
+    @Test
+    public void testTemplateUtilSimpleMixed() {
+        replacements.put("#BrukerID", "#fizzle(HEX:3234)");
+        replacements.put("#Passord", "TestPassord");
+        String template = "Text to be replaced #BrukerID before this";
+
+        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        log.trace("Fizzled result: {}", result);
+        assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
+
+
+    }
+
 
     @Test
     public void testTemplateUtilWithCharacterFizzling() {

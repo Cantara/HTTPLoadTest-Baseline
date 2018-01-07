@@ -168,17 +168,17 @@ command.  As of now, only simple, pre-calculated http badic-auth is supported.
   "command_template" : "",
   "command_replacement_map" : {
     "#Passord" : "TestPassord",
-    "#BrukerID" : "TestBruker"
+    "#BrukerID" : "User_#fizzle(HEX:3234)"
   }
 }, {
   "command_url" : "http://test.tull.no",
   "command_contenttype" : "application/json",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 5000,
-  "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(chars:replaceMe)\\\",\n  \\\"name\\\": \\\"#BrukerID\\\",\n  \\\"admin\\\": true\n}",
+  "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(chars:replaceMe)\\\",\n  \\\"name\\\": \\\"#Name\\\",\n  \\\"admin\\\": true\n}",
   "command_replacement_map" : {
-    "#Passord" : "TestPassord",
-    "#BrukerID" : "TestBruker"
+    "#Simulate" : "TestPassord",
+    "#Name" : "#fizzle(option:Steve, Kate, Simon)"
   },
    "command_response_map" : {
      "#randomizeName" : "$..test_randomize_sleeptime",
@@ -186,6 +186,9 @@ command.  As of now, only simple, pre-calculated http badic-auth is supported.
   }
 } ]
 ```
+
+In this example, we have included an example where we create a randomized BrukerID variable for each TestSpecification invocation to simulate
+run with lots of different users.
 
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
