@@ -2,10 +2,12 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonPropertyOrder({"test_id", "test_name", "test_tags", "test_run_no", "test_duration", "test_success", "test_deviation_flag"})
 public class LoadTestResult {
     private String test_id;
     private String test_name;

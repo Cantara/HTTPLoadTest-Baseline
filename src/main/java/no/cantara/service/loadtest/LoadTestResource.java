@@ -3,9 +3,12 @@ package no.cantara.service.loadtest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import no.cantara.service.model.LoadTestConfig;
+import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.model.TestSpecificationLoader;
 import org.slf4j.Logger;
@@ -36,10 +39,11 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM_SELECT = "/loadTest/form/select";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
     public static final String APPLICATION_PATH_FULLSTATUS = "/loadTest/fullstatus";
+    public static final String APPLICATION_PATH_FULLSTATUS_CSV = "/loadTest/fullstatus_csv";
     public static final String APPLICATION_PATH_STOP = "/loadTest/stop";
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
-
+    private static final CsvMapper csvMapper = new CsvMapper();
     private final String loadTest = "{}";
     private final String loadTests = "{}";
     private final String loadTestStatus = "{}";
@@ -232,4 +236,29 @@ public class LoadTestResource {
 
         return Response.ok(jsonResult).build();
     }
+
+    @GET
+    @Path("/fullstatus_csv")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCSVStatusForLoadTestInstance(@PathParam("test_id") String artifactId) {
+        log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
+
+
+        String csvResult;
+        try {
+            CsvSchema csvSchema = csvMapper.schemaFor(LoadTestResult.class);
+            if (true) {
+                csvSchema = csvSchema.withHeader();
+            } else {
+                csvSchema = csvSchema.withoutHeader();
+            }
+            csvResult = csvMapper.writer(csvSchema).writeValueAsString(LoadTestExecutorService.getResultList());
+        } catch (IOException e) {
+            log.warn("Could not convert to CSV {}", loadTestStatus);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return Response.ok(csvResult).build();
+    }
+
 }

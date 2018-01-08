@@ -240,6 +240,12 @@ public class Main {
             securityHandler.addConstraintMapping(loadTestFullStatusEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadTestFullStatusCSVEndpointConstraintMapping = new ConstraintMapping();
+            loadTestFullStatusCSVEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestFullStatusCSVEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FULLSTATUS_CSV);
+            securityHandler.addConstraintMapping(loadTestFullStatusCSVEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestStopEndpointConstraintMapping = new ConstraintMapping();
             loadTestStopEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             loadTestStopEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STOP);
