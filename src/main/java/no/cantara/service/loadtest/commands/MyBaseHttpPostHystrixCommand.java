@@ -21,8 +21,6 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
     protected Logger log;
     protected URI serviceUri;
-    protected String myAppTokenId = "";
-    protected String myAppTokenXml = "";
     protected String TAG = "";
     protected HttpRequest request;
 
@@ -58,18 +56,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
         HystrixRequestContext.initializeContext();
     }
 
-//    private void init(URI serviceUri, String myAppTokenXml, String myAppTokenId, String hystrixGroupKey) {
-//        this.serviceUri = serviceUri;
-//        this.myAppTokenXml = myAppTokenXml;
-//        if(this.myAppTokenXml!=null && !this.myAppTokenXml.equals("")  &&  (myAppTokenId==null||myAppTokenId.isEmpty())){
-//            this.myAppTokenId= ApplicationXpathHelper.getAppTokenIdFromAppTokenXml(myAppTokenXml);
-//        } else {
-//            this.myAppTokenId = myAppTokenId;
-//        }
-//        this.TAG =this.getClass().getName() + ", pool :" + hystrixGroupKey;
-//        this.log =  LoggerFactory.getLogger(TAG);
-//        HystrixRequestContext.initializeContext();
-//    }
+
 
 
     @Override
@@ -89,7 +76,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
                 uriString += getTargetPath();
             }
 
-            log.trace("TAG" + " - serviceUri={} myAppTokenId={}", uriString, myAppTokenId);
+            log.trace("TAG" + " - serviceUri={} myAppTokenId={}", uriString);
 
             if (getQueryParameters() != null && getQueryParameters().length != 0) {
                 request = HttpRequest.post(uriString, true, getQueryParameters());
