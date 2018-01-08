@@ -2,6 +2,7 @@ package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.hystrix.HystrixCommandProperties;
 import no.cantara.service.Main;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
@@ -121,6 +122,7 @@ public class LoadTestExecutorService {
     public static synchronized void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         unsafeList = new ArrayList<>();
         resultList = Collections.synchronizedList(unsafeList);
+        HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
         loadTestRunNo++;
         activeLoadTestConfig = loadTestConfig;
 
