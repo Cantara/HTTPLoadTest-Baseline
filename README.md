@@ -68,15 +68,26 @@ the longest allowed time the tests are allowed to run.
 
 ## Example on load test result
 ```text
-Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 seconds.
+{ "HTTPLoadTest-status": 
+"Started: 08/01-2018  18:31:56  Now: 08/01-2018  18:32:10  Ran for 08/01-2018  18:32:06 seconds.
 
-  203 read tests resulted in 202 successful runs where 1 was marked as deviation(s).
-   22 write tests resulted in 22 successful runs where 0 was marked as deviation(s).
-    0 unmarked tests resulted in 0 successful runs where 0 was marked as deviation(s).
-  225 total tests resulted in 224 successful runs where 1 was marked as deviation(s).
- 1335 ms mean duraction for successful read tests, 1884 ms ninety percentile successful read tests 
- 4749 ms mean duraction for successful write tests, 1863 ms ninety percentile successful write tests 
-```
+  101 read tests resulted in 101 successful runs where 0 was marked failure and 0 was marked as deviation(s).
+    8 write tests resulted in 6 successful runs where 2 was marked failure and 0 was marked as deviation(s).
+    0 unmarked tests resulted in 0 successful runs where 0 was marked failure and  0 was marked as deviation(s).
+  109 total tests resulted in 109 successful runs where 0 was marked failure and 0 was marked as deviation(s).
+   88 active tests threads scheduled, number of threads configured: 10,  isRunning: false 
+  928 ms mean duraction for successful read tests, 1286 ms ninety percentile successful read tests 
+ 11801 ms mean duraction for successful write tests, 1762 ms ninety percentile successful write tests 
+
+{
+  "test_id" : "Default-1234",
+  "test_name" : "Default values for LoadTest Configuration",
+  "test_no_of_threads" : 10,
+  "test_read_write_ratio" : 90,
+  "test_sleep_in_ms" : 50,
+  "test_randomize_sleeptime" : true,
+  "test_duration_in_seconds" : 10
+}```
 
 If we look at the example output above, we see that we have a load-test with a read/write ratio of 90, 
 which mean that we have almost 10 times more runs of the read TestConfiguration than we have invocations of the write TestSpecification. 
