@@ -2,6 +2,7 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,6 +108,18 @@ public class TestSpecification {
     }
 
     public String getCommand_http_authstring() {
+        if (command_http_authstring != null && command_http_authstring.split("/").length == 2) {
+            String[] upfields = command_http_authstring.split("/");
+            String name = upfields[0];
+            String password = upfields[1];
+
+            String authString = name + ":" + password;
+            System.out.println("auth string: " + authString);
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            String authStringEnc = "Basic " + new String(authEncBytes);
+            return authStringEnc;
+
+        }
         return command_http_authstring;
     }
 

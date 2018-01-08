@@ -48,7 +48,7 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
     @Override
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
         super.dealWithRequestBeforeSend(request);
-        if (httpAuthorizationString == null || httpAuthorizationString.length() < 10) {
+        if (httpAuthorizationString != null && httpAuthorizationString.length() > 10) {
             request.authorization(httpAuthorizationString);
         }
 

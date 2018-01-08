@@ -174,6 +174,7 @@ command.  As of now, only simple, pre-calculated http badic-auth is supported.
   "command_url" : "http://test.tull.no",
   "command_contenttype" : "application/json",
   "command_http_post" : true,
+  "command_http_authstring": "username/password",
   "command_timeout_milliseconds" : 5000,
   "command_template" : "FILE:./templates/my_test_tull_template.json",
   "command_replacement_map" : {
