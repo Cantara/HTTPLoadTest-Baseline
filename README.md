@@ -28,9 +28,6 @@ Open in browser:
 
 
 
-#### The flow of TestSpecification Execution
-
-![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/TestSpecificationExecutionFlow.png)
 
 ### Example-oriented documentation to get familiar with the application
 
@@ -120,6 +117,11 @@ HTTP requests and internal threads.
 
 
 ## Example on read test specification
+
+#### The flow of TestSpecification Execution
+
+![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/TestSpecificationExecutionFlow.png)
+
 ```json
 [ {
   "command_url" : "https://gmail.com",
