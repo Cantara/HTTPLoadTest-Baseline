@@ -2,16 +2,14 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.loadtest.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertTrue;
 
@@ -80,7 +78,7 @@ public class TestSpecificationMappingTest {
     public void readTestSpecificationMappingFromFile() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("thinkehr/read_JournalFeed.json").getFile());
+        File file = new File(classLoader.getResource("readconfig.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
@@ -158,7 +156,14 @@ public class TestSpecificationMappingTest {
     @Test
     public void testURICreate() {
         String url = "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/composition/#fizzle(option:#compositionIds)?format=STRUCTURED";
-        URI uri = URI.create(url);
+
+        Map<String, String> replacements = new HashMap<>();
+
+        replacements.put("#compositionIds", UUID.randomUUID().toString());
+
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(url, replacements);
+
+        URI uri = URI.create(result);
         assertTrue(url != null);
     }
 }
