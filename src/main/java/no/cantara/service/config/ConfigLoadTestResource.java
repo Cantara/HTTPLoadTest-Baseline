@@ -2,9 +2,10 @@ package no.cantara.service.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.cantara.service.model.TestSpecificationLoader;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
+import no.cantara.service.model.TestSpecificationLoader;
+import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,7 +157,8 @@ public class ConfigLoadTestResource {
         String optionString = "";
         for (int n = 0; n < configuredTestSpecifications.size() / 2; n++) {
             int displayvalue = 1 + n;
-            optionString = optionString + "        <option value=\"" + displayvalue + "\">" + displayvalue + "</option>";
+            String displayname = Configuration.getString("TestSpecification." + displayvalue + ".displayname");
+            optionString = optionString + "        <option value=\"" + displayvalue + "\">" + displayname + "(" + displayvalue + ")" + "</option>";
         }
 
         String response =

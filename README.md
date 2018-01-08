@@ -212,8 +212,10 @@ run with lots of different users.
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
 ```properties
+TestSpecification.1.displayname=Bootstrap TestSpecifications
 TestSpecification.1.read.filename=./specifications/FirstReadTestSpecification.json
 TestSpecification.1.write.filename=./specifications/FirstWriteTestSpecification.json
+TestSpecification.2.displayname=Normal Simulated TestSpecifications
 TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.json
 TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
 ```
