@@ -20,7 +20,7 @@ public class TemplateUtil {
         add("#fizzle(option:");
     }};
 
-    public static String updateTemplateWithvaluesFromMap(String template, Map<String, String> templatereplacementMap) {
+    public static String updateTemplateWithValuesFromMap(String template, Map<String, String> templatereplacementMap) {
         if (template == null) {
             return "";
         }
@@ -29,6 +29,7 @@ public class TemplateUtil {
             for (String key : templatereplacementMap.keySet()) {
                 if (template.contains(key)) {
                     template = template.replaceAll(key, templatereplacementMap.get(key));
+                    log.trace("Replaced {} with {}", key, templatereplacementMap.get(key));
                 }
             }
         }

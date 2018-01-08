@@ -63,4 +63,14 @@ public class HTTPResultUtil {
         }
         return resultsMap;
     }
+
+    public static String max50(String s) {
+        if (s == null) {
+            return s;
+        }
+        if (s.length() > 50) {
+            return s.substring(0, 50);
+        }
+        return s;
+    }
 }

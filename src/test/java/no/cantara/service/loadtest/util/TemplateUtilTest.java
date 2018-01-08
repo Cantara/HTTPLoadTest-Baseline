@@ -20,7 +20,7 @@ public class TemplateUtilTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #BrukerID before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
 
@@ -33,7 +33,7 @@ public class TemplateUtilTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #BrukerID before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
 
@@ -47,7 +47,7 @@ public class TemplateUtilTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #fizzle(chars:text) before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
 
@@ -60,7 +60,7 @@ public class TemplateUtilTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #fizzle(digits:3234) before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
 
@@ -73,7 +73,7 @@ public class TemplateUtilTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #fizzle(HEX:3234) before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
 
@@ -86,7 +86,7 @@ public class TemplateUtilTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #fizzle(option:yes, no, here, there) before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
 

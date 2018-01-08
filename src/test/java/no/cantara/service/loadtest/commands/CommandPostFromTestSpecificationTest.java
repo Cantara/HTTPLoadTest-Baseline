@@ -65,8 +65,8 @@ public class CommandPostFromTestSpecificationTest {
         Map<String, String> replacements = new HashMap<>();
         replacements.put("#BrukerID", "TestBruker");
         replacements.put("#Passord", "TestPassord");
-        assertTrue(TemplateUtil.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestBruker"));
-        assertTrue(TemplateUtil.updateTemplateWithvaluesFromMap(soaptemplate, replacements).contains("TestPassord"));
+        assertTrue(TemplateUtil.updateTemplateWithValuesFromMap(soaptemplate, replacements).contains("TestBruker"));
+        assertTrue(TemplateUtil.updateTemplateWithValuesFromMap(soaptemplate, replacements).contains("TestPassord"));
 
     }
 

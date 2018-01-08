@@ -44,7 +44,7 @@ public class HTTPResultToTemplateChainingTest {
         replacements.put("#Passord", "TestPassord");
         String template = "Text to be replaced #fizzle(option:#BrukerID) before this";
 
-        String result = TemplateUtil.updateTemplateWithvaluesFromMap(template, replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         assertTrue(!result.contains("#BrukerID"));
         log.trace("Fizzled result: {}", result);
 

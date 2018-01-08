@@ -4,6 +4,7 @@ import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.HTTPResultUtil;
+import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.max50;
 
 public class MyWriteRunnable implements Runnable {
     private final List<TestSpecification> testSpecificationList;
@@ -58,6 +60,8 @@ public class MyWriteRunnable implements Runnable {
         int writeCommandNo = 1;
         for (TestSpecification testSpecification : testSpecificationList) {
             testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
+            testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), resolvedResultVariables));
+            testSpecification.setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), resolvedResultVariables));
             if (testSpecification.getCommand_url().length() > 0) {
                 log.trace("Calling {}", testSpecification.getCommand_url());
                 loadTestResult.setTest_success(true);
@@ -68,24 +72,25 @@ public class MyWriteRunnable implements Runnable {
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + result + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + result + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ")");
                     }
                 } else {
                     CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + result + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + result + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ")");
                     }
                 }
+                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ")");
 //            log.debug("Returned result: " + result);
                 resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
             }
