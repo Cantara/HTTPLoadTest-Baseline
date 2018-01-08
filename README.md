@@ -27,6 +27,11 @@ Open in browser:
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
 
+
+#### The flow of TestSpecification Execution
+
+![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/TestSpecificationExecutionFlow.png)
+
 ### Example-oriented documentation to get familiar with the application
 
 Since the main goal for this codebase is to simplify Companies efforts in ensuring that a agile or continous investment into software development does not compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a Company's contonous CI/CD processes. This means that the application have two modi:  a) exploration modi - where you (as in any normal QA åprocess, can analyzy the load-characteristics of your application and b) easily add the baseline characteristics to the deployment QA pipelines.
