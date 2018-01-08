@@ -89,7 +89,7 @@ public class TestSpecificationMappingTest {
         //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }
 
-    @Test
+    @Test(priority = 1, enabled = false)
     public void testInstanciateTestConfigFromJson() throws Exception {
         String test = "[\n" +
                 "  {\n" +
