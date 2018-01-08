@@ -36,4 +36,5 @@ public class LoadTestConfigTest {
         LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
         assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }
+
 }

@@ -88,4 +88,70 @@ public class TestSpecificationMappingTest {
         }
         //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }
+
+    @Test
+    public void testInstanciateTestConfigFromJson() throws Exception {
+        String test = "[\n" +
+                "  {\n" +
+                "    \"command_url\": \"https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/query\",\n" +
+                "    \"command_contenttype\": \"application/json\",\n" +
+                "    \"command_http_post\": true,\n" +
+                "    \"command_http_authstring\": \"Basic YWRtaW46YWRtaW4=\",\n" +
+                "    \"command_timeout_milliseconds\": 5000,\n" +
+                "    \"command_template\": \"{ \\\"aql\\\": \\\"select count(a/uid/value) as count from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\\\", \\\"aqlParameters\\\": { \\\"ehrId\\\": \\\"#ehr\\\" }\\t}\",\n" +
+                "    \"command_replacement_map\": {\n" +
+                "      \"#ehr\": \"f19473e5-fb8a-42cf-b5e8-50ff0deed766\"\n" +
+                "    }\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"command_url\": \"https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/query\",\n" +
+                "    \"command_contenttype\": \"application/json\",\n" +
+                "    \"command_http_post\": true,\n" +
+                "    \"command_http_authstring\": \"Basic YWRtaW46YWRtaW4=\",\n" +
+                "    \"command_timeout_milliseconds\": 5000,\n" +
+                "    \"command_template\": \"{ \\\"aql\\\": \\\"select a/uid/value as id from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\\\", \\\"aqlParameters\\\": { \\\"ehrId\\\": \\\"#ehr\\\" }\\t}\",\n" +
+                "    \"command_replacement_map\": {\n" +
+                "      \"#ehr\": \"f19473e5-fb8a-42cf-b5e8-50ff0deed766\"\n" +
+                "    },\n" +
+                "   \"command_response_map\" : {\n" +
+                "      \"#compositionIds\" : \"$.resultSet[*].id\"\n" +
+                "    }\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"command_url\": \"https://odn1-thinkehr-cluster03.privatedns.zone}/rest/v1/composition/{{compositionId}}?format=STRUCTURED\",\n" +
+                "    \"command_contenttype\": \"application/json\",\n" +
+                "    \"command_http_post\": false,\n" +
+                "    \"command_http_authstring\": \"Basic YWRtaW46YWRtaW4=\",\n" +
+                "    \"command_timeout_milliseconds\": 5000,\n" +
+                "    \"command_template\": \"\",\n" +
+                "    \"command_replacement_map\": {\n" +
+                "      \"#ehr\": \"f19473e5-fb8a-42cf-b5e8-50ff0deed766\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "]";
+        TestSpecification jsonLoadtest = mapper.readValue(test, TestSpecification.class);
+
+
+        log.info(jsonLoadtest.toString());
+
+    }
+
+    @Test
+    public void readTestSpecificationWithExternalTemplateMappingFromFile() throws Exception {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("readconfig.json").getFile());
+        List<TestSpecification> readTestSpec = new ArrayList<>();
+        readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+        });
+        for (TestSpecification testSpecification : readTestSpec) {
+            assertTrue(testSpecification.getCommand_url().length() > 0);
+            testSpecification.setCommand_template("FILE:./pom.xml");
+            testSpecification.loadTemplateReference();
+            assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
+        }
+        //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
+    }
+
+
 }

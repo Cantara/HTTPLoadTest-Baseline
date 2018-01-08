@@ -175,7 +175,7 @@ command.  As of now, only simple, pre-calculated http badic-auth is supported.
   "command_contenttype" : "application/json",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 5000,
-  "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(chars:replaceMe)\\\",\n  \\\"name\\\": \\\"#Name\\\",\n  \\\"admin\\\": true\n}",
+  "command_template" : "FILE:./templates/my_test_tull_template.json",
   "command_replacement_map" : {
     "#Simulate" : "TestPassord",
     "#Name" : "#fizzle(option:Steve, Kate, Simon)"

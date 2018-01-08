@@ -6,11 +6,14 @@ import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
+import java.util.Random;
 
 public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand<String> {
 
     String uri;
     String contentType = "text/xml;charset=UTF-8";
+    static Random r = new Random();
+
     String httpAuthorizationString;
     String template = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:aut=\"http://dbonline.no/webservices/xsd/Autorisasjon\" xmlns:per=\"http://dbonline.no/webservices/xsd/PersonInfo\">\n" +
             "   <soapenv:Header>\n" +
@@ -33,7 +36,8 @@ public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand
 
 
     public CommandPostFromTestSpecification(TestSpecification testSpecification) {
-        super(URI.create(TemplateUtil.updateTemplateWithvaluesFromMap(testSpecification.getCommand_url(), testSpecification.getCommand_replacement_map())), "hystrixGroupKey");
+        super(URI.create(TemplateUtil.updateTemplateWithvaluesFromMap(testSpecification.getCommand_url(), testSpecification.getCommand_replacement_map())),
+                "hystrixGroupKey" + testSpecification.getCommand_url() + r.nextInt(10000));
         this.template = TemplateUtil.updateTemplateWithvaluesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();

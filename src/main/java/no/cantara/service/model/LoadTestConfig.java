@@ -2,6 +2,8 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -15,6 +17,7 @@ public class LoadTestConfig {
     private boolean test_randomize_sleeptime = false;
     private int test_duration_in_seconds = 40;
 
+    private static final Logger log = LoggerFactory.getLogger(LoadTestConfig.class);
 
     public LoadTestConfig(@JsonProperty("test_id") String id,
                           @JsonProperty("test_name") String test_name,

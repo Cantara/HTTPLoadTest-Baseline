@@ -2,7 +2,11 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +20,8 @@ public class TestSpecification {
     private String command_template = "";
     private Map<String, String> command_replacement_map = new HashMap<>();
     private Map<String, String> command_response_map = new HashMap<>();
+
+    private static final Logger log = LoggerFactory.getLogger(TestSpecification.class);
 
 
     public TestSpecification(@JsonProperty("command_url") String command_url,
@@ -112,6 +118,17 @@ public class TestSpecification {
         this.command_response_map = command_response_map;
     }
 
+    public void loadTemplateReference() {
+        if (getCommand_template().startsWith("FILE:")) {
+            try {
+                String contents = new String(Files.readAllBytes(Paths.get(getCommand_template().substring(5, getCommand_template().length()))));
+                setCommand_template(contents);
+            } catch (Exception e) {
+                log.error("Unable to load external referenced TestSpecification remplate");
+            }
+
+        }
+    }
     @Override
     public String toString() {
         return "TestSpecification{" +
