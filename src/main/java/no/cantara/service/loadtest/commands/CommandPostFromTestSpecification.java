@@ -66,4 +66,16 @@ public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand
     protected String getTargetPath() {
         return "";
     }
+
+    @Override
+    protected String dealWithFailedResponse(String responseBody, int statusCode) {
+        return "StatusCode:" + statusCode + ":" + responseBody;
+    }
+
+    @Override
+    protected String dealWithResponse(String response) {
+        //return "200" + ":" + super.dealWithResponse(response);
+        return super.dealWithResponse(response);
+    }
+
 }

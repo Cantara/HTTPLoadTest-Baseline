@@ -42,19 +42,23 @@ public class HTTPResultUtil {
 
     public static Map<String, String> parseWithJsonPath(String resultToParse, Map<String, String> jsonpaths) {
         Map<String, String> resultsMap = new HashMap<>();
-        if (resultToParse == null) {
+        if (resultToParse == null || jsonpaths == null || resultToParse.startsWith("StatusCode:")) {
             log.trace("resultToParse was empty, so returning empty .");
             return resultsMap;
         }
 
         for (String jsonPathKey : jsonpaths.keySet()) {
-            List<String> resultStrings = JsonPathHelper.findJsonpathList(resultToParse, jsonpaths.get(jsonPathKey));
-            if (resultStrings == null || resultStrings.size() == 0) {
-                log.debug("jsonpath returned zero hits");
-                //break;
-            } else {
-                String result = resultStrings.toString();
-                resultsMap.put(jsonPathKey, result.substring(2, result.length() - 2));
+            try {
+                List<String> resultStrings = JsonPathHelper.findJsonpathList(resultToParse, jsonpaths.get(jsonPathKey));
+                if (resultStrings == null || resultStrings.size() == 0) {
+                    log.debug("jsonpath returned zero hits");
+                    //break;
+                } else {
+                    String result = resultStrings.toString();
+                    resultsMap.put(jsonPathKey, result.substring(2, result.length() - 2));
+                }
+            } catch (Exception e) {
+                log.warn("Error in trying to match variables from result. jspnpath:{} - result: {}", jsonPathKey, resultToParse);
             }
         }
         return resultsMap;

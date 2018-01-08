@@ -57,6 +57,7 @@ public class MyReadRunnable implements Runnable {
         int readCommandNo = 1;
         for (TestSpecification testSpecification : testSpecificationList) {
             testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
+            log.debug("Active variables: {}", testSpecification.getCommand_replacement_map());
 
             if (testSpecification.getCommand_url().length() > 0) {
 
@@ -72,22 +73,27 @@ public class MyReadRunnable implements Runnable {
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + result + ")");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + result + ")");
                     }
                 } else {
                     CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + result + ")");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + result + ")");
                     }
                 }
 //            log.trace("Returned result: " + result);
                 resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
+                log.debug("Resolved variables: {}", resolvedResultVariables);
             }
         }
 

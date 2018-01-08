@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class TestSpecificationMappingTest {
     public void readTestSpecificationMappingFromFile() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("readconfig.json").getFile());
+        File file = new File(classLoader.getResource("thinkehr/read_JournalFeed.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
@@ -154,4 +155,10 @@ public class TestSpecificationMappingTest {
     }
 
 
+    @Test
+    public void testURICreate() {
+        String url = "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/composition/#fizzle(option:#compositionIds)?format=STRUCTURED";
+        URI uri = URI.create(url);
+        assertTrue(url != null);
+    }
 }

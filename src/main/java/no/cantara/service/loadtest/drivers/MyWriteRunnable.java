@@ -68,18 +68,22 @@ public class MyWriteRunnable implements Runnable {
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + result + ")");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + result + ")");
                     }
                 } else {
                     CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + result + ")");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + result + ")");
                     }
                 }
 //            log.debug("Returned result: " + result);

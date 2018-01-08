@@ -62,8 +62,14 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
 
 
     @Override
-    protected String dealWithResponse(String responseBody) {
-        return responseBody;
+    protected String dealWithFailedResponse(String responseBody, int statusCode) {
+        return "StatusCode:" + statusCode + ":" + responseBody;
+    }
+
+    @Override
+    protected String dealWithResponse(String response) {
+        //return "200" + ":" + super.dealWithResponse(response);
+        return super.dealWithResponse(response);
     }
 
 

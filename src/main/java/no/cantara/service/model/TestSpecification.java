@@ -72,6 +72,10 @@ public class TestSpecification {
     }
 
     public Map<String, String> getCommand_replacement_map() {
+        if (command_replacement_map == null) {
+            command_replacement_map = new HashMap<>();
+        }
+
         return command_replacement_map;
     }
 
@@ -111,6 +115,9 @@ public class TestSpecification {
     }
 
     public Map<String, String> getCommand_response_map() {
+        if (command_response_map == null) {
+            command_response_map = new HashMap<>();
+        }
         return command_response_map;
     }
 
