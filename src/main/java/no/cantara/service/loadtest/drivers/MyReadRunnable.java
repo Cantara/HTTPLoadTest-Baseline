@@ -67,7 +67,7 @@ public class MyReadRunnable implements Runnable {
             if (testSpecification.getCommand_url().length() > 0) {
 
 
-                log.trace("Calling {}", testSpecification.getCommand_url());
+                log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
                 loadTestResult.setTest_success(true);
                 loadTestResult.setTest_tags(loadTestResult.getTest_tags() +
                         " - (Read-URL:" + readCommandNo++ + "/" + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
@@ -106,9 +106,9 @@ public class MyReadRunnable implements Runnable {
                     loadTestResult.setTest_success(false);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
                 } else {
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -");
-                    log.debug("Resolved variables: {}", resolvedResultVariables);
                     resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
+                    log.debug("Resolved variables: {}", resolvedResultVariables);
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Res(" + resolvedResultVariables + ") - ");
                 }
 
             }

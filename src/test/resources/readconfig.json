@@ -1,35 +1,41 @@
 [
   {
-    "command_url": "https://gmail.com",
-    "command_http_post": false,
-    "command_http_authstring": null,
-    "command_http_post": false,
-    "command_timeout_milliseconds": 2000,
-    "command_template": "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#Passord\\\",\n  \\\"admin\\\": true\n}",
+    "command_url": "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/query",
+    "command_contenttype": "application/json",
+    "command_http_post": true,
+    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_timeout_milliseconds": 5000,
+    "command_template": "{ \"aql\": \"select count(a/uid/value) as count from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\", \"aqlParameters\": { \"ehrId\": \"#ehr\" }\t}",
     "command_replacement_map": {
-      "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
-    },
-    "command_response_map": {
-      "#randomizeName": "$..test_randomize_sleeptime",
-      "#testName": "$..test_name"
+      "#ehr": "f19473e5-fb8a-42cf-b5e8-50ff0deed766"
     }
   },
   {
-    "command_url": "http://test.tull.no",
-    "command_http_post": true,
-    "command_http_authstring": "Basic ZGV2ZWxvcG1lbnQtbWVkaWNhdGlvbjoxT09jTEpoR01oSyMxMHUhRDMzUw==",
-    "command_timeout_milliseconds": 5000,
+    "command_url": "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/query",
     "command_contenttype": "application/json",
-    "command_template": "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#fizzle(chars:replaceMe)\\\",\n  \\\"admin\\\": true\n}",
+    "command_http_post": true,
+    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_timeout_milliseconds": 5000,
+    "command_template": "{ \"aql\": \"select a/uid/value as id from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\", \"aqlParameters\": { \"ehrId\": \"#ehr\" }\t}",
     "command_replacement_map": {
-      "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
+      "#ehr": "f19473e5-fb8a-42cf-b5e8-50ff0deed766"
     },
     "command_response_map": {
-      "#randomizeName": "$..test_randomize_sleeptime",
-      "#testName": "$..test_name"
+      "#compositionIds": "$.resultSet[*].id"
+    }
+  },
+  {
+    "command_url": "https://odn1-thinkehr-cluster03.privatedns.zone/rest/v1/composition/getByUids?format=STRUCTURED",
+    "command_contenttype": "application/json",
+    "command_http_post": true,
+    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_timeout_milliseconds": 5000,
+    "command_template": "uids: #compositionIds",
+    "command_replacement_map": {
+      "#ehr": "f19473e5-fb8a-42cf-b5e8-50ff0deed766"
+    },
+    "command_response_map": {
+      "#compositionIds": "$.resultSet[*].id"
     }
   }
 ]
-
