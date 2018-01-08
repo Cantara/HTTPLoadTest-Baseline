@@ -270,6 +270,8 @@ public class LoadTestExecutorService {
         }
         int r_deviations = 0;
         int r_success = 0;
+        long r_duration = 0;
+        long w_duration = 0;
         int r_results = 0;
         int w_deviations = 0;
         int w_success = 0;
@@ -277,6 +279,12 @@ public class LoadTestExecutorService {
         int deviations = 0;
         int success = 0;
         int results = 0;
+        long r_mean_success = 0;
+        long r_ninety_percentine_success = 0;
+        long w_mean_success = 0;
+        long w_ninety_percentine_success = 0;
+        List<Long> r_times = new ArrayList<>();
+        List<Long> w_times = new ArrayList<>();
         for (LoadTestResult loadTestResult : loadTestResults) {
             if (loadTestResult.getTest_id().startsWith("r-")) {
                 r_results++;
@@ -285,6 +293,8 @@ public class LoadTestExecutorService {
                 }
                 if (loadTestResult.isTest_success()) {
                     r_success++;
+                    r_duration = r_duration + loadTestResult.getTest_duration();
+                    r_times.add(loadTestResult.getTest_duration());
                 }
 
             } else {
@@ -295,6 +305,8 @@ public class LoadTestExecutorService {
                     }
                     if (loadTestResult.isTest_success()) {
                         w_success++;
+                        w_duration = r_duration + loadTestResult.getTest_duration();
+                        w_times.add(loadTestResult.getTest_duration());
                     }
 
                 } else {
@@ -324,11 +336,23 @@ public class LoadTestExecutorService {
         } else {
             stats = "Started: " + df.format(new Date(nowTimestamp)) + "  Now: " + df.format(new Date(nowTimestamp)) + "\n";
         }
+        if (r_success > 0) {
+            r_mean_success = r_duration / r_success;
+            Collections.sort(r_times);
+            r_ninety_percentine_success = r_times.get(r_times.size() * 9 / 10);
+        }
+        if (w_success > 0) {
+            w_mean_success = w_duration / w_success;
+            Collections.sort(w_times);
+            w_ninety_percentine_success = w_times.get(w_times.size() * 9 / 10);
+        }
         stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results, r_success, (r_results - r_success), r_deviations);
         stats = stats + "\n" + String.format(" %4d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
         stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
         stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, r_success + w_success + success, (r_results + w_results + results) - (r_success + w_success + success), r_deviations + w_deviations + deviations);
         stats = stats + "\n" + String.format(" %4d active tests threads scheduled, number of threads configured: %d,  isRunning: %b ", threadsScheduled, threadPoolSize, isRunning);
+        stats = stats + "\n" + String.format(" %4d ms mean duraction for successful read tests, %4d ms ninety percentile successful read tests ", r_mean_success, r_ninety_percentine_success);
+        stats = stats + "\n" + String.format(" %4d ms mean duraction for successful write tests, %4d ms ninety percentile successful write tests ", w_mean_success, w_ninety_percentine_success);
 
         String loadTestJson = "";
         if (activeLoadTestConfig != null) {
