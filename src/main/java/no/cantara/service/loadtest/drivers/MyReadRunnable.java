@@ -71,29 +71,34 @@ public class MyReadRunnable implements Runnable {
                 loadTestResult.setTest_tags(loadTestResult.getTest_tags() +
                         " - (Read-URL:" + readCommandNo++ + "/" + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
 
-                String result;
-                if (testSpecification.isCommand_http_post()) {
-                    CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
-                    result = command.execute();
-                    if (!command.isSuccessfulExecution()) {
-                        loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
+                String result = null;
+                try {
+                    if (testSpecification.isCommand_http_post()) {
+                        CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+                        result = command.execute();
+                        if (!command.isSuccessfulExecution()) {
+                            loadTestResult.setTest_success(false);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
+                        }
+                        if (command.isResponseRejected()) {
+                            loadTestResult.setTest_deviation_flag(true);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + first50(result) + ") -");
+                        }
+                    } else {
+                        CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
+                        result = command.execute();
+                        if (!command.isSuccessfulExecution()) {
+                            loadTestResult.setTest_success(false);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
+                        }
+                        if (command.isResponseRejected()) {
+                            loadTestResult.setTest_deviation_flag(true);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + first50(result) + ") -");
+                        }
                     }
-                    if (command.isResponseRejected()) {
-                        loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + first50(result) + ") -");
-                    }
-                } else {
-                    CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
-                    result = command.execute();
-                    if (!command.isSuccessfulExecution()) {
-                        loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
-                    }
-                    if (command.isResponseRejected()) {
-                        loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + first50(result) + ") -");
-                    }
+                } catch (Exception e) {
+                    log.error("Unable to instansiate TestSpecification", e);
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":Unable to instansiate TestSpecification(" + first50(e.getMessage()) + ") -");
                 }
 //            log.trace("Returned result: " + result);
                 if (result == null || result.startsWith("StatusCode:")) {
