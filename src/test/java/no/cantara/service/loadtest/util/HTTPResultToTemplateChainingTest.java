@@ -1,12 +1,14 @@
 package no.cantara.service.loadtest.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.base.util.json.JsonPathHelper;
 import no.cantara.service.model.LoadTestConfigTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.testng.Assert.assertTrue;
@@ -48,5 +50,47 @@ public class HTTPResultToTemplateChainingTest {
         assertTrue(!result.contains("#BrukerID"));
         log.trace("Fizzled result: {}", result);
 
+    }
+
+    @Test
+    public void testJsonPathListInserts() throws Exception {
+        String json = "{   \"resultSet\": [\n" +
+                "        {\n" +
+                "            \"id\": \"105b595a-e523-4c20-9d44-3365251c4364::default::2\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"id\": \"b8d8757d-8e02-4ce5-9808-85b29b55ca79::default::5\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        List jsonList = JsonPathHelper.findJsonpathList(json, "$.resultSet[*].id");
+        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonList);
+        Map<String, String> replacements = new HashMap<>();
+
+        replacements.put("##JsonList", jsonString);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap("The result #JsonList", replacements);
+        assertTrue(!result.contains("##JsonList"));
+        log.trace("Fizzled result: {}", result);
+    }
+
+    @Test
+    public void testJsonPathListInserts2() throws Exception {
+        String json = "{   \"resultSet\": [\n" +
+                "        {\n" +
+                "            \"id\": \"105b595a-e523-4c20-9d44-3365251c4364::default::2\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"id\": \"b8d8757d-8e02-4ce5-9808-85b29b55ca79::default::5\"\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+        List jsonList = JsonPathHelper.findJsonpathList(json, "$.resultSet[*].id");
+        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonList);
+        Map<String, String> replacements = new HashMap<>();
+
+        replacements.put("#JsonList", jsonString);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap("The result #fizzle(option:#JsonList)", replacements);
+        assertTrue(!result.contains("##JsonList"));
+        log.trace("Fizzled result: {}", result);
     }
 }

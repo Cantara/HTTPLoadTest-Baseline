@@ -145,7 +145,7 @@ public class TestSpecification {
                 String contents = new String(Files.readAllBytes(Paths.get(getCommand_template().substring(5, getCommand_template().length()))));
                 setCommand_template(contents);
             } catch (Exception e) {
-                log.error("Unable to load external referenced TestSpecification remplate");
+                log.error("Unable to load external referenced TestSpecification remplate", e);
             }
 
         }
