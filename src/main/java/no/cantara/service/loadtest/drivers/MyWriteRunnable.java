@@ -72,30 +72,30 @@ public class MyWriteRunnable implements Runnable {
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ") -");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ") -");
                     }
                 } else {
                     CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ") -");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ")");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ") -");
                     }
                 }
 //            log.trace("Returned result: " + result);
                 if (result.startsWith("StatusCode:")) {
                     loadTestResult.setTest_success(false);
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ") -");
                 } else {
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ")");
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ") -");
                     log.debug("Resolved variables: {}", resolvedResultVariables);
                     resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
                 }
