@@ -1,5 +1,6 @@
 package no.cantara.service.loadtest.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.base.util.json.JsonPathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class HTTPResultUtil {
     private static final Logger log = LoggerFactory.getLogger(HTTPResultUtil.class);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
 
     public static Map parseWithRegexp(String resultToParse, Map<String, String> regexpSelectorMap) {
@@ -50,12 +52,15 @@ public class HTTPResultUtil {
         for (String jsonPathKey : jsonpaths.keySet()) {
             try {
                 List<String> resultStrings = JsonPathHelper.findJsonpathList(resultToParse, jsonpaths.get(jsonPathKey));
+
                 if (resultStrings == null || resultStrings.size() == 0) {
                     log.debug("jsonpath returned zero hits");
                     //break;
                 } else {
-                    String result = resultStrings.toString();
-                    resultsMap.put(jsonPathKey, result.substring(2, result.length() - 2));
+                    String result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultStrings);
+                    //String result = resultStrings.toString();
+                    resultsMap.put(jsonPathKey, result);
+//                    resultsMap.put(jsonPathKey, result.substring(2, result.length() - 2));
                 }
             } catch (Exception e) {
                 log.warn("Error in trying to match variables from result. jspnpath:{} - result: {}", jsonPathKey, resultToParse);
