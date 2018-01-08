@@ -91,7 +91,7 @@ public class MyWriteRunnable implements Runnable {
                     }
                 }
 //            log.trace("Returned result: " + result);
-                if (result.startsWith("StatusCode:")) {
+                if (result == null || result.startsWith("StatusCode:")) {
                     loadTestResult.setTest_success(false);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ") -");
                 } else {
