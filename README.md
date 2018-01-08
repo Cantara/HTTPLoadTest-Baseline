@@ -74,6 +74,8 @@ Started: 02/01-2018  14:42:50  Now: 02/01-2018  14:43:02  Running for 117 second
    22 write tests resulted in 22 successful runs where 0 was marked as deviation(s).
     0 unmarked tests resulted in 0 successful runs where 0 was marked as deviation(s).
   225 total tests resulted in 224 successful runs where 1 was marked as deviation(s).
+ 1335 ms mean duraction for successful read tests, 1884 ms ninety percentile successful read tests 
+ 4749 ms mean duraction for successful write tests, 1863 ms ninety percentile successful write tests 
 ```
 
 If we look at the example output above, we see that we have a load-test with a read/write ratio of 90, 
