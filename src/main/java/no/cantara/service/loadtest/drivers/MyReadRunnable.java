@@ -96,9 +96,15 @@ public class MyReadRunnable implements Runnable {
                     }
                 }
 //            log.trace("Returned result: " + result);
-                resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
-                log.debug("Resolved variables: {}", resolvedResultVariables);
-                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ")");
+                if (result.startsWith("StatusCode:")) {
+                    loadTestResult.setTest_success(false);
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
+                } else {
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ")");
+                    log.debug("Resolved variables: {}", resolvedResultVariables);
+                    resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
+                }
+
             }
         }
 

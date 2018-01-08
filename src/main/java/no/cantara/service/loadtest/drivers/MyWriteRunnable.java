@@ -90,9 +90,15 @@ public class MyWriteRunnable implements Runnable {
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + max50(result) + ")");
                     }
                 }
-                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ")");
-//            log.debug("Returned result: " + result);
-                resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
+//            log.trace("Returned result: " + result);
+                if (result.startsWith("StatusCode:")) {
+                    loadTestResult.setTest_success(false);
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + max50(result) + ")");
+                } else {
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + max50(result) + ")");
+                    log.debug("Resolved variables: {}", resolvedResultVariables);
+                    resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
+                }
             }
         }
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
