@@ -33,7 +33,7 @@ public class LoadTestResultTest {
         String csvstring = csvMapper.writer(csvSchema).writeValueAsString(resultList);
 //        String csvstring2 = csvMapper.writeValueAsString(resultList);
 
-        assertTrue(csvstring.contains("56"));
+        assertTrue(csvstring.contains("90"));
     }
 
 
