@@ -116,8 +116,8 @@ public class TestSpecification {
             String authString = name + ":" + password;
             System.out.println("auth string: " + authString);
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            String authStringEnc = new String(authEncBytes);
-//            String authStringEnc = "Basic " + new String(authEncBytes);
+//            String authStringEnc = new String(authEncBytes);
+            String authStringEnc = "Basic " + new String(authEncBytes);
             return authStringEnc;
 
         }
