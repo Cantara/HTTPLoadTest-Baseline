@@ -64,6 +64,9 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
 
     @Override
     protected String dealWithFailedResponse(String responseBody, int statusCode) {
+        if (statusCode < 300 && statusCode >= 200) {
+            return responseBody;
+        }
         return "StatusCode:" + statusCode + ":" + responseBody;
     }
 
