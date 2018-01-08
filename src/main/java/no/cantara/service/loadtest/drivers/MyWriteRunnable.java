@@ -56,13 +56,16 @@ public class MyWriteRunnable implements Runnable {
 
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
         Map<String, String> resolvedResultVariables = new HashMap<>();
+        Map<String, String> inheritedVariables = new HashMap<>();
 
         int writeCommandNo = 1;
         for (TestSpecification testSpecification : testSpecificationList) {
             testSpecification.loadTemplateReference();
+            testSpecification.addMapToCommand_replacement_map(inheritedVariables);
             testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
             testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), resolvedResultVariables));
             testSpecification.setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), resolvedResultVariables));
+            inheritedVariables = testSpecification.getCommand_replacement_map();
 
 
             if (testSpecification.getCommand_url().length() > 0) {
