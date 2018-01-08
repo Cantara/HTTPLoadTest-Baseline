@@ -1,38 +1,20 @@
 package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import no.cantara.base.command.BaseHttpPostHystrixCommand;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
 import java.util.Random;
 
-public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand<String> {
+public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
 
     String uri;
     String contentType = "text/xml;charset=UTF-8";
     static Random r = new Random();
 
     String httpAuthorizationString;
-    String template = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:aut=\"http://dbonline.no/webservices/xsd/Autorisasjon\" xmlns:per=\"http://dbonline.no/webservices/xsd/PersonInfo\">\n" +
-            "   <soapenv:Header>\n" +
-            "      <aut:UserAuthorization>\n" +
-            "         <UserID>#BrukerID</UserID>\n" +
-            "         <Passord>#Passord</Passord>\n" +
-            "         <EndUser>MyEndUserName</EndUser>\n" +
-            "         <Versjon>v1-1-0</Versjon>\n" +
-            "     </aut:UserAuthorization>\n" +
-            "   </soapenv:Header>\n" +
-            "   <soapenv:Body>\n" +
-            "      <per:GetPerson>\n" +
-            "         <Internref>XYZXYZXYZXYZ</Internref>\n" +
-            "         <NameAddress>1</NameAddress>\n" +
-            "         <InterestCode>1</InterestCode>\n" +
-            "         <Beta>Detaljer</Beta>\n" +
-            "      </per:GetPerson>\n" +
-            "   </soapenv:Body>\n" +
-            "</soapenv:Envelope>\n";
+    String template = "";
 
 
     public CommandPostFromTestSpecification(TestSpecification testSpecification) {
@@ -57,7 +39,9 @@ public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand
         if (template.contains("soapenv:Envelope")) {
             //request.getConnection().addRequestProperty("SOAPAction", SOAP_ACTION);
         }
+
         request.contentType(contentType).send(this.template);
+        log.trace(request.header("Authorization"));
         return request;
     }
 

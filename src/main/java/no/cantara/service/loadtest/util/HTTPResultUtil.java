@@ -64,7 +64,7 @@ public class HTTPResultUtil {
         return resultsMap;
     }
 
-    public static String max50(String s) {
+    public static String first50(String s) {
         if (s == null) {
             return s;
         }

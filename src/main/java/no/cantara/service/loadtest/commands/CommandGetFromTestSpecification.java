@@ -57,6 +57,7 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
         }
 
         request.contentType(contentType).send(this.template);
+        log.trace(request.header("Authorization"));
         return request;
     }
 

@@ -115,4 +115,28 @@ public class CommandPostFromTestSpecificationTest {
 
     }
 
+    @Test
+    public void testDefaultConfigCommandPostFromStringTestSpecification() throws Exception {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
+        List<TestSpecification> readTestSpec = new ArrayList<>();
+        readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+        });
+        for (TestSpecification testSpecification : readTestSpec) {
+            assertTrue(testSpecification.getCommand_url().length() > 0);
+            log.trace("Calling {}", testSpecification.getCommand_url());
+            String result;
+            if (testSpecification.isCommand_http_post()) {
+                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification);
+                result = commandPostFromTestSpecification.execute();
+                log.trace("" + commandPostFromTestSpecification.isCircuitBreakerOpen());
+            } else {
+                result = new CommandGetFromTestSpecification(testSpecification).execute();
+            }
+            log.debug("Returned result: " + result);
+            //assertTrue(result.length() > 0);
+        }
+    }
+
 }
