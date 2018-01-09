@@ -2,8 +2,8 @@
 
 ##### Status
 
-[![GitHub release](https://img.shields.io/github/release/Cantara/HTTPLoadTest-Baseline/)](https://GitHub.com/Cantara/HTTPLoadTest-Baseline//releases/)
-![Build Status](https://jenkins.capraconsulting.no/buildStatus/icon?job=Cantara-HTTPLoadTest-baseline) - [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)    [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
+![Build Status](https://jenkins.capraconsulting.no/buildStatus/icon?job=Cantara-HTTPLoadTest-baseline) - 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)    [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
 
 
 HTTPLoadTest-Baseline is simple starting point for building LoadTests to be used for continous deploy/continous production QA pipelines.  Baseline projects are meant to be a git clone 
