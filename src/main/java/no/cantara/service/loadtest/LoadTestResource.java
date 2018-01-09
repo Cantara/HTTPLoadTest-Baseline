@@ -146,8 +146,8 @@ public class LoadTestResource {
     @Path("/form/select")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updatSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
-        log.trace("Invoked updatSelectedTestSpecificationForm with {}", testSpecificationNumber);
+    public Response updateSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
+        log.trace("Invoked updateSelectedTestSpecificationForm with {}", testSpecificationNumber);
 
         String jsonResponse = "";
         try {
