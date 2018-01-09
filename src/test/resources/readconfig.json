@@ -5,10 +5,10 @@
     "command_http_authstring": null,
     "command_http_post": false,
     "command_timeout_milliseconds": 2000,
-    "command_template": "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#Passord\\\",\n  \\\"admin\\\": true\n}",
+    "command_template": "{\n  \\\"sub\\\": \\\"#UserID\\\",\n  \\\"name\\\": \\\"#Password\\\",\n  \\\"admin\\\": true\n}",
     "command_replacement_map": {
-      "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
+      "#Password": "TestPassword",
+      "#UserID": "TestUser"
     },
     "command_response_map": {
       "#randomizeName": "$..test_randomize_sleeptime",
@@ -21,10 +21,9 @@
     "command_http_authstring": "Basic ZGV2ZWxvcG1lbnQtbWVkaWNhdGlvbjoxT09jTEpoR01oSyMxMHUhRDMzUw==",
     "command_timeout_milliseconds": 5000,
     "command_contenttype": "application/json",
-    "command_template": "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#fizzle(chars:replaceMe)\\\",\n  \\\"admin\\\": true\n}",
+    "command_template": "{\n  \\\"sub\\\": \\\"#TID\\\",\n  \\\"name\\\": \\\"#fizzle(chars:replaceMe)\\\",\n  \\\"admin\\\": true\n}",
     "command_replacement_map": {
-      "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
+      "#TID": "#fizzle(option:yes, no, here, there)"
     },
     "command_response_map": {
       "#randomizeName": "$..test_randomize_sleeptime",
