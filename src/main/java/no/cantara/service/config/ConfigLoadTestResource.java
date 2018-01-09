@@ -157,8 +157,12 @@ public class ConfigLoadTestResource {
         String optionString = "";
         for (int n = 0; n < configuredTestSpecifications.size() / 2; n++) {
             int displayvalue = 1 + n;
-            String displayname = Configuration.getString("TestSpecification." + displayvalue + ".displayname");
-            optionString = optionString + "        <option value=\"" + displayvalue + "\">" + displayname + "(" + displayvalue + ")" + "</option>";
+            String displayname = Configuration.getString("TestSpecification." + displayvalue + ".displayname") +
+                    "   (" + displayvalue +
+                    " [read:" + Configuration.getString("TestSpecification." + displayvalue + ".read.filename") +
+                    ":write:" + Configuration.getString("TestSpecification." + displayvalue + ".write.filename") +
+                    "])";
+            optionString = optionString + "        <option value=\"" + displayvalue + "\">" + displayname + "</option>";
         }
 
         String response =
