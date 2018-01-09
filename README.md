@@ -182,17 +182,11 @@ From the example above, we can see use of several of HTTPLoadTest features. The 
 to replace parts of an URL or parts of an HTTP payload. The command_response_map consist of JsonPath expression which is matched against the response and put into the
 corresponding named variable. These gererated variables can then be used in consequitive commands alond with the variables in the command_replacement_map. If you need 
 a list as a result, you might find the #fizzle(option:#testName) feature handy. This will pick a random value from the returned response and substitute it in the next
-command.  As of now, only simple, pre-calculated http badic-auth is supported.
+command.  As of now, only http badic-auth is supported. You can use pre-calculated  and "username/password" is supported.
 
 
 
-
-
-
-
-
-
-#### Template special operations
+#### Template (command_template) and URL (command_url) special operations
 
 ```jshelllanguage
 #fizzle(chars:replaceMe)                          =>  tEftohTdS
