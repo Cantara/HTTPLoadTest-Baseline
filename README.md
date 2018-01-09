@@ -119,8 +119,8 @@ which mean that we have almost 10 times more runs of the read TestConfiguration 
 In this run, we have recorded one failed read run, which was a result of a timeout. (If we got non 2xx HTTP codes, the result would be failed test.)
 
 
-Note: The test_read_write_ratio has to be between 1 (%) and 99 (%) as of now, since we have some special-handling for values outside that
-scope. If you want to expoerience running a single test at a time, you can add the same testSpecification as both read-testSpecification and 
+Note: The test_read_write_ratio has to be between 1 (%) and 100 (%) as of now, since we have some special-handling for values outside that
+range. If you want to experience running a single test at a time, you can add the same testSpecification as both read-testSpecification and 
 write-TestSpecification to archieve the same result.
 
 
@@ -211,6 +211,11 @@ between the different simulated scenarios.
 #fizzle(option:yes, no, here, there)              =>  here
 ```
 
+
+Tip: A very useful tip when you are building and testing TestSpecifications is to visit the /health endpoint, as it will display specifications with the
+variables resolved so you can verify that the replacement is what you wanted it to be.
+
+
 ### Example on write test specification
 ```json
 
@@ -259,7 +264,7 @@ TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.j
 TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
 ```
 
-#### If you want global variables, you might add something like this to ./config_override/application_override.properties
+#### If you want completely global variables, you might add something like this to ./config_override/application_override.properties
 ```properties
 GlobalVariable.1.name=#TestMe
 GlobalVariable.1.value={per, ola, petter}
