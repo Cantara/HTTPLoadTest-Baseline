@@ -88,7 +88,8 @@ public class TestSpecification {
 
     public void addMapToCommand_replacement_map(Map<String, String> map_to_add) {
 
-        map_to_add.forEach(this.command_replacement_map::putIfAbsent);
+        //map_to_add.forEach(this.command_replacement_map::putIfAbsent);
+        this.command_replacement_map.putAll(map_to_add);
         //this.command_replacement_map.putAll(Maps.difference(command_replacement_map, map_to_add).entriesOnlyOnLeft());
     }
 
