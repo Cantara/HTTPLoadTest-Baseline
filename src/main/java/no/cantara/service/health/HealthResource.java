@@ -30,11 +30,16 @@ public class HealthResource {
     @GET
     public Response healthCheck() {
         log.trace("healthCheck");
-        String response = String.format("{ \"HTTPLoadTest-health\": \"OK\", \n\"version\": \"%s\", \n\"now\":\"%s\", \n\"running since\": \"%s\", \n\n\"statistics\": \n\"%s\", \n\n\"readTestSpecification\": \n\"%s\", \n\n\"writeTestSpecification\": \n\"%s\"}",
+        String resultsJson = "running";
+        if (!LoadTestExecutorService.isRunning()) {
+            resultsJson = LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
+        }
+        String response = String.format("{ \"HTTPLoadTest-health\": \"OK\", \n\"version\": \"%s\", \n\"now\":\"%s\"," +
+                        " \n\"running since\": \"%s\", \n\n\"statistics\": \n\"%s\", \n\n\"readTestSpecification\": \n\"%s\", \n\n\"writeTestSpecification\": \n\"%s\"}",
                 getVersion(),
                 Instant.now(),
                 getRunningSince(),
-                LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList()),
+                resultsJson,
                 LoadTestExecutorService.getReadTestSpecificationListJson(),
                 LoadTestExecutorService.getWriteTestSpecificationListJson());
         return Response.ok(response).build();
