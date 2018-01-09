@@ -192,7 +192,7 @@ command.  As of now, only http badic-auth is supported. You can use pre-calculat
 
 #### Template (command_template) and URL (command_url) special operations
 
-```jshelllanguage
+```properties
 #fizzle(chars:replaceMe)                          =>  tEftohTdS
 #fizzle(digits:67643)                             =>  32632
 #fizzle(U_chars:(TEST)                            =>  WRVY
@@ -288,7 +288,7 @@ Open in browser:
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
 * To configure the read-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/read   
 * To configure the write-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/write   
-* To select between pre-configured TestSpecificationsr: http://localhost:8086/HTTPLoadTest-baseline/config/select
+* To select between pre-configured TestSpecifications sets: http://localhost:8086/HTTPLoadTest-baseline/config/select
 
 
 ### Work-in-progress - nice vizualisation of running loadtests
