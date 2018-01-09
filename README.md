@@ -122,6 +122,13 @@ HTTP requests and internal threads.
 
 ![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/TestSpecificationExecutionFlow.png)
 
+The diagram try to show how a TestSpecification consists of a chain of Comands(HTTP-requests), which all report to a TestResult. The commands use a variable-map
+to replace tags/markers in the command-specification for URL and template to give you flexibility to control parameters++. The result (HTTP-response) is
+parsed with the instructions in the command_response_map and the value of this parsing is put into the named variable in the same map. These calculated variables
+is then added to the command_replacement_map to the next command. The next command also inherit the map from the previos step to ensure you have the same
+variable from thinks like options/set selections.
+
+
 ```json
 [ {
   "command_url" : "https://gmail.com",
