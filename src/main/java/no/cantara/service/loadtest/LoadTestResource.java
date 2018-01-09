@@ -150,11 +150,12 @@ public class LoadTestResource {
         log.trace("Invoked updateSelectedTestSpecificationForm with {}", testSpecificationNumber);
 
         String jsonResponse = "";
+        Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
         try {
-            Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
+                    log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
                     InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> readTestSpec = new ArrayList<>();
                     readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
@@ -163,10 +164,11 @@ public class LoadTestResource {
 
                     jsonResponse = "[{\"Read_TestSpecification\": \n" + loadTestJson + "}";
                     LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
-                    log.trace("Loaded Configured TestSpecification: {}", configuredTests.get(testSpecificationEntry));
+                    log.info("Loaded Configured TestSpecification: {}", configuredTests.get(testSpecificationEntry));
                 }
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
 //                    File file = new File(configuredTests.get(testSpecificationEntry));
+                    log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
                     InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> writeTestSpec = new ArrayList<>();
                     writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
@@ -176,12 +178,12 @@ public class LoadTestResource {
                     jsonResponse = jsonResponse + ",{\n\n\"Write_TestSpecification\": \n" + loadTestJson + "}]";
 
                     LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
-                    log.trace("Loaded Configured TestSpecification: {}, filaame:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
+                    log.info("Loaded Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
                 }
             }
             return Response.ok(jsonResponse).build();
         } catch (Exception e) {
-            log.warn("Could not convert to Json {}", testSpecificationNumber.toString());
+            log.warn("Could not convert to Json, selected preconfigured set number {}", testSpecificationNumber.toString());
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
