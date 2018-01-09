@@ -111,7 +111,7 @@ public class MyReadRunnable implements Runnable {
                 } else {
                     loadTestResult.setTest_success(true);
                     resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
-                    log.debug("Resolved variables: {}", resolvedResultVariables);
+                    log.info("Resolved variables: {}", resolvedResultVariables);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Res(" + resolvedResultVariables + ") - ");
                 }
 

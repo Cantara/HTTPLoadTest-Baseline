@@ -69,7 +69,7 @@ public class MyWriteRunnable implements Runnable {
 
 
             if (testSpecification.getCommand_url().length() > 0) {
-                log.debug("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
+                log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
                 loadTestResult.setTest_success(false);
                 loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + "/" + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
                 String result;
@@ -104,7 +104,7 @@ public class MyWriteRunnable implements Runnable {
                     loadTestResult.setTest_success(true);
                     resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Res(" + resolvedResultVariables + ") - ");
-                    log.debug("Resolved variables: {}", resolvedResultVariables);
+                    log.info("Resolved variables: {}", resolvedResultVariables);
                 }
             }
         }
