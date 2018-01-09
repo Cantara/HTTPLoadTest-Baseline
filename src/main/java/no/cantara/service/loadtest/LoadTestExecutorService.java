@@ -165,6 +165,8 @@ public class LoadTestExecutorService {
         }
         log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", activeLoadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, activeLoadTestConfig.getTest_duration_in_seconds());
         isRunning = false;
+        stopTime = System.currentTimeMillis();
+        threadsScheduled = 0;
         threadExecutor.shutdown();
     }
 
@@ -419,7 +421,9 @@ public class LoadTestExecutorService {
 
 
     private static synchronized void reduceThreadsScheduled() {
-        threadsScheduled = threadsScheduled - 1;
+        if (threadsScheduled > 0) {
+            threadsScheduled = threadsScheduled - 1;
+        }
     }
 
 
