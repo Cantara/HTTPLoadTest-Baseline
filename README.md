@@ -1,11 +1,11 @@
-# HTTPLoadTest-baseline
+# HTTPLoadTest-Baseline
 
 ##### Status
 
 ![Build Status](https://jenkins.capraconsulting.no/buildStatus/icon?job=Cantara-HTTPLoadTest-baseline) - [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)    [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
 
 
-HTTPLoadTest-baseline is simple starting point for building LoadTests to be used for continous deploy/continous production QA pipelines.  Baseline projects are meant to be a git clone 
+HTTPLoadTest-Baseline is simple starting point for building LoadTests to be used for continous deploy/continous production QA pipelines.  Baseline projects are meant to be a git clone 
 starting point for for software which are expected to grow and flourish in different ways which are not easy to parameterize in early stages. It should be 
 useable for quite a few settings, but is expected to grow in different directions. We would love to receive pull-request for enhancements both on current 
 codebase and extensibillity features.
@@ -16,7 +16,7 @@ fulfill you needs/requirements.  The main goal for this codebase is to simplify 
 compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
 Company's continous CI/CD processes.
 
-We have built HTTPLoadTest-baseline on an underlaying cicuit-breaker framework called hystrix and timed execution blocks to avoid any blocking or dangeling 
+We have built HTTPLoadTest-Baseline on an underlaying cicuit-breaker framework called hystrix and timed execution blocks to avoid any blocking or dangeling 
 HTTP requests and internal threads.
 
 Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase 
