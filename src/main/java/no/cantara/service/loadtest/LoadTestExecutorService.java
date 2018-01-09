@@ -309,7 +309,7 @@ public class LoadTestExecutorService {
                     }
                     if (loadTestResult.isTest_success()) {
                         w_success++;
-                        w_duration = r_duration + loadTestResult.getTest_duration();
+                        w_duration = w_duration + loadTestResult.getTest_duration();
                         w_times.add(loadTestResult.getTest_duration());
                     }
 
