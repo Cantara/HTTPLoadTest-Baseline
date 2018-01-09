@@ -333,7 +333,7 @@ public class LoadTestExecutorService {
                 stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
 
             } else {
-                stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Ran for " + df.format(new Date(stopTime)) + " seconds.\n";
+                stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Ran for " + (nowTimestamp - startTime) + " seconds.\n";
 
             }
 
