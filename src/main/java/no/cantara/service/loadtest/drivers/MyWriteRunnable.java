@@ -62,6 +62,7 @@ public class MyWriteRunnable implements Runnable {
         for (TestSpecification testSpecification : testSpecificationList) {
             testSpecification.loadTemplateReference();
             testSpecification.addMapToCommand_replacement_map(inheritedVariables);
+            testSpecification.addMapToCommand_replacement_map(loadTestConfig.getTest_global_variables_map());
             testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
             testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), resolvedResultVariables));
             testSpecification.setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), resolvedResultVariables));

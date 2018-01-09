@@ -61,6 +61,7 @@ public class MyReadRunnable implements Runnable {
         for (TestSpecification testSpecification : testSpecificationList) {
             testSpecification.loadTemplateReference();
             testSpecification.addMapToCommand_replacement_map(inheritedVariables);
+            testSpecification.addMapToCommand_replacement_map(loadTestConfig.getTest_global_variables_map());
             testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
             log.debug("Active variables: {}", testSpecification.getCommand_replacement_map());
             testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), resolvedResultVariables));

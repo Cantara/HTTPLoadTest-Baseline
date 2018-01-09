@@ -1,6 +1,7 @@
 package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestSpecification {
     private String command_url;
@@ -153,6 +155,7 @@ public class TestSpecification {
 
         }
     }
+
     @Override
     public String toString() {
         return "TestSpecification{" +

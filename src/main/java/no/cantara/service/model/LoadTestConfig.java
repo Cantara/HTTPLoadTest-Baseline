@@ -1,11 +1,15 @@
 package no.cantara.service.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoadTestConfig {
     private String test_id;
@@ -16,6 +20,7 @@ public class LoadTestConfig {
     private int test_sleep_in_ms = 10;
     private boolean test_randomize_sleeptime = false;
     private int test_duration_in_seconds = 40;
+    private Map<String, String> test_global_variables_map = new HashMap<>();
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestConfig.class);
 
@@ -25,7 +30,8 @@ public class LoadTestConfig {
                           @JsonProperty("test_read_write_ratio") String test_read_write_ratio,
                           @JsonProperty("test_sleep_in_ms") String test_sleep_in_ms,
                           @JsonProperty("test_randomize_sleeptime") String test_randomize_sleeptime,
-                          @JsonProperty("test_duration_in_seconds") String test_duration_in_seconds) {
+                          @JsonProperty("test_duration_in_seconds") String test_duration_in_seconds,
+                          @JsonProperty("test_global_variables_map") Map<String, String> test_global_variables_map) {
         this.test_id = id;
         this.test_name = test_name;
         this.test_no_of_threads = Integer.valueOf(test_no_of_threads);
@@ -33,6 +39,7 @@ public class LoadTestConfig {
         this.test_sleep_in_ms = Integer.valueOf(test_sleep_in_ms);
         this.test_randomize_sleeptime = Boolean.parseBoolean(test_randomize_sleeptime);
         this.test_duration_in_seconds = Integer.valueOf(test_duration_in_seconds);
+        this.test_global_variables_map = test_global_variables_map;
 
     }
 
@@ -96,4 +103,14 @@ public class LoadTestConfig {
         this.test_duration_in_seconds = test_duration_in_seconds;
     }
 
+    public Map<String, String> getTest_global_variables_map() {
+        return test_global_variables_map;
+    }
+
+    public void setTest_global_variables_map(Map<String, String> test_global_variables_map) {
+        if (this.test_global_variables_map == null) {
+            this.test_global_variables_map = new HashMap<>();
+        }
+        this.test_global_variables_map = test_global_variables_map;
+    }
 }
