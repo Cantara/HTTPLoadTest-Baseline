@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class TestSpecificationLoaderTest {
         Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
         for (String testSpecificationEntry : configuredTests.keySet()) {
-            File file = new File(configuredTests.get(testSpecificationEntry));
+            InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
             List<TestSpecification> readTestSpec = new ArrayList<>();
             readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
             });
