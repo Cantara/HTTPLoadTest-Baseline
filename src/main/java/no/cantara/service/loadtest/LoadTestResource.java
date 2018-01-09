@@ -82,7 +82,7 @@ public class LoadTestResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response startLoadTestForm(@FormParam("jsonConfig") String json) {
-        log.trace("Invoked startLoadTest with {}", json);
+        log.trace("Invoked startLoadTestForm with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String testId = JsonPath.read(document, "$.test_id");
         if (testId == null) {
@@ -176,7 +176,7 @@ public class LoadTestResource {
                     jsonResponse = jsonResponse + ",{\n\n\"Write_TestSpecification\": \n" + loadTestJson + "}]";
 
                     LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
-                    log.trace("Loaded Configured TestSpecification: {}", configuredTests.get(testSpecificationEntry));
+                    log.trace("Loaded Configured TestSpecification: {}, filaame:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
                 }
             }
             return Response.ok(jsonResponse).build();
