@@ -148,20 +148,18 @@ variable from thinks like options/set selections.
   "command_timeout_milliseconds" : 5000,
   "command_template" : "",
   "command_replacement_map" : {
-    "#Passord" : "TestPassord",
-    "#BrukerID" : "TestBruker"
+    "#password" : "TestPassword",
+    "#UserID" : "TestUser"
   }
   },
   {
-  "command_url" : "http://test.tull.no/#MySite",
+  "command_url" : "http://test.me/#MySite",
   "command_contenttype" : "application/json",
   "command_http_authstring": "Basic ZGV2ZWxvcG1lbnQtbWVkaWNhdGlvbjoxT09jTEpoR01oSyMxMHUhRDMzUw==",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 5000,
-  "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(digits:67643)\\\",\n  \\\"name\\\": \\\"#BrukerID\\\",\n  \\\"admin\\\": true\n}",
+  "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(digits:67643)\\\",\n  \\\"name\\\": \\\"#UserID\\\",\n  \\\"admin\\\": true\n}",
   "command_replacement_map" : {
-    "#Passord" : "TestPassord",
-    "#BrukerID" : "TestBruker",
     "#MySite" : "demo"
   },
    "command_response_map" : {
@@ -205,16 +203,16 @@ command.  As of now, only simple, pre-calculated http badic-auth is supported.
   "command_timeout_milliseconds" : 5000,
   "command_template" : "",
   "command_replacement_map" : {
-    "#Passord" : "TestPassord",
-    "#BrukerID" : "User_#fizzle(HEX:3234)"
+    "#password" : "TestPassword",
+    "#UserID" : "TestUser"
   }
 }, {
-  "command_url" : "http://test.tull.no",
+  "command_url" : "http://test.me",
   "command_contenttype" : "application/json",
   "command_http_post" : true,
   "command_http_authstring": "username/password",
   "command_timeout_milliseconds" : 5000,
-  "command_template" : "FILE:./templates/my_test_tull_template.json",
+  "command_template" : "FILE:./templates/my_test_me_template.json",
   "command_replacement_map" : {
     "#Simulate" : "TestPassord",
     "#Name" : "#fizzle(option:Steve, Kate, Simon)"
