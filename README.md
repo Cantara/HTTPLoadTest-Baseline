@@ -151,37 +151,41 @@ variable from thinks like options/set selections.
 
 
 ```json
-[ {
-  "command_url" : "https://gmail.com",
-  "command_contenttype" : "text/html",
-  "command_http_post" : false,
-  "command_timeout_milliseconds" : 5000,
-  "command_template" : "",
-  "command_replacement_map" : {
-    "#password" : "TestPassword",
-    "#UserID" : "TestUser"
-  }
+[ 
+  {
+    "command_url" : "https://gmail.com",
+    "command_contenttype" : "text/html",
+    "command_http_post" : false,
+    "command_timeout_milliseconds" : 5000,
+    "command_template" : "",
+    "command_replacement_map" : {
+      "#password" : "TestPassword",
+      "#UserID" : "TestUser"
+    }
   },
   {
-  "command_url" : "http://test.me/#MySite",
-  "command_contenttype" : "application/json",
-  "command_http_authstring": "Basic ZGV2ZWxvcG1lbnQtbWVkaWNhdGlvbjoxT09jTEpoR01oSyMxMHUhRDMzUw==",
-  "command_http_post" : true,
-  "command_timeout_milliseconds" : 5000,
-  "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(digits:67643)\\\",\n  \\\"name\\\": \\\"#UserID\\\",\n  \\\"admin\\\": true\n}",
-  "command_replacement_map" : {
-    "#MySite" : "demo"
+    "command_url" : "http://test.me/#MySite",
+    "command_contenttype" : "application/json",
+    "command_http_authstring": "Basic ZGV2ZWxvcG1lbnQtbWVkaWNhdGlvbjoxT09jTEpoR01oSyMxMHUhRDMzUw==",
+    "command_http_post" : true,
+    "command_timeout_milliseconds" : 5000,
+    "command_template" : "{\n  \\\"sub\\\": \\\"#fizzle(digits:67643)\\\",\n  \\\"name\\\": \\\"#UserID\\\",\n  \\\"admin\\\": true\n}",
+    "command_replacement_map" : {
+      "#MySite" : "demo"
   },
-   "command_response_map" : {
-     "#randomizeName" : "$..test_randomize_sleeptime",
+    "command_response_map" : {
+      "#randomizeName" : "$..test_randomize_sleeptime",
       "#testName" : "$..test_name"
-  }
-} ]
+    }
+  } 
+]
 ```
 From the example above, we can see use of several of HTTPLoadTest features. The command_replacement_map is a supplied variable-set for the given command. This is used
 to replace parts of an URL or parts of an HTTP payload. The command_response_map consist of JsonPath expression which is matched against the response and put into the
-corresponding named variable. These gererated variables can then be used in consequitive commands alond with the variables in the command_replacement_map. If you need 
-a list as a result, you might find the #fizzle(option:#testName) feature handy. This will pick a random value from the returned response and substitute it in the next
+corresponding named variable. 
+
+The gererated variables can then be used in consequitive commands along with the variables in the command_replacement_map. If you need  a list as a result, you might 
+find the #fizzle(option:#variablename) feature handy. This will pick a random value from the returned response and substitute it in the next
 command.  As of now, only http badic-auth is supported. You can use pre-calculated  and "username/password" is supported.
 
 
@@ -200,32 +204,35 @@ command.  As of now, only http badic-auth is supported. You can use pre-calculat
 ### Example on write test specification
 ```json
 
-[ {
-  "command_url" : "https://gmail.com",
-  "command_contenttype" : "text/html",
-  "command_http_post" : false,
-  "command_timeout_milliseconds" : 5000,
-  "command_template" : "",
-  "command_replacement_map" : {
-    "#password" : "TestPassword",
-    "#UserID" : "TestUser"
-  }
-}, {
-  "command_url" : "http://test.me",
-  "command_contenttype" : "application/json",
-  "command_http_post" : true,
-  "command_http_authstring": "username/password",
-  "command_timeout_milliseconds" : 5000,
-  "command_template" : "FILE:./templates/my_test_me_template.json",
-  "command_replacement_map" : {
-    "#Simulate" : "TestPassord",
-    "#Name" : "#fizzle(option:Steve, Kate, Simon)"
-  },
-   "command_response_map" : {
-     "#randomizeName" : "$..test_randomize_sleeptime",
-     "#testName" : "$..test_name"
-  }
-} ]
+[
+  {
+    "command_url" : "https://gmail.com",  
+    "command_contenttype" : "text/html",
+    "command_http_post" : false,
+    "command_timeout_milliseconds" : 5000,
+    "command_template" : "",
+    "command_replacement_map" : {
+      "#password" : "TestPassword",
+      "#UserID" : "TestUser"
+    }
+  }, 
+  {
+    "command_url" : "http://test.me",
+    "command_contenttype" : "application/json",
+    "command_http_post" : true,
+    "command_http_authstring": "username/password",
+    "command_timeout_milliseconds" : 5000,
+    "command_template" : "FILE:./templates/my_test_me_template.json",
+    "command_replacement_map" : {
+      "#Simulate" : "TestPassord",
+      "#Name" : "#fizzle(option:Steve, Kate, Simon)"
+    },
+    "command_response_map" : {
+      "#randomizeName" : "$..test_randomize_sleeptime",
+      "#testName" : "$..test_name"
+    }
+  } 
+]
 ```
 
 In this example, we have included an example where we create a randomized BrukerID variable for each TestSpecification invocation to simulate
