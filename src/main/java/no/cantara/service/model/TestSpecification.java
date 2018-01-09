@@ -19,7 +19,7 @@ public class TestSpecification {
     private boolean command_http_post = false;
     private int command_timeout_milliseconds = 2000;
     private String command_template = "";
-    private Map<String, String> command_replacement_map = new HashMap<>();
+    private Map<String, String> command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
     private Map<String, String> command_response_map = new HashMap<>();
 
     private static final Logger log = LoggerFactory.getLogger(TestSpecification.class);
@@ -39,7 +39,8 @@ public class TestSpecification {
         this.command_timeout_milliseconds = Integer.valueOf(command_timeout_milliseconds);
         this.command_contenttype = command_contenttype;
         this.command_template = command_template;
-        this.command_replacement_map = command_replacement_map;
+        this.command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
+        addMapToCommand_replacement_map(command_replacement_map);
         this.command_response_map = command_response_map;
 
     }
@@ -74,14 +75,15 @@ public class TestSpecification {
 
     public Map<String, String> getCommand_replacement_map() {
         if (command_replacement_map == null) {
-            command_replacement_map = new HashMap<>();
+            command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
         }
 
         return command_replacement_map;
     }
 
     public void setCommand_replacement_map(Map<String, String> command_replacement_map) {
-        this.command_replacement_map = command_replacement_map;
+        this.command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
+        addMapToCommand_replacement_map(command_replacement_map);
     }
 
     public void addMapToCommand_replacement_map(Map<String, String> map_to_add) {

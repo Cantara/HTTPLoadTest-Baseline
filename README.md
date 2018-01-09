@@ -222,6 +222,14 @@ TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.j
 TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
 ```
 
+#### If you want global variables, you might add something like this to ./config_override/application_override.properties
+```properties
+GlobalVariable.1.name=#TestMe
+GlobalVariable.1.value={per, ola, petter}
+GlobalVariable.2.name=#SystemID
+GlobalVariable.2.value=PDC-10
+```
+
 # Protecting the LoadTest WebUI
 
 If you want to add basic authentication to HTTLLoadTest, just add the following to config_override/application_override.properties

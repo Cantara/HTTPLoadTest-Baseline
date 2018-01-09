@@ -21,7 +21,7 @@ public class TestSpecificationLoaderTest {
 
     @Test
     public void test_LoadspecificationsFromProperties() throws Exception {
-        Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpacificationFilenameMap();
+        Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
         for (String testSpecificationEntry : configuredTests.keySet()) {
             File file = new File(configuredTests.get(testSpecificationEntry));
@@ -37,6 +37,16 @@ public class TestSpecificationLoaderTest {
 
         }
     }
+
+    @Test
+    public void test_Global_command_replacement_map() throws Exception {
+        Map<String, String> globalVariableMap = TestSpecificationLoader.getGlobal_command_replacement_map();
+
+        for (String globalVariable : globalVariableMap.keySet()) {
+                log.trace("Loaded  global variable: {} - value:{}",globalVariable, globalVariableMap.get(globalVariable));
+            }
+
+        }
 
 
 }

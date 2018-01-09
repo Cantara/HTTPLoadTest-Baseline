@@ -151,7 +151,7 @@ public class LoadTestResource {
 
         String jsonResponse = "";
         try {
-            Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpacificationFilenameMap();
+            Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {

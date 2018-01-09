@@ -152,7 +152,7 @@ public class ConfigLoadTestResource {
 
         String jsonconfig = "{}";
 
-        Map<String, String> configuredTestSpecifications = TestSpecificationLoader.getPersistedTestSpacificationFilenameMap();
+        Map<String, String> configuredTestSpecifications = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
         String optionString = "";
         for (int n = 0; n < configuredTestSpecifications.size() / 2; n++) {
