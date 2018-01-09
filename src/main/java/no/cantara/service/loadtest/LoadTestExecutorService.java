@@ -99,7 +99,8 @@ public class LoadTestExecutorService {
 
     public static synchronized void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
-        threadsScheduled--;
+        reduceThreadsScheduled();
+
 //        LoadTestExecutorService.reduceThreadsScheduled();
 
         //log.info("ResultMapSize: {}", resultList.size());
@@ -390,11 +391,11 @@ public class LoadTestExecutorService {
                 //remove this if you do not want to cancel the job in progress
                 //or set the argument to 'false' if you do not want to interrupt the thread
                 future.cancel(true);
-                threadsScheduled--;
+                reduceThreadsScheduled();
                 throw e;
             } catch (ExecutionException e) {
                 //unwrap the root cause
-                threadsScheduled--;
+                reduceThreadsScheduled();
                 Throwable t = e.getCause();
                 if (t instanceof Error) {
                     throw (Error) t;
@@ -423,6 +424,8 @@ public class LoadTestExecutorService {
     private static synchronized void reduceThreadsScheduled() {
         if (threadsScheduled > 0) {
             threadsScheduled = threadsScheduled - 1;
+        } else {
+            threadsScheduled = 0;
         }
     }
 
