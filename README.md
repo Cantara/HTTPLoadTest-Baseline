@@ -106,6 +106,10 @@ If we look at the example output above, we see that we have a load-test with a r
 which mean that we have almost 10 times more runs of the read TestConfiguration than we have invocations of the write TestSpecification. 
 In this run, we have recorded one failed read run, which was a result of a timeout. (If we got non 2xx HTTP codes, the result would be failed test.)
 
+Note: The test_read_write_ratio has to be between 1 (%) and 99 (%) as of now, since we have some special-handling for values outside that
+scope. If you want to expoerience running a single test at a time, you can add the same testSpecification as both read-testSpecification and 
+write-TestSpecification to archieve the same result.
+
 
 ### Example on test invocation result
 ```json
@@ -124,6 +128,7 @@ In this run, we have recorded one failed read run, which was a result of a timeo
 This example show that we have received an HTTP 2xx code, but something unexpected happened and the response was marked as an deviation. The most 
 common cause of deviations in HTTPLoadTest is timeout, as we use an underlaying icuit-breaker framework called hystrix to avoid blocking and dangeling 
 HTTP requests and internal threads.
+
 
 
 
