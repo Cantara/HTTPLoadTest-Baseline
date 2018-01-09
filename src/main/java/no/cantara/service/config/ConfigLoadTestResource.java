@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +43,12 @@ public class ConfigLoadTestResource {
 
         try {
 
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource("DefaultLoadTestConfig.json").getFile());
+            //ClassLoader classLoader = getClass().getClassLoader();
+            //File file = new File(classLoader.getResource("DefaultLoadTestConfig.json").getFile());
+            InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
             LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
             jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
-            log.trace("Loaded defaultconfig: {}", jsonconfig);
+            log.trace("Loaded defaultConfig: {}", jsonconfig);
 
         } catch (Exception e) {
             log.error("Unable to read default configuration for LoadTest.", e);

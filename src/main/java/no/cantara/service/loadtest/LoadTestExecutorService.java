@@ -10,6 +10,7 @@ import no.cantara.service.loadtest.drivers.MyWriteRunnable;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
+import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,12 +42,12 @@ public class LoadTestExecutorService {
     static {
         try {
 
-            InputStream is = LoadTestExecutorService.class.getClassLoader().getResourceAsStream("DefaultReadTestSpecification.json");
+            InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
             readTestSpecificationList = mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
             });
             String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
             log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-            InputStream wis = LoadTestExecutorService.class.getClassLoader().getResourceAsStream("DefaultReadTestSpecification.json");
+            InputStream wis = Configuration.loadByName("DefaultReadTestSpecification.json");
 
             writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
             });
