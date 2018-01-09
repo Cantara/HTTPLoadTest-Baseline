@@ -7,11 +7,19 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
 
 
-A simple baseline for building LoadTests to be used for continous deploy/continous production QA pipelines.  Baseline projects are meant to be a git clone starting point for for software which are expected to grow and flourish in different ways which are not easy to parameterize in early stages. It should be useable for quite a few settings, but is expected to grow in different directions. We would love to receive pull-request for enhancements both on current codebase and extensibillity features.
+A simple baseline for building LoadTests to be used for continous deploy/continous production QA pipelines.  Baseline projects are meant to be a git clone 
+starting point for for software which are expected to grow and flourish in different ways which are not easy to parameterize in early stages. It should be 
+useable for quite a few settings, but is expected to grow in different directions. We would love to receive pull-request for enhancements both on current 
+codebase and extensibillity features.
 
-Why another load-test OpenSource project?  We think this is a reasonable question. There exist quite a few "full-fledged" alternatives. Our concern is that the uptake of those solutions are way below what the industry need, and this is an attempt to try to offer a different alternative which may or may not fulfill you needs/requirements. 
+Why another load-test OpenSource project?  We think this is a reasonable question. There exist quite a few "full-fledged" alternatives. Our concern is that 
+the uptake of those solutions are way below what the industry need, and this is an attempt to try to offer a different alternative which may or may not 
+fulfill you needs/requirements.  The main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continous investment into software development does not 
+compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
+Company's continous CI/CD processes.
 
-Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase the quality of produces software by making it less "expensive" to add this type of quality processes into your software development process.
+Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase 
+the quality of produces software by making it less "expensive" to add this type of quality processes into your software development process.
 
 #### The process-flow of load-testing
 
@@ -31,7 +39,10 @@ Open in browser:
 
 ### Example-oriented documentation to get familiar with the application
 
-Since the main goal for this codebase is to simplify Companies efforts in ensuring that a agile or continous investment into software development does not compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a Company's contonous CI/CD processes. This means that the application have two modi:  a) exploration modi - where you (as in any normal QA åprocess, can analyzy the load-characteristics of your application and b) easily add the baseline characteristics to the deployment QA pipelines.
+Since the main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continous investment into software development does not 
+compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
+Company's continous CI/CD processes. This means that the application have two modi:  a) exploration modi - where you (as in any normal QA åprocess, can 
+analyzy the load-characteristics of your application and b) easily add the baseline characteristics to the deployment QA pipelines.
 
 Let's have a look at the details...
 
