@@ -44,7 +44,7 @@ public class HTTPResultUtil {
 
     public static Map<String, String> parseWithJsonPath(String resultToParse, Map<String, String> jsonpaths) {
         Map<String, String> resultsMap = new HashMap<>();
-        if (resultToParse == null || jsonpaths == null || resultToParse.startsWith("StatusCode:")) {
+        if (resultToParse == null || resultToParse.length() < 1 || jsonpaths == null || resultToParse.startsWith("StatusCode:")) {
             log.trace("resultToParse was empty, so returning empty .");
             return resultsMap;
         }
