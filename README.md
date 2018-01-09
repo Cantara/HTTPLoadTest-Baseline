@@ -16,7 +16,7 @@ fulfill you needs/requirements.  The main goal for this codebase is to simplify 
 compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
 Company's continous CI/CD processes.
 
-We have built HTTPLoadTest-baseline on an underlaying cicuit-breaker framework called hystrix to avoid blocking and dangeling 
+We have built HTTPLoadTest-baseline on an underlaying cicuit-breaker framework called hystrix and timed execution blocks to avoid any blocking or dangeling 
 HTTP requests and internal threads.
 
 Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase 
