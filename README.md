@@ -267,7 +267,7 @@ login.admin.password=adminservice
 
 ```jshelllanguage
 mvn clean install
-java -jar target/HTTPLoadTest-baseline-0.9.2-SNAPSHOT.jar
+java -jar target/HTTPLoadTest-baseline-<version>-SNAPSHOT.jar
 wget http://localhost:8086/HTTPLoadTest-baseline/health
 wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/status             // return latest loadTests with status
@@ -275,6 +275,7 @@ wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/stop               // 
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus         // return alle the loadTest results in json
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv     // return alle the loadTest results in csv
 ```
+* version=0.19.3 
 
 Open in browser:  
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
