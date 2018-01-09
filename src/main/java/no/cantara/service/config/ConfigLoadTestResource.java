@@ -2,6 +2,7 @@ package no.cantara.service.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.model.TestSpecificationLoader;
@@ -78,19 +79,20 @@ public class ConfigLoadTestResource {
     public Response presentReadConfigUI() {
         log.trace("presentReadConfigUI");
 
-        String jsonreadconfig = "{}";
+        String jsonreadconfig = LoadTestExecutorService.getReadTestSpecificationListJson();
+        if (jsonreadconfig == null || jsonreadconfig.length() < 20) {
+            try {
 
-        try {
+                InputStream file = Configuration.loadByName("DefaultReadTestSpecification.json");
+                List<TestSpecification> readTestSpec = new ArrayList<>();
+                readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                });
+                jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
+                log.trace("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
 
-            InputStream file = Configuration.loadByName("DefaultReadTestSpecification.json");
-            List<TestSpecification> readTestSpec = new ArrayList<>();
-            readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
-            });
-            jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
-            log.trace("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-
-        } catch (Exception e) {
-            log.error("Unable to read default configuration for LoadTest.", e);
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
         }
 
         String response =
@@ -113,21 +115,23 @@ public class ConfigLoadTestResource {
     public Response presentWriteConfigUI() {
         log.trace("presentWriteConfigUI");
 
-        String jsonwriteconfig = "{}";
+        String jsonwriteconfig = LoadTestExecutorService.getWriteTestSpecificationListJson();
 
-        try {
+        if (jsonwriteconfig == null || jsonwriteconfig.length() < 20) {
+            try {
 
-            InputStream file = Configuration.loadByName("DefaultWriteTestSpecification.json");
-            List<TestSpecification> writeTestSpec = new ArrayList<>();
-            writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
-            });
-            jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
-            log.trace("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
+                InputStream file = Configuration.loadByName("DefaultWriteTestSpecification.json");
+                List<TestSpecification> writeTestSpec = new ArrayList<>();
+                writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                });
+                jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
+                log.trace("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
 
-        } catch (Exception e) {
-            log.error("Unable to read default configuration for LoadTest.", e);
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+
         }
-
         String response =
                 "<html>" +
                         "  <body>\n" +
