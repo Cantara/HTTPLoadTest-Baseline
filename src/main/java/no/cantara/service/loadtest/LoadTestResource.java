@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +155,7 @@ public class LoadTestResource {
 
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
-                    File file = new File(configuredTests.get(testSpecificationEntry));
+                    InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> readTestSpec = new ArrayList<>();
                     readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                     });
@@ -166,7 +166,8 @@ public class LoadTestResource {
                     log.trace("Loaded Configured TestSpecification: {}", configuredTests.get(testSpecificationEntry));
                 }
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
-                    File file = new File(configuredTests.get(testSpecificationEntry));
+//                    File file = new File(configuredTests.get(testSpecificationEntry));
+                    InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> writeTestSpec = new ArrayList<>();
                     writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                     });
