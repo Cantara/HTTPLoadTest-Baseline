@@ -39,8 +39,10 @@ Open in browser:
 
 Since the main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continous investment into software development does not 
 compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
-Company's continous CI/CD processes. This means that the application have two modi:  a) exploration modi - where you (as in any normal QA åprocess, can 
-analyzy the load-characteristics of your application and b) easily add the baseline characteristics to the deployment QA pipelines.
+Company's continous CI/CD processes. This means that the application have two modi:  
+* a) an exploration modi - where you (as in any normal QA åprocess, can 
+analyzy the load-characteristics of your application and 
+* b) easily add the baseline characteristics to the deployment QA pipelines.
 
 Let's have a look at the details...
 
