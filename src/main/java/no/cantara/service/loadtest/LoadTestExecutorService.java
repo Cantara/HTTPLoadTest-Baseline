@@ -45,19 +45,25 @@ public class LoadTestExecutorService {
     private static int threadPoolSize = 0;
 
     static {
-        InputStream xmlFileName = Configuration.loadByName("hazelcast.xml");
+
+        if (Configuration.getBoolean("loadtest.cluster")) {
+            InputStream xmlFileName = Configuration.loadByName("hazelcast.xml");
 //        log.info("Loaded hazelcast configuration :" + xmlFileName);
-        Config hazelcastConfig = new Config();
-                hazelcastConfig = new XmlConfigBuilder(xmlFileName).build();
-        //       log.info("Loading hazelcast configuration from :" + xmlFileName);
+            Config hazelcastConfig = new Config();
+            hazelcastConfig = new XmlConfigBuilder(xmlFileName).build();
+            //       log.info("Loading hazelcast configuration from :" + xmlFileName);
 
-        hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
-        HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
+            hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
+            HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
 
-        resultList = hazelcastInstance.getList("results");
-        log.info("Connecting to list {} - map size: {}", "results", resultList.size());
-        configMap = hazelcastInstance.getMap("configmap");
-        log.info("Connecting to map {} - map size: {}", "config", configMap.size());
+            resultList = hazelcastInstance.getList("results");
+            log.info("Connecting to list {} - map size: {}", "results", resultList.size());
+            configMap = hazelcastInstance.getMap("configmap");
+            log.info("Connecting to map {} - map size: {}", "config", configMap.size());
+        } else {
+            resultList = Collections.synchronizedList(unsafeList);
+            configMap = new HashMap<>();
+        }
         if (configMap.size() == 0) {
             try {
 
@@ -77,7 +83,6 @@ public class LoadTestExecutorService {
             } catch (Exception e) {
                 log.error("Unable to read default configuration for LoadTest.", e);
             }
-        } else {
             // Found other cluster nodes, loading speci from them
             getSpecFromMap();
         }
@@ -85,16 +90,21 @@ public class LoadTestExecutorService {
     }
 
     private static void getSpecFromMap() {
-        readTestSpecificationList = (List<TestSpecification>) configMap.get("readTestSpecificationList");
-        writeTestSpecificationList = (List<TestSpecification>) configMap.get("writeTestSpecificationList");
-        activeLoadTestConfig = (LoadTestConfig) configMap.get("activeLoadTestConfig");
+        if (Configuration.getBoolean("loadtest.cluster")) {
+            readTestSpecificationList = (List<TestSpecification>) configMap.get("readTestSpecificationList");
+            writeTestSpecificationList = (List<TestSpecification>) configMap.get("writeTestSpecificationList");
+            activeLoadTestConfig = (LoadTestConfig) configMap.get("activeLoadTestConfig");
+        }
     }
 
     private static void updateSpecMap() {
-        configMap.put("readTestSpecificationList", readTestSpecificationList);
-        configMap.put("writeTestSpecificationList", writeTestSpecificationList);
-        configMap.put("activeLoadTestConfig", activeLoadTestConfig);
+        if (Configuration.getBoolean("loadtest.cluster")) {
+            configMap.put("readTestSpecificationList", readTestSpecificationList);
+            configMap.put("writeTestSpecificationList", writeTestSpecificationList);
+            configMap.put("activeLoadTestConfig", activeLoadTestConfig);
+        }
     }
+
     public static List<TestSpecification> getReadTestSpecificationList() {
         return readTestSpecificationList;
     }
@@ -228,82 +238,82 @@ public class LoadTestExecutorService {
         while (isRunning) {
 
 
-                int chance = r.nextInt(100);
-                long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
-                if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * 10)) {
-                    // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
-                    // for long (endurance) loadtest runs
-                    log.info("MaxRunInMilliSeconds: {}, threadsScheduled: {}", maxRunTimeMs, threadsScheduled);
-                    if (read_ratio == 0) {
-                        String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
-                        LoadTestResult loadTestResult = new LoadTestResult();
-                        loadTestResult.setTest_id(loadTestConfig.getTest_id());
-                        loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                        loadTestResult.setTest_run_no(runNo++);
-                        Runnable worker = new MyRunnable(url, loadTestResult);
-                        threadsScheduled++;
-                        try {
-                            runWithTimeout(new Callable<String>() {
-                                @Override
-                                public String call() {
-                                    threadExecutor.execute(worker);
-                                    return "";
+            int chance = r.nextInt(100);
+            long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
+            if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * 10)) {
+                // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
+                // for long (endurance) loadtest runs
+                log.info("MaxRunInMilliSeconds: {}, threadsScheduled: {}", maxRunTimeMs, threadsScheduled);
+                if (read_ratio == 0) {
+                    String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
+                    LoadTestResult loadTestResult = new LoadTestResult();
+                    loadTestResult.setTest_id(loadTestConfig.getTest_id());
+                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                    loadTestResult.setTest_run_no(runNo++);
+                    Runnable worker = new MyRunnable(url, loadTestResult);
+                    threadsScheduled++;
+                    try {
+                        runWithTimeout(new Callable<String>() {
+                            @Override
+                            public String call() {
+                                threadExecutor.execute(worker);
+                                return "";
 
-                                }
-                            }, maxRunTimeMs, TimeUnit.MILLISECONDS);
-                        } catch (Exception e) {
-                            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
-                            LoadTestExecutorService.reduceThreadsScheduled();
-                        }
-
-//                    threadExecutor.execute(worker);
-
-                    } else if (chance <= read_ratio) {
-                        LoadTestResult loadTestResult = new LoadTestResult();
-                        loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
-                        loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                        loadTestResult.setTest_run_no(runNo++);
-                        Runnable worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult);
-                        threadsScheduled++;
-
-                        try {
-                            runWithTimeout(new Callable<String>() {
-                                @Override
-                                public String call() {
-                                    threadExecutor.execute(worker);
-                                    return "";
-                                }
-                            }, maxRunTimeMs, TimeUnit.MILLISECONDS);
-                        } catch (Exception e) {
-                            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
-                            LoadTestExecutorService.reduceThreadsScheduled();
-                        }
-//                    threadExecutor.execute(worker);
-
-                    } else {
-                        LoadTestResult loadTestResult = new LoadTestResult();
-                        loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
-                        loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                        loadTestResult.setTest_run_no(runNo++);
-                        Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
-                        threadsScheduled++;
-                        try {
-                            runWithTimeout(new Callable<String>() {
-                                @Override
-                                public String call() {
-                                    threadExecutor.execute(worker);
-                                    return "";
-                                }
-                            }, maxRunTimeMs, TimeUnit.MILLISECONDS);
-                        } catch (Exception e) {
-                            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
-                            LoadTestExecutorService.reduceThreadsScheduled();
-                        }
-//                    threadExecutor.execute(worker);
-
+                            }
+                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
+                    } catch (Exception e) {
+                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        LoadTestExecutorService.reduceThreadsScheduled();
                     }
+
+//                    threadExecutor.execute(worker);
+
+                } else if (chance <= read_ratio) {
+                    LoadTestResult loadTestResult = new LoadTestResult();
+                    loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
+                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                    loadTestResult.setTest_run_no(runNo++);
+                    Runnable worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult);
+                    threadsScheduled++;
+
+                    try {
+                        runWithTimeout(new Callable<String>() {
+                            @Override
+                            public String call() {
+                                threadExecutor.execute(worker);
+                                return "";
+                            }
+                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
+                    } catch (Exception e) {
+                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        LoadTestExecutorService.reduceThreadsScheduled();
+                    }
+//                    threadExecutor.execute(worker);
+
+                } else {
+                    LoadTestResult loadTestResult = new LoadTestResult();
+                    loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
+                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
+                    loadTestResult.setTest_run_no(runNo++);
+                    Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
+                    threadsScheduled++;
+                    try {
+                        runWithTimeout(new Callable<String>() {
+                            @Override
+                            public String call() {
+                                threadExecutor.execute(worker);
+                                return "";
+                            }
+                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
+                    } catch (Exception e) {
+                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        LoadTestExecutorService.reduceThreadsScheduled();
+                    }
+//                    threadExecutor.execute(worker);
+
                 }
             }
+        }
 
 
 //        }
