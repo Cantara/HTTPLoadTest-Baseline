@@ -1,13 +1,15 @@
 [
   {
     "command_url": "https://gmail.com",
+    "command_contenttype": "text/html",
+    "command_http_authstring": "",
     "command_http_post": false,
     "command_timeout_milliseconds": 5000,
-    "command_contenttype": "text/html",
-    "command_template": "",
+    "command_template": "test",
     "command_replacement_map": {
       "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
+      "#BrukerID": "TestBruker",
+      "#TestMe": "{per, ola, petter}"
     },
     "command_response_map": {
       "#randomizeName": "$..test_randomize_sleeptime",
@@ -15,14 +17,16 @@
     }
   },
   {
-    "command_url": "http://test.tull.no",
+    "command_url": "https://gmail.com",
+    "command_contenttype": "text/html",
+    "command_http_authstring": "",
     "command_http_post": true,
     "command_timeout_milliseconds": 5000,
-    "command_contenttype": "application/json",
-    "command_template": "{\n  \\\"sub\\\": \\\"#BrukerID\\\",\n  \\\"name\\\": \\\"#Passord\\\",\n  \\\"admin\\\": true\n}",
+    "command_template": "test",
     "command_replacement_map": {
       "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
+      "#BrukerID": "TestBruker",
+      "#TestMe": "{per, ola, petter}"
     },
     "command_response_map": {
       "#randomizeName": "$..test_randomize_sleeptime",

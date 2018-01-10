@@ -72,7 +72,7 @@ public class LoadTestExecutorService {
                 });
                 String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
                 log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-                InputStream wis = Configuration.loadByName("DefaultReadTestSpecification.json");
+                InputStream wis = Configuration.loadByName("DefaultWriteTestSpecification.json");
 
                 writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
                 });

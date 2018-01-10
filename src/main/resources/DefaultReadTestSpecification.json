@@ -1,18 +1,11 @@
 [
   {
-    "command_url": "https://gmail.com",
-    "command_http_post": false,
-    "command_http_authstring": "",
-    "command_timeout_milliseconds": 5000,
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/health",
     "command_contenttype": "text/html",
-    "command_template": "dummy",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 2000,
+    "command_template": "",
     "command_replacement_map": {
-      "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
-    },
-    "command_response_map": {
-      "#randomizeName": "$..test_randomize_sleeptime",
-      "#testName": "$..test_name"
     }
   }
 ]

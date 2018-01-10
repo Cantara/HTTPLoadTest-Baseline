@@ -1,18 +1,33 @@
 [
   {
     "command_url": "https://gmail.com",
-    "command_http_post": true,
-    "command_http_authstring": "",
-    "command_timeout_milliseconds": 5000,
     "command_contenttype": "text/html",
+    "command_http_authstring": "",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 5000,
     "command_template": "test",
     "command_replacement_map": {
-      "#Passord": "TestPassord",
-      "#BrukerID": "TestBruker"
+      "#Password": "TestPassword",
+      "#UserID": "TestUser",
+      "#TestMe": "{per, ola, petter}"
     },
     "command_response_map": {
       "#randomizeName": "$..test_randomize_sleeptime",
       "#testName": "$..test_name"
+    }
+  },
+  {
+    "command_url": "https://gmail.com",
+    "command_contenttype": "text/html",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 5000,
+    "command_template": "test",
+    "command_replacement_map": {
+    },
+    "command_response_map": {
+      "#randomizeName": "$..something",
+      "#testName": "$..more"
     }
   }
 ]

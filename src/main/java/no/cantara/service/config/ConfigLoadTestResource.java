@@ -120,9 +120,9 @@ public class ConfigLoadTestResource {
         if (jsonwriteconfig == null || jsonwriteconfig.length() < 20) {
             try {
 
-                InputStream file = Configuration.loadByName("DefaultWriteTestSpecification.json");
+                InputStream wfile = Configuration.loadByName("DefaultWriteTestSpecification.json");
                 List<TestSpecification> writeTestSpec = new ArrayList<>();
-                writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                writeTestSpec = mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
                 log.trace("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
