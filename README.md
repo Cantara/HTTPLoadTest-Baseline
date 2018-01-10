@@ -282,6 +282,8 @@ login.admin.user=admin
 login.admin.password=adminservice
 ```
 
+* [Clustering HTTPLoadTest-baseline](CLUSTERING.md)
+
 
 # Development and Contribution
 
