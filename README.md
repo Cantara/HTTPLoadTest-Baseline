@@ -24,7 +24,7 @@ the quality of produces software by making it less "expensive" to add this type 
 
 #### The process-flow of load-testing
 
-![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/HTTPLoadTest-FullProcessFlow.png)
+![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-FullProcessFlow.png)
 
 #### A quick intro/test-run
 
@@ -149,7 +149,7 @@ HTTP requests and internal threads.
 
 #### The flow of TestSpecification Execution
 
-![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/TestSpecificationExecutionFlow.png)
+![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/TestSpecificationExecutionFlow.png)
 
 The diagram try to show how a TestSpecification consists of a chain of Comands(HTTP-requests), which all report to a TestResult. The commands use a variable-map
 to replace tags/markers in the command-specification for URL and template to give you flexibility to control parameters++. The result (HTTP-response) is
@@ -314,7 +314,7 @@ Since the main use meant for HTTPLoadTest is in automated QA pipelines, we have 
 nice WebUI and result vizualizations. We hope to address this shortcoming some time in the future and will be glad 
 for any helping hands.
 
-![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/whiteboard-UI-config-mockup.jpg)
+![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/images/whiteboard-UI-config-mockup.jpg)
 
 
 ### Troubleshoting   
