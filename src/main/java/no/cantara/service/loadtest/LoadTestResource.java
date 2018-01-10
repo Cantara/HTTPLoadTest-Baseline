@@ -183,7 +183,7 @@ public class LoadTestResource {
             }
             return Response.ok(jsonResponse).build();
         } catch (Exception e) {
-            log.warn("Could not convert to Json, selected preconfigured set number {}", testSpecificationNumber.toString());
+            log.warn("Could not convert to Json, selected preconfigured set number {} \n{}", testSpecificationNumber.toString(), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
