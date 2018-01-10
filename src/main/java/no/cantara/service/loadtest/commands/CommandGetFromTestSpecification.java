@@ -56,7 +56,7 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
             //request.getConnection().addRequestProperty("SOAPAction", SOAP_ACTION);
         }
 
-        request.contentType(contentType).send(this.template);
+        request.contentType(contentType);  //.body(this.template);
         log.trace(request.header("Authorization"));
         return request;
     }
