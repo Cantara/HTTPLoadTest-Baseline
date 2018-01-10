@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.cantara.service</groupId>
     <artifactId>HTTPLoadTest-baseline</artifactId>
-    <version>0.22.2-SNAPSHOT</version>
+    <version>0.22.3-SNAPSHOT</version>
     <name>HTTPLoadTest-baseline</name>
     <url>https://wiki.cantara.no/</url>
 
