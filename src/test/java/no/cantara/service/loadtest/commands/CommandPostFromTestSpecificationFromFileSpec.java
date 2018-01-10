@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 
 public class CommandPostFromTestSpecificationFromFileSpec {
-    private final static Logger log = LoggerFactory.getLogger(CommandGetURLTest.class);
+    private final static Logger log = LoggerFactory.getLogger(CommandPostFromTestSpecificationFromFileSpec.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
