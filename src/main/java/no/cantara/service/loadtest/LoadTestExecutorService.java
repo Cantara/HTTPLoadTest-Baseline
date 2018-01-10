@@ -73,6 +73,7 @@ public class LoadTestExecutorService {
                 String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
                 log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
 
+                updateSpecMap();
             } catch (Exception e) {
                 log.error("Unable to read default configuration for LoadTest.", e);
             }
