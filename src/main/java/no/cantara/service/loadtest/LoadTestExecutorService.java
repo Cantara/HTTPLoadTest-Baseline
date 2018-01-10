@@ -18,7 +18,6 @@ import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,7 +28,7 @@ public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static List<LoadTestResult> unsafeList = new ArrayList<>();
-    private static List<LoadTestResult> resultList = Collections.synchronizedList(unsafeList);
+    private static List<LoadTestResult> resultList;// = Collections.synchronizedList(unsafeList);
     private static List<TestSpecification> readTestSpecificationList;
     private static List<TestSpecification> writeTestSpecificationList;
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -40,48 +39,61 @@ public class LoadTestExecutorService {
     private static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
     private static ExecutorService threadExecutor;
+    private static final Map<String, Object> configMap;
 
     private static int threadsScheduled = 0;
     private static int threadPoolSize = 0;
 
     static {
-        String xmlFileName = Configuration.loadByName("hazelcast.config").toString();
-        log.info("Loaded hazelcast configuration :" + xmlFileName);
+        InputStream xmlFileName = Configuration.loadByName("hazelcast.xml");
+//        log.info("Loaded hazelcast configuration :" + xmlFileName);
         Config hazelcastConfig = new Config();
-        if (xmlFileName != null && xmlFileName.length() > 10) {
-            try {
                 hazelcastConfig = new XmlConfigBuilder(xmlFileName).build();
-                log.info("Loading hazelcast configuration from :" + xmlFileName);
-            } catch (FileNotFoundException notFound) {
-                log.error("Error - not able to load hazelcast.xml configuration.  Using embedded configuration as fallback");
-            }
-        }
+        //       log.info("Loading hazelcast configuration from :" + xmlFileName);
 
         hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
         HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
 
         resultList = hazelcastInstance.getList("results");
-        log.info("Connecting to map {} - map size: {}", "results", resultList.size());
-        try {
+        log.info("Connecting to list {} - map size: {}", "results", resultList.size());
+        configMap = hazelcastInstance.getMap("configmap");
+        log.info("Connecting to map {} - map size: {}", "config", configMap.size());
+        if (configMap.size() == 0) {
+            try {
 
-            InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
-            readTestSpecificationList = mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
-            });
-            String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
-            log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-            InputStream wis = Configuration.loadByName("DefaultReadTestSpecification.json");
+                InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
+                readTestSpecificationList = mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
+                });
+                String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
+                log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
+                InputStream wis = Configuration.loadByName("DefaultReadTestSpecification.json");
 
-            writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
-            });
-            String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
-            log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
+                writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
+                });
+                String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
+                log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
 
-        } catch (Exception e) {
-            log.error("Unable to read default configuration for LoadTest.", e);
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+        } else {
+            // Found other cluster nodes, loading speci from them
+            getSpecFromMap();
         }
 
     }
 
+    private static void getSpecFromMap() {
+        readTestSpecificationList = (List<TestSpecification>) configMap.get("readTestSpecificationList");
+        writeTestSpecificationList = (List<TestSpecification>) configMap.get("writeTestSpecificationList");
+        activeLoadTestConfig = (LoadTestConfig) configMap.get("activeLoadTestConfig");
+    }
+
+    private static void updateSpecMap() {
+        configMap.put("readTestSpecificationList", readTestSpecificationList);
+        configMap.put("writeTestSpecificationList", writeTestSpecificationList);
+        configMap.put("activeLoadTestConfig", activeLoadTestConfig);
+    }
     public static List<TestSpecification> getReadTestSpecificationList() {
         return readTestSpecificationList;
     }
@@ -110,6 +122,8 @@ public class LoadTestExecutorService {
 
     public static void setReadTestSpecificationList(List<TestSpecification> readTestSpecificationList) {
         LoadTestExecutorService.readTestSpecificationList = readTestSpecificationList;
+        updateSpecMap();
+
     }
 
     public static List<TestSpecification> getWriteTestSpecificationList() {
@@ -118,6 +132,8 @@ public class LoadTestExecutorService {
 
     public static void setWriteTestSpecificationList(List<TestSpecification> writeTestSpecificationList) {
         LoadTestExecutorService.writeTestSpecificationList = writeTestSpecificationList;
+        updateSpecMap();
+
     }
 
     public static synchronized void addResult(LoadTestResult loadTestResult) {
@@ -144,7 +160,6 @@ public class LoadTestExecutorService {
     }
 
     public static synchronized void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
-
         /**
          * IExecutorService executor = hz.getExecutorService("executor");
          for (Integer key : map.keySet())
@@ -155,6 +170,7 @@ public class LoadTestExecutorService {
         HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
         loadTestRunNo++;
         activeLoadTestConfig = loadTestConfig;
+        updateSpecMap();
 
         long loadtestStartTimestamp = System.currentTimeMillis();
         isRunning = true;

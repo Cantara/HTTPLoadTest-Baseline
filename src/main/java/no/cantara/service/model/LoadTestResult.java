@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({"test_id", "test_name", "test_tags", "test_run_no", "test_duration", "test_success", "test_deviation_flag"})
-public class LoadTestResult {
+public class LoadTestResult implements Serializable {
     private String test_id;
     private String test_name;
     private String test_tags;

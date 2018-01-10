@@ -98,7 +98,7 @@ public class LoadTestResource {
             return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
 //            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
-            log.warn("Could not convert to Json {}", json.toString());
+            log.warn("/form Could not convert to Json {}, e", json.toString(), e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -117,7 +117,7 @@ public class LoadTestResource {
             LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
             return Response.ok(json).build();
         } catch (Exception e) {
-            log.warn("Could not convert to Json {}", json.toString());
+            log.warn("/form/read Could not convert to Json {},\n {e}", json.toString(), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
@@ -137,7 +137,7 @@ public class LoadTestResource {
             LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
             return Response.ok(json).build();
         } catch (Exception e) {
-            log.warn("Could not convert to Json {}", json.toString());
+            log.warn("/form/write Could not convert to Json {} \n{}", json.toString(), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
