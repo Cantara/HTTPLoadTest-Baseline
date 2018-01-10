@@ -1,3 +1,12 @@
+## Clustering HTTPLoadTest-Baseline
+
+We are in process of extending HTTPLoadTest-Baseline to support clustered deployments. This functionality should be
+considered to be in "early access" and to be used at your own risk. A HTTPLoadTest cluster will try to spread the load 
+(in practise the number of configured threads) evenly among the registered nodes.
+
+
+#### An example hazelcast.xml configuration for kubernetes deployments
+```xml
 <hazelcast xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://www.hazelcast.com/schema/config
                                http://www.hazelcast.com/schema/config/hazelcast-config-3.9.xsd"
@@ -28,3 +37,4 @@
         </join>
     </network>
 </hazelcast>
+```
