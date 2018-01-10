@@ -39,7 +39,7 @@ public class TestSpecification implements Serializable {
         this.command_url = command_url;
         this.command_http_post = Boolean.parseBoolean(command_http_post);
         this.command_http_authstring = command_http_authstring;
-        this.command_timeout_milliseconds = Integer.valueOf(command_timeout_milliseconds);
+        this.command_timeout_milliseconds = Integer.parseInt(command_timeout_milliseconds);
         this.command_contenttype = command_contenttype;
         this.command_template = command_template;
         this.command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();

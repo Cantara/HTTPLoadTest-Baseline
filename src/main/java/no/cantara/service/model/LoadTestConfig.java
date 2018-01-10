@@ -35,9 +35,9 @@ public class LoadTestConfig implements Serializable {
                           @JsonProperty("test_global_variables_map") Map<String, String> test_global_variables_map) {
         this.test_id = id;
         this.test_name = test_name;
-        this.test_no_of_threads = Integer.valueOf(test_no_of_threads);
-        this.test_read_write_ratio = Integer.valueOf(test_read_write_ratio);
-        this.test_sleep_in_ms = Integer.valueOf(test_sleep_in_ms);
+        this.test_no_of_threads = Integer.parseInt(test_no_of_threads);
+        this.test_read_write_ratio = Integer.parseInt(test_read_write_ratio);
+        this.test_sleep_in_ms = Integer.parseInt(test_sleep_in_ms);
         this.test_randomize_sleeptime = Boolean.parseBoolean(test_randomize_sleeptime);
         this.test_duration_in_seconds = Integer.valueOf(test_duration_in_seconds);
         this.test_global_variables_map = test_global_variables_map;

@@ -11,7 +11,7 @@ import java.util.Map;
 public class TemplateUtil {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateUtil.class);
-    public static final List<String> fizzleKeyList = new ArrayList<String>() {{
+    private static final List<String> fizzleKeyList = new ArrayList<String>() {{
         add("#fizzle(chars:");
         add("#fizzle(digits:");
         add("#fizzle(U_chars:");
