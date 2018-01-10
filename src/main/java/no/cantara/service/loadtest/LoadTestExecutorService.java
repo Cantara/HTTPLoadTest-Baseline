@@ -2,6 +2,10 @@ package no.cantara.service.loadtest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.config.Config;
+import com.hazelcast.config.XmlConfigBuilder;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.netflix.hystrix.HystrixCommandProperties;
 import no.cantara.service.Main;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
@@ -14,6 +18,7 @@ import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +45,23 @@ public class LoadTestExecutorService {
     private static int threadPoolSize = 0;
 
     static {
+        String xmlFileName = Configuration.loadByName("hazelcast.config").toString();
+        log.info("Loaded hazelcast configuration :" + xmlFileName);
+        Config hazelcastConfig = new Config();
+        if (xmlFileName != null && xmlFileName.length() > 10) {
+            try {
+                hazelcastConfig = new XmlConfigBuilder(xmlFileName).build();
+                log.info("Loading hazelcast configuration from :" + xmlFileName);
+            } catch (FileNotFoundException notFound) {
+                log.error("Error - not able to load hazelcast.xml configuration.  Using embedded configuration as fallback");
+            }
+        }
+
+        hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
+        HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
+
+        resultList = hazelcastInstance.getList("results");
+        log.info("Connecting to map {} - map size: {}", "results", resultList.size());
         try {
 
             InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
@@ -122,6 +144,12 @@ public class LoadTestExecutorService {
     }
 
     public static synchronized void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
+
+        /**
+         * IExecutorService executor = hz.getExecutorService("executor");
+         for (Integer key : map.keySet())
+         executor.executeOnKeyOwner(new YourBigTask(), key);
+         */
         unsafeList = new ArrayList<>();
         resultList = Collections.synchronizedList(unsafeList);
         HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
