@@ -194,7 +194,7 @@ corresponding named variable.
 
 The generated variables can then be used in consequitive commands along with the variables in the command_replacement_map. If you need  a list as a result, you might 
 find the #fizzle(option:#variablename) feature handy. This will pick a random value from the returned response and substitute it in the next
-command.  As of now, only http badic-auth is supported. You can use pre-calculated  and "username/password" is supported.
+command.  As of now, only http basic-auth is supported. You can use pre-calculated  and "username/password" or "username:password" is supported.
 
 Note: Please note that the variables are shared between the read TestSpesification and the write TestSpecification to allow sharing of data
 between the different simulated scenarios.
