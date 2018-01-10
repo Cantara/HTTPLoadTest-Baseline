@@ -2,6 +2,7 @@ package no.cantara.service.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
@@ -68,7 +69,8 @@ public class ConfigLoadTestResource {
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  </ul><br/><br/>" +
-                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a>" +
+                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
+                        "  HTTPLoadTest-Baseline "+ HealthResource.getVersion()+"<br/"+
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();
@@ -180,7 +182,8 @@ public class ConfigLoadTestResource {
                         "        <input type=\"submit\">" +
                         "    </form>" +
                         "  <br/><br/>" +
-                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a>" +
+                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/>" +
+                        "HTTPLoadTest-Baseline "+ HealthResource.getVersion()+"<br/"+
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();

@@ -1,6 +1,7 @@
 package no.cantara.service.health;
 
 import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +51,10 @@ public class HealthResource {
         return Instant.now().minus(uptimeInMillis, ChronoUnit.MILLIS).toString();
     }
 
-    private String getVersion() {
+    public static String getVersion() {
         Properties mavenProperties = new Properties();
         String resourcePath = "/META-INF/maven/no.cantara.service/HTTPLoadTest-baseline/pom.properties";
-        URL mavenVersionResource = this.getClass().getResource(resourcePath);
+        URL mavenVersionResource = Configuration.class.getResource(resourcePath);
         if (mavenVersionResource != null) {
             try {
                 mavenProperties.load(mavenVersionResource.openStream());
