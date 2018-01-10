@@ -126,6 +126,19 @@ public class TestSpecification {
             return authStringEnc;
 
         }
+        if (command_http_authstring != null && command_http_authstring.split(":").length == 2) {
+            String[] upfields = command_http_authstring.split(":");
+            String name = upfields[0];
+            String password = upfields[1];
+
+            String authString = name + ":" + password;
+            System.out.println("auth string: " + authString);
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+//            String authStringEnc = new String(authEncBytes);
+            String authStringEnc = "Basic " + new String(authEncBytes);
+            return authStringEnc;
+
+        }
         return command_http_authstring;
     }
 
