@@ -518,9 +518,10 @@ public class LoadTestExecutorService {
                     //   System.out.println("Directory " + listOfFiles[i].getName());
                 }
             }
+            return resultlistOfResults.substring(0, resultlistOfResults.length() - 2);
         } catch (Exception e) {
             log.error("Unable to look for resultfiles. ", e);
         }
-        return resultlistOfResults.substring(0, resultlistOfResults.length() - 2);
+        return resultlistOfResults;
     }
 }
