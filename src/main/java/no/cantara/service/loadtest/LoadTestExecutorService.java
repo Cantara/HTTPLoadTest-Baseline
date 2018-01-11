@@ -382,7 +382,7 @@ public class LoadTestExecutorService {
 
     public static synchronized String printStats(List<LoadTestResult> loadTestResults, boolean whileRunning) {
         long nowTimestamp = System.currentTimeMillis();
-        if (stopTime == 0 && ((nowTimestamp - startTime) / 1000) > activeLoadTestConfig.getTest_duration_in_seconds()) {
+        if (activeLoadTestConfig != null && stopTime == 0 && ((nowTimestamp - startTime) / 1000) > activeLoadTestConfig.getTest_duration_in_seconds()) {
             stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
         if (loadTestResults == null || (whileRunning = false && isRunning == true)) {
