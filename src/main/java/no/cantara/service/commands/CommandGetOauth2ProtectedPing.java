@@ -8,12 +8,10 @@ import java.net.URI;
 
 public class CommandGetOauth2ProtectedPing extends BaseHttpGetHystrixCommand<String> {
 
-    String uri;
 
     public CommandGetOauth2ProtectedPing(String uri) {
 
         super(URI.create(uri), "hystrixGroupKey");
-        this.uri = uri;
     }
 
 

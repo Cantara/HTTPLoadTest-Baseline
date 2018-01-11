@@ -15,7 +15,6 @@ public class CommandAuthorizeOAuth2Application extends BaseHttpPostHystrixComman
      */
 
 
-    private String uri;
     private String CLIENT_ID = "CLIENT_ID";
     private String CLIENT_SECRET = "CLIENT_SECRET";
     int retryCnt = 0;
@@ -23,7 +22,6 @@ public class CommandAuthorizeOAuth2Application extends BaseHttpPostHystrixComman
 
     public CommandAuthorizeOAuth2Application(String uri) {
         super(URI.create(uri), "hystrixGroupKey", 3000);
-        this.uri = uri;
     }
 
     @Override

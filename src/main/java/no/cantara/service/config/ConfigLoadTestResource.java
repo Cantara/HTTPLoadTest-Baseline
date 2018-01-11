@@ -86,8 +86,7 @@ public class ConfigLoadTestResource {
             try {
 
                 InputStream file = Configuration.loadByName("DefaultReadTestSpecification.json");
-                List<TestSpecification> readTestSpec = new ArrayList<>();
-                readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                List<TestSpecification>  readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
                 log.trace("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
@@ -123,8 +122,7 @@ public class ConfigLoadTestResource {
             try {
 
                 InputStream wfile = Configuration.loadByName("DefaultWriteTestSpecification.json");
-                List<TestSpecification> writeTestSpec = new ArrayList<>();
-                writeTestSpec = mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
+                List<TestSpecification> writeTestSpec =  mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
                 log.trace("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);

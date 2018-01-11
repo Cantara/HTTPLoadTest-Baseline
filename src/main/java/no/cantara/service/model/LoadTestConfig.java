@@ -39,7 +39,7 @@ public class LoadTestConfig implements Serializable {
         this.test_read_write_ratio = Integer.parseInt(test_read_write_ratio);
         this.test_sleep_in_ms = Integer.parseInt(test_sleep_in_ms);
         this.test_randomize_sleeptime = Boolean.parseBoolean(test_randomize_sleeptime);
-        this.test_duration_in_seconds = Integer.valueOf(test_duration_in_seconds);
+        this.test_duration_in_seconds = Integer.parseInt(test_duration_in_seconds);
         this.test_global_variables_map = test_global_variables_map;
 
     }

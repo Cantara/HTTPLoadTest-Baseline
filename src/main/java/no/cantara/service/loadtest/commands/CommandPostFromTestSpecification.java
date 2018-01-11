@@ -9,7 +9,6 @@ import java.util.Random;
 
 public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
 
-    String uri;
     String contentType = "text/xml;charset=UTF-8";
     static Random r = new Random();
 
@@ -23,7 +22,6 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
         this.template = TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();
-        this.uri = testSpecification.getCommand_url();
     }
 
 

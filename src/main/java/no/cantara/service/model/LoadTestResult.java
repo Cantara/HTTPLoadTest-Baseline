@@ -33,7 +33,7 @@ public class LoadTestResult implements Serializable {
         this.test_id = id;
         this.test_name = test_name;
         this.test_tags = test_tags;
-        this.test_run_no = Integer.valueOf(test_run_no);
+        this.test_run_no = Integer.parseInt(test_run_no);
         this.test_duration = Integer.valueOf(test_duration);
         this.test_success = Boolean.parseBoolean(test_success);
         this.test_deviation_flag = Boolean.parseBoolean(test_deviation_flag);

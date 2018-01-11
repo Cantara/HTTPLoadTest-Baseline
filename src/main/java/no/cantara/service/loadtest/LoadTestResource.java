@@ -111,8 +111,7 @@ public class LoadTestResource {
         log.trace("Invoked updateReadTestSpecificationForm with {}", json);
         try {
 
-            List<TestSpecification> readTestSpec = new ArrayList<>();
-            readTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
+            List<TestSpecification> readTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
             });
             LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
             return Response.ok(json).build();
@@ -131,8 +130,7 @@ public class LoadTestResource {
 
         try {
 
-            List<TestSpecification> writeTestSpec = new ArrayList<>();
-            writeTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
+            List<TestSpecification> writeTestSpec =  mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
             });
             LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
             return Response.ok(json).build();

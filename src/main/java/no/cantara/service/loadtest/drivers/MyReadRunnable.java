@@ -127,7 +127,7 @@ public class MyReadRunnable implements Runnable {
     }
 
     private static void logTimedCode(long startTime, String msg) {
-        long elapsedSeconds = (System.currentTimeMillis() - startTime);
+        // long elapsedSeconds = (System.currentTimeMillis() - startTime);
         //log.trace("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
     }
 

@@ -49,8 +49,7 @@ public class LoadTestExecutorService {
         if (Configuration.getBoolean("loadtest.cluster")) {
             InputStream xmlFileName = Configuration.loadByName("hazelcast.xml");
 //        log.info("Loaded hazelcast configuration :" + xmlFileName);
-            Config hazelcastConfig = new Config();
-            hazelcastConfig = new XmlConfigBuilder(xmlFileName).build();
+            Config hazelcastConfig  = new XmlConfigBuilder(xmlFileName).build();
             //       log.info("Loading hazelcast configuration from :" + xmlFileName);
 
             hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
