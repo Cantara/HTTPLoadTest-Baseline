@@ -28,6 +28,7 @@ import java.util.concurrent.*;
 public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
+    public static final int THREAD_READINESS_FACTOR = 2;
     private static List<LoadTestResult> unsafeList = new ArrayList<>();
     private static List<LoadTestResult> resultList;// = Collections.synchronizedList(unsafeList);
     private static List<TestSpecification> readTestSpecificationList;
@@ -240,7 +241,7 @@ public class LoadTestExecutorService {
 
             int chance = r.nextInt(100);
             long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
-            if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * 10)) {
+            if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR)) {
                 // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
                 // for long (endurance) loadtest runs
                 log.info("MaxRunInMilliSeconds: {}, threadsScheduled: {}", maxRunTimeMs, threadsScheduled);
@@ -469,6 +470,7 @@ public class LoadTestExecutorService {
 
     public static void stop() {
         isRunning = false;
+        threadExecutor.shutdown();
         stopTime = System.currentTimeMillis();
         threadsScheduled = 0;
     }
@@ -479,6 +481,9 @@ public class LoadTestExecutorService {
             threadsScheduled = threadsScheduled - 1;
         } else {
             threadsScheduled = 0;
+            isRunning = false;
+            threadExecutor.shutdown();
+            stopTime = System.currentTimeMillis();
         }
     }
 
