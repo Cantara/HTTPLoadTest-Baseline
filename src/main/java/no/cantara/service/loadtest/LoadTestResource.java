@@ -46,7 +46,6 @@ public class LoadTestResource {
     private static final CsvMapper csvMapper = new CsvMapper();
     private final String loadTest = "{}";
     private final String loadTests = "{}";
-    private final String loadTestStatus = "{}";
 
     @Autowired
     public LoadTestResource() {
@@ -227,15 +226,7 @@ public class LoadTestResource {
         log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
 
 
-        String jsonResult;
-        try {
-            jsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
-        } catch (IOException e) {
-            log.warn("Could not convert to Json {}", loadTestStatus);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-
-        return Response.ok(jsonResult).build();
+        return Response.ok(getJsonResultString()).build();
     }
 
     @GET
@@ -245,7 +236,12 @@ public class LoadTestResource {
         log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
 
 
-        String csvResult;
+        return Response.ok(getCSVResultString()).build();
+    }
+
+
+    public static String getCSVResultString() {
+        String csvResult = "";
         try {
             CsvSchema csvSchema = csvMapper.schemaFor(LoadTestResult.class);
             if (true) {
@@ -255,11 +251,21 @@ public class LoadTestResource {
             }
             csvResult = csvMapper.writer(csvSchema).writeValueAsString(LoadTestExecutorService.getResultList());
         } catch (IOException e) {
-            log.warn("Could not convert to CSV {}", loadTestStatus);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            log.warn("Could not convert to CSV {}", csvResult);
+            //     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
-        return Response.ok(csvResult).build();
+        return csvResult;
     }
 
+    public static String getJsonResultString() {
+        String jsonResult = "[{}]";
+        try {
+            jsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
+        } catch (IOException e) {
+            log.warn("Could not convert to Json {}", jsonResult);
+            //       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return jsonResult;
+    }
 }

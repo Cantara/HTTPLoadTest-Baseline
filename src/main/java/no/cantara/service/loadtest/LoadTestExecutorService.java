@@ -19,7 +19,9 @@ import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,6 +32,7 @@ public class LoadTestExecutorService {
     private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorService.class);
     public static final int THREAD_READINESS_FACTOR = 4;
     public static final int LOAD_TEST_RAMPDOWN_TIME_MS = 50;
+    public static final String RESULT_FILE_PATH = "./results";
     private static List<LoadTestResult> unsafeList = new ArrayList<>();
     private static List<LoadTestResult> resultList;// = Collections.synchronizedList(unsafeList);
     private static List<TestSpecification> readTestSpecificationList;
@@ -353,6 +356,7 @@ public class LoadTestExecutorService {
         runTaskExecutor.shutdown();
         stopTime = System.currentTimeMillis();
         threadsScheduled = 0;
+        storeResultToFiles();
     }
 
 
@@ -479,4 +483,44 @@ public class LoadTestExecutorService {
         return stats + "\n\n" + loadTestJson;
     }
 
+    private static void storeResultToFiles() {
+
+        try {
+
+
+            File directory = new File(RESULT_FILE_PATH);
+            if (!directory.exists()) {
+                directory.mkdir();
+                // If you require it to make the entire directory path including parents,
+            }
+            PrintWriter jsonwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + activeLoadTestConfig.getTest_id() + "_" + startTime + ".json", "UTF-8");
+            jsonwriter.println(LoadTestResource.getJsonResultString());
+            jsonwriter.close();
+            PrintWriter cvswriter = new PrintWriter(RESULT_FILE_PATH + File.separator + activeLoadTestConfig.getTest_id() + "_" + startTime + ".csv", "UTF-8");
+            cvswriter.println(LoadTestResource.getCSVResultString());
+            cvswriter.close();
+        } catch (Exception e) {
+            log.error("Unable to persist resultfiles. ", e);
+        }
+    }
+
+    public static String listStoredResults() {
+        String resultlistOfResults = "";
+        try {
+
+            File folder = new File(RESULT_FILE_PATH);
+            File[] listOfFiles = folder.listFiles();
+
+            for (int i = 0; i < listOfFiles.length; i++) {
+                if (listOfFiles[i].isFile()) {
+                    resultlistOfResults = resultlistOfResults + listOfFiles[i].getName() + ", ";
+                } else if (listOfFiles[i].isDirectory()) {
+                    //   System.out.println("Directory " + listOfFiles[i].getName());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Unable to look for resultfiles. ", e);
+        }
+        return resultlistOfResults.substring(0, resultlistOfResults.length() - 2);
+    }
 }
