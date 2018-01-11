@@ -8,6 +8,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.netflix.hystrix.HystrixCommandProperties;
 import no.cantara.service.Main;
+import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
 import no.cantara.service.loadtest.drivers.MyWriteRunnable;
@@ -384,15 +385,12 @@ public class LoadTestExecutorService {
         String stats;
         if (loadTestRunNo > 0) {
             if (stopTime == 0) {
-                stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
-
+                stats = "Started: " + df.format(new Date(startTime)) +" Version:"+ HealthResource.getVersion()+ "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - startTime) / 1000 + " seconds.\n";
             } else {
-                stats = "Started: " + df.format(new Date(startTime)) + "  Now: " + df.format(new Date(nowTimestamp)) + "  Ran for " + (stopTime - startTime) / 1000 + " seconds.\n";
-
+                stats = "Started: " + df.format(new Date(startTime)) +" Version:"+ HealthResource.getVersion()+ "  Now: " + df.format(new Date(nowTimestamp)) + "  Ran for " + (stopTime - startTime) / 1000 + " seconds.\n";
             }
-
         } else {
-            stats = "Started: " + df.format(new Date(nowTimestamp)) + "  Now: " + df.format(new Date(nowTimestamp)) + "\n";
+            stats = "Started: " + df.format(new Date(nowTimestamp)) + " Version:"+ HealthResource.getVersion()+"  Now: " + df.format(new Date(nowTimestamp)) + "\n";
         }
         if (r_success > 0) {
             r_mean_success = r_duration / r_success;
