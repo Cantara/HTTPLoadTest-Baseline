@@ -27,8 +27,9 @@ import java.util.concurrent.*;
 
 public class LoadTestExecutorService {
 
-    private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
-    public static final int THREAD_READINESS_FACTOR = 2;
+    private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorService.class);
+    public static final int THREAD_READINESS_FACTOR = 4;
+    public static final int LOAD_TEST_RAMPDOWN_TIME_MS = 50;
     private static List<LoadTestResult> unsafeList = new ArrayList<>();
     private static List<LoadTestResult> resultList;// = Collections.synchronizedList(unsafeList);
     private static List<TestSpecification> readTestSpecificationList;
@@ -40,7 +41,8 @@ public class LoadTestExecutorService {
     private static int loadTestRunNo = 0;
     private static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
-    private static ExecutorService threadExecutor;
+    private static ExecutorService runTaskExecutor;
+
     private static final Map<String, Object> configMap;
 
     private static int threadsScheduled = 0;
@@ -50,7 +52,7 @@ public class LoadTestExecutorService {
 
         if (Configuration.getBoolean("loadtest.cluster")) {
             InputStream xmlFileName = Configuration.loadByName("hazelcast.xml");
-//        log.info("Loaded hazelcast configuration :" + xmlFileName);
+            //        log.info("Loaded hazelcast configuration :" + xmlFileName);
             Config hazelcastConfig  = new XmlConfigBuilder(xmlFileName).build();
             //       log.info("Loading hazelcast configuration from :" + xmlFileName);
 
@@ -151,19 +153,10 @@ public class LoadTestExecutorService {
     public static synchronized void addResult(LoadTestResult loadTestResult) {
         resultList.add(loadTestResult);
         reduceThreadsScheduled();
-
-//        LoadTestExecutorService.reduceThreadsScheduled();
-
-        //log.info("ResultMapSize: {}", resultList.size());
     }
 
 
     public static List getResultList() {
-        //List<LoadTestResult> copyList = new LinkedList<>();
-        //for (LoadTestResult loadTestResult : resultList) {
-        //    copyList.add(loadTestResult);
-        //}
-
         return resultList;
     }
 
@@ -219,20 +212,18 @@ public class LoadTestExecutorService {
                 }
             }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
         } catch (Exception e) {
-            logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+            log.error("Exception {}", e);
+            logTimedCode(startTime, loadTestConfig.getTest_id() + " - LoadTestConfig was interrupted!");
         }
         log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", activeLoadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, activeLoadTestConfig.getTest_duration_in_seconds());
-        isRunning = false;
-        stopTime = System.currentTimeMillis();
-        threadsScheduled = 0;
-        threadExecutor.shutdown();
+        stop();
     }
 
 
     private static void runTask(LoadTestConfig loadTestConfig) {
         int runNo = 1;
 
-        threadExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
+        runTaskExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
         threadPoolSize = loadTestConfig.getTest_no_of_threads();
         int read_ratio = loadTestConfig.getTest_read_write_ratio();
 
@@ -241,10 +232,10 @@ public class LoadTestExecutorService {
 
             int chance = r.nextInt(100);
             long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
-            if (maxRunTimeMs > 50 && isRunning && threadsScheduled < (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR)) {
+            if ((maxRunTimeMs > LOAD_TEST_RAMPDOWN_TIME_MS) && isRunning && (threadsScheduled < (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR))) {
                 // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
                 // for long (endurance) loadtest runs
-                log.info("MaxRunInMilliSeconds: {}, threadsScheduled: {}", maxRunTimeMs, threadsScheduled);
+                log.info("MaxRunInMilliSeconds: {}, LOAD_TEST_RAMPDOWN_TIME_MS:{} , threadsScheduled: {}, maxThreadsAllowed: {}", maxRunTimeMs, LOAD_TEST_RAMPDOWN_TIME_MS, threadsScheduled, (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR));
                 if (read_ratio == 0) {
                     String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
                     LoadTestResult loadTestResult = new LoadTestResult();
@@ -257,18 +248,15 @@ public class LoadTestExecutorService {
                         runWithTimeout(new Callable<String>() {
                             @Override
                             public String call() {
-                                threadExecutor.execute(worker);
+                                runTaskExecutor.execute(worker);
                                 return "";
 
                             }
                         }, maxRunTimeMs, TimeUnit.MILLISECONDS);
                     } catch (Exception e) {
-                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyRunnable was interrupted!");
                         LoadTestExecutorService.reduceThreadsScheduled();
                     }
-
-//                    threadExecutor.execute(worker);
-
                 } else if (chance <= read_ratio) {
                     LoadTestResult loadTestResult = new LoadTestResult();
                     loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
@@ -281,16 +269,14 @@ public class LoadTestExecutorService {
                         runWithTimeout(new Callable<String>() {
                             @Override
                             public String call() {
-                                threadExecutor.execute(worker);
+                                runTaskExecutor.execute(worker);
                                 return "";
                             }
                         }, maxRunTimeMs, TimeUnit.MILLISECONDS);
                     } catch (Exception e) {
-                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyReadRunnable was interrupted!");
                         LoadTestExecutorService.reduceThreadsScheduled();
                     }
-//                    threadExecutor.execute(worker);
-
                 } else {
                     LoadTestResult loadTestResult = new LoadTestResult();
                     loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
@@ -302,31 +288,101 @@ public class LoadTestExecutorService {
                         runWithTimeout(new Callable<String>() {
                             @Override
                             public String call() {
-                                threadExecutor.execute(worker);
+                                runTaskExecutor.execute(worker);
                                 return "";
                             }
                         }, maxRunTimeMs, TimeUnit.MILLISECONDS);
                     } catch (Exception e) {
-                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - was interrupted!");
+                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyWriteRunnable was interrupted!");
                         LoadTestExecutorService.reduceThreadsScheduled();
                     }
-//                    threadExecutor.execute(worker);
 
                 }
             }
         }
-
-
-//        }
-//        System.out.println("\nFinished all threads");
-//        threadsScheduled = 0;
-        threadExecutor.shutdown();
-        stopTime = System.currentTimeMillis();
+        stop();
     }
 
-    public static synchronized String printStats(List<LoadTestResult> loadTestResults) {
-        if (loadTestResults == null) {
-            return "";
+
+    private static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
+        runWithTimeout(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                runnable.run();
+                return null;
+            }
+        }, timeout, timeUnit);
+    }
+
+    private static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
+        final ExecutorService runWithTimeoutExecutor = Executors.newSingleThreadExecutor();
+        if (isRunning) {
+            final Future<T> future = runWithTimeoutExecutor.submit(callable);
+            runWithTimeoutExecutor.shutdown(); // This does not cancel the already-scheduled task.
+            try {
+                return future.get(timeout, timeUnit);
+            } catch (TimeoutException e) {
+                //remove this if you do not want to cancel the job in progress
+                //or set the argument to 'false' if you do not want to interrupt the thread
+                future.cancel(true);
+                reduceThreadsScheduled();
+                throw e;
+            } catch (ExecutionException e) {
+                //unwrap the root cause
+                reduceThreadsScheduled();
+                Throwable t = e.getCause();
+                if (t instanceof Error) {
+                    throw (Error) t;
+                } else if (t instanceof Exception) {
+                    throw (Exception) t;
+                } else {
+                    throw new IllegalStateException(t);
+                }
+            }
+
+        }
+        return null;
+    }
+
+    public static boolean isRunning() {
+        return isRunning;
+    }
+
+    public static void stop() {
+        isRunning = false;
+        runTaskExecutor.shutdown();
+        stopTime = System.currentTimeMillis();
+        threadsScheduled = 0;
+    }
+
+
+    private static synchronized void reduceThreadsScheduled() {
+        if (threadsScheduled > 0) {
+            threadsScheduled = threadsScheduled - 1;
+            log.info("scheduledThreads= {}, reduced", threadsScheduled);
+        } else {
+            threadsScheduled = 0;
+            log.info("scheduledThreads=0");
+            if (((System.currentTimeMillis() - startTime) / 1000) < activeLoadTestConfig.getTest_duration_in_seconds()) {
+                log.info("scheduledThreads=0, LoadTestRun completed");
+                stop();
+            }
+        }
+    }
+
+
+    private static void logTimedCode(long startTime, String msg) {
+        long elapsedSeconds = (System.currentTimeMillis() - startTime);
+        log.info("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
+    }
+
+    public static synchronized String printStats(List<LoadTestResult> loadTestResults, boolean whileRunning) {
+        long nowTimestamp = System.currentTimeMillis();
+        if (stopTime == 0 && ((nowTimestamp - startTime) / 1000) > activeLoadTestConfig.getTest_duration_in_seconds()) {
+            stop();  // We might get in trouble if no memory for native threads in high thread situations
+        }
+        if (loadTestResults == null || (whileRunning = false && isRunning == true)) {
+            return "";  // We ship on empty results and if tests are running and whileRunning flag is not set
         }
         int r_deviations = 0;
         int r_success = 0;
@@ -382,7 +438,6 @@ public class LoadTestExecutorService {
             }
         }
         DateFormat df = new SimpleDateFormat("dd/MM-yyyy  HH:mm:ss");
-        long nowTimestamp = System.currentTimeMillis();
         String stats;
         if (loadTestRunNo > 0) {
             if (stopTime == 0) {
@@ -424,72 +479,4 @@ public class LoadTestExecutorService {
         return stats + "\n\n" + loadTestJson;
     }
 
-    private static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
-        runWithTimeout(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                runnable.run();
-                return null;
-            }
-        }, timeout, timeUnit);
-    }
-
-    private static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
-        if (isRunning) {
-            final ExecutorService executor = Executors.newSingleThreadExecutor();
-            final Future<T> future = executor.submit(callable);
-            executor.shutdown(); // This does not cancel the already-scheduled task.
-            try {
-                return future.get(timeout, timeUnit);
-            } catch (TimeoutException e) {
-                //remove this if you do not want to cancel the job in progress
-                //or set the argument to 'false' if you do not want to interrupt the thread
-                future.cancel(true);
-                reduceThreadsScheduled();
-                throw e;
-            } catch (ExecutionException e) {
-                //unwrap the root cause
-                reduceThreadsScheduled();
-                Throwable t = e.getCause();
-                if (t instanceof Error) {
-                    throw (Error) t;
-                } else if (t instanceof Exception) {
-                    throw (Exception) t;
-                } else {
-                    throw new IllegalStateException(t);
-                }
-            }
-
-        }
-        return null;
-    }
-
-    public static boolean isRunning() {
-        return isRunning;
-    }
-
-    public static void stop() {
-        isRunning = false;
-        threadExecutor.shutdown();
-        stopTime = System.currentTimeMillis();
-        threadsScheduled = 0;
-    }
-
-
-    private static synchronized void reduceThreadsScheduled() {
-        if (threadsScheduled > 0) {
-            threadsScheduled = threadsScheduled - 1;
-        } else {
-            threadsScheduled = 0;
-            isRunning = false;
-            threadExecutor.shutdown();
-            stopTime = System.currentTimeMillis();
-        }
-    }
-
-
-    private static void logTimedCode(long startTime, String msg) {
-        long elapsedSeconds = (System.currentTimeMillis() - startTime);
-        log.info("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
-    }
 }

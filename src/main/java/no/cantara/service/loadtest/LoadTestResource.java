@@ -206,7 +206,7 @@ public class LoadTestResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         String response = String.format("{ \"HTTPLoadTest-status\": \n\"%s\", \n\n\"test-run-results\": %s}",
-                LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList()), jsonResponse);
+                LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList(), true), jsonResponse);  // force statistics
 
         return Response.ok(response).build();
     }
