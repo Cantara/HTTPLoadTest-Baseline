@@ -76,6 +76,9 @@ public class CommandPostFromTestSpecificationFromFileSpec {
             if (testSpecification.getCommand_url().contains("verify")) {
                 testSpecification.setCommand_url(testServer.getUrl() + "/verify");
             }
+            if (testSpecification.getCommand_url().contains("ping")) {
+                testSpecification.setCommand_url(testServer.getUrl() + "/ping");
+            }
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {

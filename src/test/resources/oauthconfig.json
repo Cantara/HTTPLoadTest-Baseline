@@ -1,6 +1,6 @@
 [
   {
-    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/verify",
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/ping",
     "command_contenttype": "application/json;charset=UTF-8",
     "command_http_authstring": "Bearer #fizzle(option:#access_token)",
     "command_http_post": false,
@@ -10,13 +10,8 @@
       "#access_token": "[ \"AsT5OjbzRn430zqMLgV3Ia\" ]"
     },
     "command_response_map": {
-      "#client_id": "$..client_id",
-      "#auth_user_id": "$..auth_user_id",
-      "#user_id": "$..user_id",
-      "#user_type": "$..user_type",
-      "#expires": "$..expires",
-      "#scope": "$..scope",
-      "#name": "$..name"
+      "#ping_response": "$..response",
+      "#ping_now": "$..now"
     }
   }
 ]
