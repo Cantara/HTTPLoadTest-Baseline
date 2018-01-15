@@ -43,8 +43,6 @@
     "command_timeout_milliseconds": 200,
     "command_template": "",
     "command_replacement_map": {
-      "#code": "myDummyCode",
-      "#redirectURI": "https://www.vg.no"
     },
     "command_response_map": {
       "#client_id": "$..client_id",

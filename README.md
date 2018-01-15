@@ -229,37 +229,65 @@ variables resolved so you can verify that the replacement is what you wanted it 
 
 [
   {
-    "command_url" : "https://gmail.com",  
-    "command_contenttype" : "text/html",
-    "command_http_post" : false,
-    "command_timeout_milliseconds" : 5000,
-    "command_template" : "",
-    "command_replacement_map" : {
-      "#password" : "TestPassword",
-      "#UserID" : "TestUser"
-    }
-  }, 
-  {
-    "command_url" : "http://test.me",
-    "command_contenttype" : "application/json",
-    "command_http_post" : true,
-    "command_http_authstring": "username/password",
-    "command_timeout_milliseconds" : 5000,
-    "command_template" : "FILE:./templates/my_test_me_template.json",
-    "command_replacement_map" : {
-      "#Simulate" : "TestPassord",
-      "#Name" : "#fizzle(option:Steve, Kate, Simon)"
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=client_credentials&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#CLIENT_ID": "myClientIdValue",
+      "#CLIENT_SECRET": "MySecretValue"
     },
-    "command_response_map" : {
-      "#randomizeName" : "$..test_randomize_sleeptime",
-      "#testName" : "$..test_name"
+    "command_response_map": {
+      "#access_token": "$..access_token"
     }
-  } 
+  },
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=authorization_code&code=#code&redirect_uri=#redirectURI&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#code": "myDummyCode",
+      "#redirectURI": "https://www.vg.no"
+    },
+    "command_response_map": {
+      "#access_token2": "$..access_token",
+      "#token_type": "$..token_type",
+      "#expires_in": "$..expires_in",
+      "#refresh_token": "$..refresh_token",
+      "#scope": "$..scope",
+      "#uid": "$..uid",
+      "#info": "$..info"
+    }
+  },
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/verify",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "Bearer #fizzle(option:#access_token)",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+    },
+    "command_response_map": {
+      "#client_id": "$..client_id",
+      "#auth_user_id": "$..auth_user_id",
+      "#user_id": "$..user_id",
+      "#user_type": "$..user_type",
+      "#expires": "$..expires",
+      "#scope": "$..scope",
+      "#name": "$..name"
+    }
+  }
 ]
 ```
 
-In this example, we have included an example where we create a randomized BrukerID variable for each TestSpecification invocation to simulate
-run with lots of different users.
+In this example, we use the embedded Oauth2 server simulator to examplify an authorization flow as a part of a test with chaining
+of variables down the chain to use the estaablished oauth2 session in later calls.
 
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
