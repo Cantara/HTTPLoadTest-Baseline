@@ -78,12 +78,19 @@ public class Fizzler {
     }
 
     public static String getRandomSetValue(String options) {
-        if (options.startsWith("#")) {
-            //options=options.
-        }
         String[] values = options.split(",");
         int selected = r.nextInt(values.length);
         return values[selected].trim();
+
+    }
+
+    // Quick un-escaping of json set
+    public static String getRandomSetValueAsString(String options) {
+        String[] values = options.split(",");
+        int selected = r.nextInt(values.length);
+        String jsonvalue = values[selected].trim();
+        String stringValue = jsonvalue.replaceAll("\\[", "").replaceAll("\"", "").replaceAll("]", "").trim();
+        return stringValue;
 
     }
 }
