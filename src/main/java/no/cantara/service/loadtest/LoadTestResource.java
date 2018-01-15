@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
+import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
 import static no.cantara.service.util.Configuration.loadByName;
 
 /**
@@ -228,7 +230,7 @@ public class LoadTestResource {
 
         // If we have a specified test, we try to load it - if not, we use current
         if (test_run_filename != null && test_run_filename.contains("json")) {
-            return Response.ok(".results/" + loadByName(test_run_filename)).build();
+            return Response.ok(RESULT_FILE_PATH + File.separator + loadByName(test_run_filename)).build();
 
         }
 
@@ -244,7 +246,7 @@ public class LoadTestResource {
 
         // If we have a specified test, we try to load it - if not, we use current
         if (test_run_filename != null && test_run_filename.contains("json")) {
-            return Response.ok(".results/" + loadByName(test_run_filename)).build();
+            return Response.ok(RESULT_FILE_PATH + File.separator + loadByName(test_run_filename)).build();
 
         }
 
