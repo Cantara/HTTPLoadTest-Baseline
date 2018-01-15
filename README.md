@@ -162,18 +162,23 @@ variable from thinks like options/set selections.
 
 
 ```json
-[ 
+[
   {
-    "command_url" : "https://gmail.com",
-    "command_contenttype" : "text/html",
-    "command_http_post" : false,
-    "command_timeout_milliseconds" : 5000,
-    "command_template" : "",
-    "command_replacement_map" : {
-      "#password" : "TestPassword",
-      "#UserID" : "TestUser"
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=client_credentials&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#CLIENT_ID":"myClientIdValue",
+      "#CLIENT_SECRET":"MySecretValue"
+    },
+    "command_response_map": {
+      "#access_token": "$..access_token"
     }
-  },
+  }
+  ,
   {
     "command_url" : "http://test.me/#MySite",
     "command_contenttype" : "application/json",

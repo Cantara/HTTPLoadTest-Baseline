@@ -27,7 +27,7 @@ public class CommandAuthorizeOAuth2ApplicationTest {
         testServer.stop();
     }
 
-    @Test(priority = 3, enabled = false)
+    @Test(priority = 3, enabled = true)
     public void testCommandAuthorizeOAuth2Application() throws Exception {
 
 

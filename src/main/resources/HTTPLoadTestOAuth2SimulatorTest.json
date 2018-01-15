@@ -1,0 +1,17 @@
+[
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=client_credentials&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#CLIENT_ID": "myClientIdValue",
+      "#CLIENT_SECRET": "MySecretValue"
+    },
+    "command_response_map": {
+      "#access_token": "$..access_token"
+    }
+  }
+]

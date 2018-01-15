@@ -1,13 +1,14 @@
 package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import no.cantara.base.command.BaseHttpPostHystrixCommand;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
 import java.util.Random;
 
-public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
+public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand<String> {
 
     String contentType = "text/xml;charset=UTF-8";
     static Random r = new Random();

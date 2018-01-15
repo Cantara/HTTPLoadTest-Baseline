@@ -37,7 +37,7 @@ public class CommandAuthorizeOAuth2Application extends BaseHttpPostHystrixComman
     @Override
     protected String getTargetPath() {
 
-        return "/token"+"?grant_type=client_credentials"+"&client_id"+CLIENT_ID+"&client_secret"+CLIENT_SECRET;
+        return "/token" + "?grant_type=client_credentials" + "&client_id=" + CLIENT_ID + "&client_secret=" + CLIENT_SECRET;
     }
 
 
