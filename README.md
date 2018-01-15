@@ -57,11 +57,11 @@ wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28
 wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
 ##  wait and get the result
 sleep 40s
-wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus
+wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
 #
 ## To download results from earlier test-runs, use /health to find the name of the test-run, and 
-wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
+wget http://localhost:28086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 ```
 
 
