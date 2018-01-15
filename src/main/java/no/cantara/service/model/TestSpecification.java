@@ -3,6 +3,7 @@ package no.cantara.service.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.cantara.service.loadtest.util.TemplateUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +115,11 @@ public class TestSpecification implements Serializable {
     }
 
     public String getCommand_http_authstring() {
-        if (command_http_authstring != null && command_http_authstring.split("/").length == 2) {
+
+        if (command_http_authstring == null || command_http_authstring.length() < 1) {
+            return null;
+        }
+        if (command_http_authstring != null && !command_http_authstring.contains("Bearer") && command_http_authstring.split("/").length == 2) {
             String[] upfields = command_http_authstring.split("/");
             String name = upfields[0];
             String password = upfields[1];
@@ -127,7 +132,7 @@ public class TestSpecification implements Serializable {
             return authStringEnc;
 
         }
-        if (command_http_authstring != null && command_http_authstring.split(":").length == 2) {
+        if (command_http_authstring != null && !command_http_authstring.contains("Bearer") && command_http_authstring.split(":").length == 2) {
             String[] upfields = command_http_authstring.split(":");
             String name = upfields[0];
             String password = upfields[1];
@@ -140,6 +145,11 @@ public class TestSpecification implements Serializable {
             return authStringEnc;
 
         }
+        if (command_http_authstring.contains("Bearer")) {
+            String test = "\\[";
+            command_http_authstring = command_http_authstring.replaceAll("]", "").replaceAll("\"", "").replaceAll(test, "").replaceAll("  ", " ");
+        }
+
         return command_http_authstring;
     }
 
@@ -158,7 +168,7 @@ public class TestSpecification implements Serializable {
         this.command_response_map = command_response_map;
     }
 
-    public void loadTemplateReference() {
+    private void loadTemplateReference() {
         if (getCommand_template().startsWith("FILE:")) {
             try {
                 String contents = new String(Files.readAllBytes(Paths.get(getCommand_template().substring(5, getCommand_template().length()))));
@@ -168,6 +178,25 @@ public class TestSpecification implements Serializable {
             }
 
         }
+    }
+
+    public void resolveVariables(Map<String, String> globalMap, Map<String, String> inheritedVariables, Map<String, String> resolvedResultVariables) {
+        loadTemplateReference();
+        if (globalMap != null) {
+            addMapToCommand_replacement_map(globalMap);
+        }
+        if (inheritedVariables != null) {
+            addMapToCommand_replacement_map(inheritedVariables);
+        }
+        if (resolvedResultVariables != null) {
+            addMapToCommand_replacement_map(resolvedResultVariables);
+        }
+        log.debug("Active variables: {}", getCommand_replacement_map());
+        setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_url(), getCommand_replacement_map()));
+        setCommand_http_authstring(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_http_authstring(), getCommand_replacement_map()));
+        setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_template(), getCommand_replacement_map()));
+
+
     }
 
     @Override

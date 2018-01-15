@@ -26,7 +26,7 @@
       "#redirectURI": "https://www.vg.no"
     },
     "command_response_map": {
-      "#access_token": "$..access_token",
+      "#access_token2": "$..access_token",
       "#token_type": "$..token_type",
       "#expires_in": "$..expires_in",
       "#refresh_token": "$..refresh_token",
@@ -34,6 +34,26 @@
       "#uid": "$..uid",
       "#info": "$..info"
     }
+  },
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/verify",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "Bearer #fizzle(option:#access_token)",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#code": "myDummyCode",
+      "#redirectURI": "https://www.vg.no"
+    },
+    "command_response_map": {
+      "#client_id": "$..client_id",
+      "#auth_user_id": "$..auth_user_id",
+      "#user_id": "$..user_id",
+      "#user_type": "$..user_type",
+      "#expires": "$..expires",
+      "#scope": "$..scope",
+      "#name": "$..name"
+    }
   }
-
 ]

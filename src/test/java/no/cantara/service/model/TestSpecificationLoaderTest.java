@@ -31,7 +31,7 @@ public class TestSpecificationLoaderTest {
             assertTrue(readTestSpec.size() > 0);
             for (TestSpecification testSpecification : readTestSpec) {
                 log.trace("Loaded  testspecification: {}", configuredTests.get(testSpecificationEntry));
-                testSpecification.loadTemplateReference();
+                testSpecification.resolveVariables(null, null, null);//loadTemplateReference();
                 assertTrue(testSpecification.getCommand_url().length() > 0);
             }
 

@@ -4,7 +4,6 @@ import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.HTTPResultUtil;
-import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -59,15 +58,7 @@ public class MyReadRunnable implements Runnable {
 
         int readCommandNo = 1;
         for (TestSpecification testSpecification : testSpecificationList) {
-            testSpecification.loadTemplateReference();
-            testSpecification.addMapToCommand_replacement_map(inheritedVariables);
-            testSpecification.addMapToCommand_replacement_map(loadTestConfig.getTest_global_variables_map());
-            testSpecification.addMapToCommand_replacement_map(resolvedResultVariables);
-            log.debug("Active variables: {}", testSpecification.getCommand_replacement_map());
-            testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), inheritedVariables));
-            testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), loadTestConfig.getTest_global_variables_map()));
-            testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), resolvedResultVariables));
-            testSpecification.setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), resolvedResultVariables));
+            testSpecification.resolveVariables(loadTestConfig.getTest_global_variables_map(), inheritedVariables, resolvedResultVariables);
             inheritedVariables = testSpecification.getCommand_replacement_map();
 
             if (testSpecification.getCommand_url().length() > 0) {

@@ -93,4 +93,15 @@ public class HTTPResultToTemplateChainingTest {
         assertTrue(!result.contains("##JsonList"));
         log.trace("Fizzled result: {}", result);
     }
+
+    @Test
+    public void testFixleMap() throws Exception {
+        String jsonString = "[ \"AsT5OjbzRn430zqMLgV3Ia\" ]";
+        Map<String, String> replacements = new HashMap<>();
+
+        replacements.put("#JsonList", jsonString);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap("The result #fizzle(option:#JsonList)", replacements);
+        assertTrue(!result.contains("##JsonList"));
+        log.trace("Fizzled result: {}", result);
+    }
 }

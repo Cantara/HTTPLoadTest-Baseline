@@ -28,7 +28,7 @@ public class OAuth2StubbedTokenVerifyResource {
         if (headers != null) {
             log.debug(getClass().getName() + ": headers=" + headers);
             if (!headers.getHeaderString("Authorization").equalsIgnoreCase("Bearer " + ConstantValue.ATOKEN)) {
-                log.error("Illegal OAUTH token provided");
+                log.error("Illegal OAUTH token provided: {}", headers.getHeaderString("Authorization"));
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
         }

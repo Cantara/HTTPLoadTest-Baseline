@@ -146,7 +146,7 @@ public class TestSpecificationMappingTest {
         for (TestSpecification testSpecification : readTestSpec) {
             assertTrue(testSpecification.getCommand_url().length() > 0);
             testSpecification.setCommand_template("FILE:./pom.xml");
-            testSpecification.loadTemplateReference();
+            testSpecification.resolveVariables(null, null, null);
             assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
         }
         //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));

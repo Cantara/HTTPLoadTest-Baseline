@@ -48,7 +48,7 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
         // request= super.dealWithRequestBeforeSend(request);
         if (httpAuthorizationString != null && httpAuthorizationString.length() > 10) {
             request = request.authorization(httpAuthorizationString);
-            log.trace(request.header("Authorization"));
+            //log.trace(request.header("Authorization"));
         }
 
         if (template.contains("soapenv:Envelope")) {
