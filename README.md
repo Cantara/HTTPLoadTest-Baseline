@@ -91,8 +91,13 @@ the longest allowed time the tests are allowed to run.  You can define LoadTest 
 
 ## Example on load test result
 ```text
-{ "HTTPLoadTest-status": 
-"Started: 08/01-2018  18:31:56  Now: 08/01-2018  18:32:10  Ran for 08/01-2018  18:32:06 seconds.
+{ "HTTPLoadTest-health": "OK", 
+"version": "(DEV VERSION)", 
+"now":"2018-01-15T10:39:37.676Z", 
+"running since": "2018-01-15T10:38:47.334Z", 
+
+"resulfiles": 
+  "HTTPLoadTest-Health_1516012005749.json, HTTPLOadTest-Health_1516003617097.csv, HTTPLoadTest-Health_1516008000667.json, HTTPLoadTest-Health_1516012005749.csv", 
 
   101 read tests resulted in 101 successful runs where 0 was marked failure and 0 was marked as deviation(s).
     8 write tests resulted in 6 successful runs where 2 was marked failure and 0 was marked as deviation(s).
