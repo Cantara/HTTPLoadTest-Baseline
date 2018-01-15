@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
+import static no.cantara.service.util.Configuration.loadByName;
 
 /**
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-09-12.
@@ -153,7 +154,7 @@ public class LoadTestResource {
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
+                    InputStream file = loadByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> readTestSpec = new ArrayList<>();
                     readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                     });
@@ -166,7 +167,7 @@ public class LoadTestResource {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
 //                    File file = new File(configuredTests.get(testSpecificationEntry));
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
+                    InputStream file = loadByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> writeTestSpec = new ArrayList<>();
                     writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                     });
@@ -222,8 +223,14 @@ public class LoadTestResource {
     @GET
     @Path("/fullstatus")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getStatusForLoadTestInstance(@PathParam("test_id") String artifactId) {
-        log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
+    public Response getStatusForLoadTestInstance(@PathParam("test_id") String test_run_filename) {
+        log.trace("getStatusForLoadTestInstances loadTestId={}", test_run_filename);
+
+        // If we have a specified test, we try to load it - if not, we use current
+        if (test_run_filename != null && test_run_filename.contains("json")) {
+            return Response.ok(".results/" + loadByName(test_run_filename)).build();
+
+        }
 
 
         return Response.ok(getJsonResultString()).build();
@@ -232,9 +239,14 @@ public class LoadTestResource {
     @GET
     @Path("/fullstatus_csv")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCSVStatusForLoadTestInstance(@PathParam("test_id") String artifactId) {
-        log.trace("getStatusForLoadTestInstances loadTestId={}", artifactId);
+    public Response getCSVStatusForLoadTestInstance(@PathParam("test_id") String test_run_filename) {
+        log.trace("getStatusForLoadTestInstances loadTestId={}", test_run_filename);
 
+        // If we have a specified test, we try to load it - if not, we use current
+        if (test_run_filename != null && test_run_filename.contains("json")) {
+            return Response.ok(".results/" + loadByName(test_run_filename)).build();
+
+        }
 
         return Response.ok(getCSVResultString()).build();
     }

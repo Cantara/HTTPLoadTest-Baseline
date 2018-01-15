@@ -59,6 +59,9 @@ wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoad
 sleep 40s
 wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
+#
+## To download results from earlier test-runs, use /health to find the name of the test-run, and 
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 ```
 
 
@@ -298,6 +301,10 @@ wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/status             // 
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/stop               // stop all loadTests
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus         // return alle the loadTest results in json
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv     // return alle the loadTest results in csv
+
+## To download results from earlier test-runs, use /health to find the name of the test-run, and 
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
+wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus?test_id=HTTPLOadTest-Health_1516003617097.json
 ```
 * version=0.19.3 
 
