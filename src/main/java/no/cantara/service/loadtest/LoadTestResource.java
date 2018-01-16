@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -208,7 +209,7 @@ public class LoadTestResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         String response = String.format("{ \"HTTPLoadTest-status\": \n\"%s\", \n\n\"test-run-results\": %s}",
-                LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList(), true), jsonResponse);  // force statistics
+                LoadTestResultUtil.printStats(LoadTestExecutorService.getResultList(), true), jsonResponse);  // force statistics
 
         return Response.ok(response).build();
     }
