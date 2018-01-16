@@ -115,9 +115,6 @@ public class LoadTestExecutorService {
         }
     }
 
-    public static List<TestSpecification> getReadTestSpecificationList() {
-        return readTestSpecificationList;
-    }
 
     public static String getReadTestSpecificationListJson() {
         String result = "[]";
@@ -145,6 +142,10 @@ public class LoadTestExecutorService {
         LoadTestExecutorService.readTestSpecificationList = readTestSpecificationList;
         updateSpecMap();
 
+    }
+
+    public static List<TestSpecification> getReadTestSpecificationList() {
+        return readTestSpecificationList;
     }
 
     public static List<TestSpecification> getWriteTestSpecificationList() {
