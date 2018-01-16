@@ -19,7 +19,6 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
 
@@ -28,20 +27,22 @@ public class MyReadRunnable implements Runnable {
     private static Random r = new Random();
     private final LoadTestResult loadTestResult;
     private final LoadTestConfig loadTestConfig;
+    private final LoadTestExecutionContext loadTestExecutionContext;
     private final List<TestSpecification> testSpecificationList;
     private static final boolean BREAK_ON_FAILURE = Configuration.getBoolean("loadtest.breakflowonfailure");
     private static final Logger log = LoggerFactory.getLogger(MyReadRunnable.class);
 
-    public MyReadRunnable(List<TestSpecification> testSpecificationList, LoadTestConfig loadTestConfig, LoadTestResult loadTestResult) {
+    public MyReadRunnable(List<TestSpecification> testSpecificationList, LoadTestConfig loadTestConfig, LoadTestResult loadTestResult, LoadTestExecutionContext loadTestExecutionContext) {
         this.testSpecificationList = testSpecificationList;
         this.loadTestResult = loadTestResult;
         this.loadTestConfig = loadTestConfig;
+        this.loadTestExecutionContext = loadTestExecutionContext;
         this.loadTestResult.setTest_tags("LoadTestId: " + loadTestConfig.getTest_id());
     }
 
     @Override
     public void run() {
-        if (!isRunning()) {
+        if (!loadTestExecutionContext.isRunning()) {
             return;
         }
 
@@ -61,7 +62,7 @@ public class MyReadRunnable implements Runnable {
     }
 
     private void execute() {
-        if (!isRunning()) {
+        if (!loadTestExecutionContext.isRunning()) {
             return;
         }
 
@@ -146,7 +147,7 @@ public class MyReadRunnable implements Runnable {
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
-        LoadTestExecutorService.addResult(loadTestResult);
+        loadTestExecutionContext.addResult(loadTestResult);
 
     }
 

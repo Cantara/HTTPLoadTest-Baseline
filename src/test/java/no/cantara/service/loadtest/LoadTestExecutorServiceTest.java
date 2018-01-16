@@ -35,7 +35,7 @@ public class LoadTestExecutorServiceTest {
         List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
         log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
-        LoadTestResultUtil.printStats(resultList, true);
+        log.info(LoadTestResultUtil.printStats(resultList, true));
         log.info("Run-time: {} ms, configured run-time: {}", endTime - startTime, fileLoadtest.getTest_duration_in_seconds() * 1000);
 
     }
@@ -57,7 +57,7 @@ public class LoadTestExecutorServiceTest {
         List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
 //        log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
-        LoadTestResultUtil.printStats(resultList, true);
+        log.info(LoadTestResultUtil.printStats(resultList, true));
         log.info("Run-time: {} ms, configured run-time: {}", endTime - startTime, fileLoadtest.getTest_duration_in_seconds() * 1000);
 
     }

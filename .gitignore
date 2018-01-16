@@ -21,3 +21,5 @@ target/
 configservice/.classpath
 configservice/.project
 configservice/.settings/
+
+/results

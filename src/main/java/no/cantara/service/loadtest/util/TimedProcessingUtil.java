@@ -28,12 +28,10 @@ public class TimedProcessingUtil {
                 //remove this if you do not want to cancel the job in progress
                 //or set the argument to 'false' if you do not want to interrupt the thread
                 future.cancel(true);
-                LoadTestExecutorService.reduceThreadsScheduled();
                 throw e;
             } catch (ExecutionException e) {
                 //unwrap the root cause
                 future.cancel(true);
-                LoadTestExecutorService.reduceThreadsScheduled();
                 Throwable t = e.getCause();
                 if (t instanceof Error) {
                     throw (Error) t;
