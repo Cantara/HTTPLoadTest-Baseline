@@ -293,7 +293,8 @@ variables resolved so you can verify that the replacement is what you wanted it 
 ```
 
 In this example, we use the embedded Oauth2 server simulator to examplify an authorization flow as a part of a test with chaining
-of variables down the chain to use the estaablished oauth2 session in later calls.
+of variables down the chain to use the established oauth2 session in later calls. As of now, HTTPLoadTest-Baseline support jsonpath and xpath
+for parsing results into variables.
 
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
