@@ -4,6 +4,7 @@ import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.HTTPResultUtil;
+import no.cantara.service.loadtest.util.TimedProcessingUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -43,7 +44,7 @@ public class MyReadRunnable implements Runnable {
 
         long startTime = System.currentTimeMillis();
         try {
-            LoadTestExecutorService.runWithTimeout(new Callable<String>() {
+            TimedProcessingUtil.runWithTimeout(new Callable<String>() {
                 @Override
                 public String call() {
                     execute();
