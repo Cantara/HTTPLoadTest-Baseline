@@ -153,6 +153,9 @@ public class LoadTestResultUtil {
             File folder = new File(LoadTestExecutorService.RESULT_FILE_PATH);
             File[] listOfFiles = folder.listFiles();
 
+            if (listOfFiles == null) {
+                return resultlistOfResults;
+            }
             for (int i = 0; i < listOfFiles.length; i++) {
                 if (listOfFiles[i].isFile()) {
                     resultlistOfResults = resultlistOfResults + listOfFiles[i].getName() + ", ";

@@ -120,9 +120,9 @@ public class MyWriteRunnable implements Runnable {
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
                 } else {
                     loadTestResult.setTest_success(true);
-                    resolvedResultVariables = HTTPResultUtil.parseWithJsonPath(result, testSpecification.getCommand_response_map());
+                    resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Res(" + resolvedResultVariables + ") - ");
-                    log.info("Resolved variables: {}", resolvedResultVariables);
+                    log.info("Resolved variables: {} result: {} from command_response_map: {}", resolvedResultVariables, result, testSpecification.getCommand_response_map());
                 }
             }
         }

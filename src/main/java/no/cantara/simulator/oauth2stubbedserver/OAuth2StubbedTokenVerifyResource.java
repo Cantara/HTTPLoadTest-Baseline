@@ -30,11 +30,13 @@ public class OAuth2StubbedTokenVerifyResource {
             if (!headers.getHeaderString("Authorization").equalsIgnoreCase("Bearer " + ConstantValue.ATOKEN)) {
                 log.error("Illegal OAUTH token provided: {}", headers.getHeaderString("Authorization"));
                 return Response.status(Response.Status.FORBIDDEN).build();
+            } else {
+                return Response.status(Response.Status.OK).entity(jSonVerifyResult).build();
+
             }
         }
-        log.trace("pollSystemEvents");
-        return Response.status(Response.Status.OK).entity(jSonVerifyResult).build();
-
+        log.trace("No OAUTH2 Authorization header found");
+        return Response.status(Response.Status.FORBIDDEN).build();
     }
 
     private String jSonVerifyResult = "{\n" +

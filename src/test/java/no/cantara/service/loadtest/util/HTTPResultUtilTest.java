@@ -37,6 +37,57 @@ public class HTTPResultUtilTest {
     }
 
     @Test
+    public void testSelectingElementsFromHTTPResult2() throws Exception {
+        String exampleResult = "{\n" +
+                "  \"test_id\": \"TestID\",\n" +
+                "  \"test_name\": \"En liten test\",\n" +
+                "  \"test_no_of_threads\": 10,\n" +
+                "  \"test_read_write_ratio\": 90,\n" +
+                "  \"test_sleep_in_ms\": 80,\n" +
+                "  \"test_randomize_sleeptime\": true,\n" +
+                "  \"test_duration_in_seconds\": 10\n" +
+                "}";
+        String testResult = "This is Chaitanya from Beginnersbook.com.";
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#testName", "$..test_name");
+        regexpSelectorMap.put("#randomizeName", "$..test_randomize_sleeptime");
+
+        Map parseResults = HTTPResultUtil.parse(testResult, regexpSelectorMap);
+
+        log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
+
+    }
+
+    @Test
+    public void testSelectingElementsFromHTTPResult3() throws Exception {
+        String exampleResult = "{ \"access_token\":\"AsT5OjbzRn430zqMLgV3Ia\" }";
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#access_token", "$..access_token");
+        Map parseResults = HTTPResultUtil.parse(exampleResult, regexpSelectorMap);
+
+        log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
+        //assertTrue(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults))
+        //assertTrue(parseResults.containsValue("AsT5OjbzRn430zqMLgV3Ia"));
+    }
+
+    @Test
+    public void testSelectingElementsFromXMLHTTPResult() throws Exception {
+        String exampleResult = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<no>" +
+                "   <cantara>" +
+                "       <base>test</base>" +
+                "   </cantara>" +
+                "</no>";
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#base", "//base");
+
+        Map parseResults = HTTPResultUtil.parse(exampleResult, regexpSelectorMap);
+
+        log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
+
+    }
+
+    @Test
     public void testRegExpElementsFromHTTPResult() throws Exception {
         String exampleResult = "FOO[DOG] = DOG\n" +
                 "FOO[CAT] = CAT";
