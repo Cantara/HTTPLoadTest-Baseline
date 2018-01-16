@@ -1,5 +1,6 @@
-package no.cantara.service.commands.oauth2;
+package no.cantara.simulator;
 
+import no.cantara.service.commands.oauth2.CommandVerifyToken;
 import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

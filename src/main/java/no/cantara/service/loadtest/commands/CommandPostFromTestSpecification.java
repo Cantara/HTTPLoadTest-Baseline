@@ -1,16 +1,15 @@
 package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import no.cantara.base.command.BaseHttpPostHystrixCommand;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
 import java.util.Random;
 
-public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand<String> {
+public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
 
-    String contentType = "text/xml;charset=UTF-8";
+    String contentType;
     static Random r = new Random();
 
     String httpAuthorizationString;
@@ -31,37 +30,39 @@ public class CommandPostFromTestSpecification extends BaseHttpPostHystrixCommand
     @Override
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
         super.dealWithRequestBeforeSend(request);
-        if (httpAuthorizationString != null && httpAuthorizationString.length() > 10) {
-            request.authorization(httpAuthorizationString);
+        if (this.httpAuthorizationString != null && this.httpAuthorizationString.length() > 10) {
+            log.info("Added authorizarion header: {}", this.httpAuthorizationString);
+            return request.authorization(this.httpAuthorizationString).contentType(contentType).send(this.template);
         }
 
         if (template.contains("soapenv:Envelope")) {
             //request.getConnection().addRequestProperty("SOAPAction", SOAP_ACTION);
         }
 
-        request.contentType(contentType).send(this.template);
-        log.trace(request.header("Authorization"));
-        return request;
+        return request.contentType(contentType).send(this.template);
     }
 
+    @Override
+    protected String dealWithFailedResponse(String responseBody, int statusCode) {
+
+        if (statusCode < 300 && statusCode >= 200) {
+            return responseBody;
+        }
+        return "StatusCode:" + statusCode + ":" + responseBody;
+
+    }
 
     @Override
     protected String getTargetPath() {
         return "";
     }
 
-    @Override
-    protected String dealWithFailedResponse(String responseBody, int statusCode) {
-        if (statusCode < 300 && statusCode >= 200) {
-            return responseBody;
-        }
-        return "StatusCode:" + statusCode + ":" + responseBody;
-    }
 
     @Override
-    protected String dealWithResponse(String response) {
+    protected String dealWithResponse(String responseBody) {
         //return "200" + ":" + super.dealWithResponse(response);
-        return super.dealWithResponse(response);
+        return responseBody;
+//        return super.dealWithResponse(response);
     }
 
 }

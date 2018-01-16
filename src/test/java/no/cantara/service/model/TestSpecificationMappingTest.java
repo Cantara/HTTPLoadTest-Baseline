@@ -2,6 +2,7 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,9 +146,14 @@ public class TestSpecificationMappingTest {
         });
         for (TestSpecification testSpecification : readTestSpec) {
             assertTrue(testSpecification.getCommand_url().length() > 0);
-            testSpecification.setCommand_template("FILE:./pom.xml");
+            //testSpecification.setCommand_template("FILE:./pom.xml");
             testSpecification.resolveVariables(null, null, null);
             assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
+            testSpecification.resolveVariables(null, null, null);
+            CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+            String result = command.execute();
+            log.warn(result);
+
         }
         //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }
