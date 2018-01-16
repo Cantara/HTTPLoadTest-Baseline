@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.cantara.service</groupId>
     <artifactId>HTTPLoadTest-baseline</artifactId>
-    <version>0.26.2</version>
+    <version>0.26.3-SNAPSHOT</version>
     <name>HTTPLoadTest-baseline</name>
     <url>https://wiki.cantara.no/</url>
 
@@ -32,7 +32,7 @@
         <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
         <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
         <url>https://wiki.cantara.no/display/architecture/Typical+micro+service+technology+stack+(java)</url>
-      <tag>HTTPLoadTest-baseline-0.26.2</tag>
+      <tag>HEAD</tag>
   </scm>
 
 
