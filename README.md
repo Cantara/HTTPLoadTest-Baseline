@@ -340,15 +340,18 @@ issues to flag bugs or new feature requests. We also love comitters and pull-req
 
 ```jshelllanguage
 mvn clean install
+#
 java -jar target/HTTPLoadTest-baseline-<version>-SNAPSHOT.jar
+#
 wget http://localhost:8086/HTTPLoadTest-baseline/health
 wget http://localhost:8086/HTTPLoadTest-baseline/config                      // UI to configure a loadTest Run
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/status             // return latest loadTests with status
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/stop               // stop all loadTests
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus         // return alle the loadTest results in json
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv     // return alle the loadTest results in csv
-
+#
 ## To download results from earlier test-runs, use /health to find the name of the test-run, and 
+#
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus?test_id=HTTPLOadTest-Health_1516003617097.json
 ```
