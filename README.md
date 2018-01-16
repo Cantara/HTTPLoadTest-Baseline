@@ -330,6 +330,12 @@ login.admin.password=adminservice
 
 # Development and Contribution
 
+HTTPLoadTest-baseline is still in its early days, but has already proven to be very useful in many sitiuations. We encourage you to
+take it for a spin. If you fork the codebase and use it as a starting poing for making your specialized version or want to contribute
+to the baseline codebase is up to you. We love feedback, so please tell us what you think and do not be afraid to use the github
+issues to flag bugs or new feature requests. We also love comitters and pull-request, so don't be shy...
+ 
+
 ### Quick build and verify
 
 ```jshelllanguage
