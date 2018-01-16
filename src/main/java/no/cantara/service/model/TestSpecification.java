@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.cantara.service.loadtest.util.TemplateUtil;
+import no.cantara.service.util.Configuration;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -170,11 +169,13 @@ public class TestSpecification implements Serializable {
 
     private void loadTemplateReference() {
         if (getCommand_template().startsWith("FILE:")) {
+            String filename = getCommand_template().substring(5, getCommand_template().length());
             try {
-                String contents = new String(Files.readAllBytes(Paths.get(getCommand_template().substring(5, getCommand_template().length()))));
+                String contents = Configuration.convertStreamToString(Configuration.loadByName(filename));
                 setCommand_template(contents);
+                log.info("loadTemplateReference - Updated FILE; filename:{}, reference with: {} \n template now: {}", filename, contents, getCommand_template());
             } catch (Exception e) {
-                log.error("Unable to load external referenced TestSpecification remplate", e);
+                log.error("loadTemplateReference - Unable to load external referenced TestSpecificationtremplate, filaname: {} exception: {}", filename, e);
             }
 
         }
@@ -191,10 +192,13 @@ public class TestSpecification implements Serializable {
         if (resolvedResultVariables != null) {
             addMapToCommand_replacement_map(resolvedResultVariables);
         }
-        log.debug("Active variables: {}", getCommand_replacement_map());
+        log.info("resolveVariables - Active variables: {}", getCommand_replacement_map());
         setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_url(), getCommand_replacement_map()));
+        log.info("resolveVariables -Updated commandURL: {}", getCommand_url());
         setCommand_http_authstring(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_http_authstring(), getCommand_replacement_map()));
+        log.info("resolveVariables - Updated command_http_authstring: {}", getCommand_http_authstring());
         setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_template(), getCommand_replacement_map()));
+        log.info("resolveVariables - Updated command_template: {}", getCommand_template());
 
 
     }

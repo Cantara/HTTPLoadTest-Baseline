@@ -51,4 +51,9 @@ public class Configuration {
         }
         return null;
     }
+
+    public static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\n");
+        return s.hasNext() ? s.next() : "";
+    }
 }
