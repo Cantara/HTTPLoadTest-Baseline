@@ -15,7 +15,7 @@ public class HTTPResultUtilTest {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void testSelectingElementsFromHTTPResult() throws Exception {
+    public void testSelectingElementsFromHJsonTTPResult() throws Exception {
         String exampleResult = "{\n" +
                 "  \"test_id\": \"TestID\",\n" +
                 "  \"test_name\": \"En liten test\",\n" +
@@ -25,19 +25,18 @@ public class HTTPResultUtilTest {
                 "  \"test_randomize_sleeptime\": true,\n" +
                 "  \"test_duration_in_seconds\": 10\n" +
                 "}";
-        String testResult = "This is Chaitanya from Beginnersbook.com.";
         Map<String, String> regexpSelectorMap = new HashMap<>();
         regexpSelectorMap.put("#testName", "$..test_name");
         regexpSelectorMap.put("#randomizeName", "$..test_randomize_sleeptime");
 
-        Map parseResults = HTTPResultUtil.parseWithJsonPath(testResult, regexpSelectorMap);
+        Map parseResults = HTTPResultUtil.parseWithJsonPath(exampleResult, regexpSelectorMap);
 
         log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
 
     }
 
     @Test
-    public void testSelectingElementsFromHTTPResult2() throws Exception {
+    public void testSelectingElementsFromJsonHTTPResult2() throws Exception {
         String exampleResult = "{\n" +
                 "  \"test_id\": \"TestID\",\n" +
                 "  \"test_name\": \"En liten test\",\n" +
@@ -47,19 +46,18 @@ public class HTTPResultUtilTest {
                 "  \"test_randomize_sleeptime\": true,\n" +
                 "  \"test_duration_in_seconds\": 10\n" +
                 "}";
-        String testResult = "This is Chaitanya from Beginnersbook.com.";
         Map<String, String> regexpSelectorMap = new HashMap<>();
         regexpSelectorMap.put("#testName", "$..test_name");
         regexpSelectorMap.put("#randomizeName", "$..test_randomize_sleeptime");
 
-        Map parseResults = HTTPResultUtil.parse(testResult, regexpSelectorMap);
+        Map parseResults = HTTPResultUtil.parse(exampleResult, regexpSelectorMap);
 
         log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
 
     }
 
     @Test
-    public void testSelectingElementsFromHTTPResult3() throws Exception {
+    public void testSelectingElementsFromJsonHTTPResult3() throws Exception {
         String exampleResult = "{ \"access_token\":\"AsT5OjbzRn430zqMLgV3Ia\" }";
         Map<String, String> regexpSelectorMap = new HashMap<>();
         regexpSelectorMap.put("#access_token", "$..access_token");
