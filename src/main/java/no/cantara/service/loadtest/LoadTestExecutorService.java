@@ -12,6 +12,7 @@ import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
 import no.cantara.service.loadtest.drivers.MyWriteRunnable;
+import no.cantara.service.loadtest.util.LoadTestThreadPool;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -30,7 +31,7 @@ import java.util.concurrent.*;
 public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorService.class);
-    public static final int THREAD_READINESS_FACTOR = 4;
+    public static final int THREAD_READINESS_FACTOR = 10;
     public static final int LOAD_TEST_RAMPDOWN_TIME_MS = 50;
     public static final String RESULT_FILE_PATH = "./results";
     private static List<LoadTestResult> unsafeList = new ArrayList<>();
@@ -44,11 +45,13 @@ public class LoadTestExecutorService {
     private static int loadTestRunNo = 0;
     private static boolean isRunning = false;
     private static LoadTestConfig activeLoadTestConfig;
-    private static ExecutorService runTaskExecutor;
+    private static LoadTestThreadPool runTaskThreadPool = new LoadTestThreadPool(7);
+
 
     private static final Map<String, Object> configMap;
 
     private static int threadsScheduled = 0;
+    private static int tasksStarted = 0;
     private static int threadPoolSize = 0;
 
     static {
@@ -226,8 +229,8 @@ public class LoadTestExecutorService {
     private static void runTask(LoadTestConfig loadTestConfig) {
         int runNo = 1;
 
-        runTaskExecutor = Executors.newFixedThreadPool(loadTestConfig.getTest_no_of_threads());
         threadPoolSize = loadTestConfig.getTest_no_of_threads();
+        runTaskThreadPool = new LoadTestThreadPool(threadPoolSize);
         int read_ratio = loadTestConfig.getTest_read_write_ratio();
 
         while (isRunning) {
@@ -238,7 +241,7 @@ public class LoadTestExecutorService {
             if ((maxRunTimeMs > LOAD_TEST_RAMPDOWN_TIME_MS) && isRunning && (threadsScheduled < (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR))) {
                 // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
                 // for long (endurance) loadtest runs
-                log.info("MaxRunInMilliSeconds: {}, LOAD_TEST_RAMPDOWN_TIME_MS:{} , threadsScheduled: {}, maxThreadsAllowed: {}", maxRunTimeMs, LOAD_TEST_RAMPDOWN_TIME_MS, threadsScheduled, (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR));
+                log.info("MaxRunInMilliSeconds: {}, LOAD_TEST_RAMPDOWN_TIME_MS:{} , threadsScheduled: {}, maxThreadsAllowed: {}, taskthreads Created: {}", maxRunTimeMs, LOAD_TEST_RAMPDOWN_TIME_MS, threadsScheduled, (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR), tasksStarted);
                 if (read_ratio == 0) {
                     String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
                     LoadTestResult loadTestResult = new LoadTestResult();
@@ -247,11 +250,13 @@ public class LoadTestExecutorService {
                     loadTestResult.setTest_run_no(runNo++);
                     Runnable worker = new MyRunnable(url, loadTestResult);
                     threadsScheduled++;
+                    tasksStarted++;
                     try {
                         runWithTimeout(new Callable<String>() {
                             @Override
                             public String call() {
-                                runTaskExecutor.execute(worker);
+                                runTaskThreadPool.execute(worker);
+                                // runTaskExecutor.execute(worker);
                                 return "";
 
                             }
@@ -267,12 +272,14 @@ public class LoadTestExecutorService {
                     loadTestResult.setTest_run_no(runNo++);
                     Runnable worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult);
                     threadsScheduled++;
+                    tasksStarted++;
 
                     try {
                         runWithTimeout(new Callable<String>() {
                             @Override
                             public String call() {
-                                runTaskExecutor.execute(worker);
+                                runTaskThreadPool.execute(worker);
+                                // runTaskExecutor.execute(worker);
                                 return "";
                             }
                         }, maxRunTimeMs, TimeUnit.MILLISECONDS);
@@ -287,11 +294,13 @@ public class LoadTestExecutorService {
                     loadTestResult.setTest_run_no(runNo++);
                     Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
                     threadsScheduled++;
+                    tasksStarted++;
                     try {
                         runWithTimeout(new Callable<String>() {
                             @Override
                             public String call() {
-                                runTaskExecutor.execute(worker);
+                                runTaskThreadPool.execute(worker);
+                                // runTaskExecutor.execute(worker);
                                 return "";
                             }
                         }, maxRunTimeMs, TimeUnit.MILLISECONDS);
@@ -318,8 +327,8 @@ public class LoadTestExecutorService {
     }
 
     private static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
-        final ExecutorService runWithTimeoutExecutor = Executors.newSingleThreadExecutor();
         if (isRunning) {
+            final ExecutorService runWithTimeoutExecutor = Executors.newSingleThreadExecutor();
             final Future<T> future = runWithTimeoutExecutor.submit(callable);
             runWithTimeoutExecutor.shutdown(); // This does not cancel the already-scheduled task.
             try {
@@ -332,6 +341,7 @@ public class LoadTestExecutorService {
                 throw e;
             } catch (ExecutionException e) {
                 //unwrap the root cause
+                future.cancel(true);
                 reduceThreadsScheduled();
                 Throwable t = e.getCause();
                 if (t instanceof Error) {
@@ -353,9 +363,9 @@ public class LoadTestExecutorService {
 
     public static void stop() {
         isRunning = false;
-        runTaskExecutor.shutdown();
         stopTime = System.currentTimeMillis();
         threadsScheduled = 0;
+        tasksStarted = 0;
         storeResultToFiles();
     }
 
@@ -369,7 +379,7 @@ public class LoadTestExecutorService {
             log.info("scheduledThreads=0");
             if (((System.currentTimeMillis() - startTime) / 1000) < activeLoadTestConfig.getTest_duration_in_seconds()) {
                 log.info("scheduledThreads=0, LoadTestRun completed");
-                stop();
+                //stop();
             }
         }
     }
@@ -385,7 +395,7 @@ public class LoadTestExecutorService {
         if (activeLoadTestConfig != null && stopTime == 0 && ((nowTimestamp - startTime) / 1000) > activeLoadTestConfig.getTest_duration_in_seconds()) {
             stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
-        if (loadTestResults == null || (whileRunning = false && isRunning == true)) {
+        if (loadTestResults == null || (whileRunning == false && isRunning == true)) {
             return "";  // We ship on empty results and if tests are running and whileRunning flag is not set
         }
         int r_deviations = 0;
