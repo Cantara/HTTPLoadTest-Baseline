@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
@@ -35,6 +37,26 @@ public class MyWriteRunnable implements Runnable {
 
     @Override
     public void run() {
+        if (!isRunning()) {
+            return;
+        }
+
+        long startTime = System.currentTimeMillis();
+        try {
+            LoadTestExecutorService.runWithTimeout(new Callable<String>() {
+                @Override
+                public String call() {
+                    execute();
+                    // runTaskExecutor.execute(worker);
+                    return "";
+                }
+            }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
+        } catch (Exception e) {
+            logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyWriteRunnable was interrupted!");
+        }
+    }
+
+    private void execute() {
         if (!isRunning()) {
             return;
         }

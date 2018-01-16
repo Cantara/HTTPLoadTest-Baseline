@@ -35,7 +35,7 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
 
     public CommandGetFromTestSpecification(TestSpecification testSpecification) {
         super(URI.create(testSpecification.getCommand_url()),
-                "hystrixCommandGetFromTestSpecification");
+                "hystrixCommandGetFromTestSpecification_" + r.nextInt(100));
         this.template = TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();

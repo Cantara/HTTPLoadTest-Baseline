@@ -274,19 +274,19 @@ public class LoadTestExecutorService {
                     threadsScheduled++;
                     tasksStarted++;
 
-                    try {
-                        runWithTimeout(new Callable<String>() {
-                            @Override
-                            public String call() {
+//                    try {
+//                        runWithTimeout(new Callable<String>() {
+//                            @Override
+//                            public String call() {
                                 runTaskThreadPool.execute(worker);
-                                // runTaskExecutor.execute(worker);
-                                return "";
-                            }
-                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
-                    } catch (Exception e) {
-                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyReadRunnable was interrupted!");
-                        LoadTestExecutorService.reduceThreadsScheduled();
-                    }
+//                                // runTaskExecutor.execute(worker);
+//                                return "";
+//                            }
+//                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
+//                    } catch (Exception e) {
+//                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyReadRunnable was interrupted!");
+//                        LoadTestExecutorService.reduceThreadsScheduled();
+//                    }
                 } else {
                     LoadTestResult loadTestResult = new LoadTestResult();
                     loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
@@ -295,19 +295,19 @@ public class LoadTestExecutorService {
                     Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
                     threadsScheduled++;
                     tasksStarted++;
-                    try {
-                        runWithTimeout(new Callable<String>() {
-                            @Override
-                            public String call() {
+//                    try {
+//                        runWithTimeout(new Callable<String>() {
+//                            @Override
+//                            public String call() {
                                 runTaskThreadPool.execute(worker);
-                                // runTaskExecutor.execute(worker);
-                                return "";
-                            }
-                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
-                    } catch (Exception e) {
-                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyWriteRunnable was interrupted!");
-                        LoadTestExecutorService.reduceThreadsScheduled();
-                    }
+//                                // runTaskExecutor.execute(worker);
+//                                return "";
+//                            }
+//                        }, maxRunTimeMs, TimeUnit.MILLISECONDS);
+//                    } catch (Exception e) {
+//                        logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyWriteRunnable was interrupted!");
+//                        LoadTestExecutorService.reduceThreadsScheduled();
+//                    }
 
                 }
             }
@@ -316,7 +316,7 @@ public class LoadTestExecutorService {
     }
 
 
-    private static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
+    public static void runWithTimeout(final Runnable runnable, long timeout, TimeUnit timeUnit) throws Exception {
         runWithTimeout(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -326,7 +326,7 @@ public class LoadTestExecutorService {
         }, timeout, timeUnit);
     }
 
-    private static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
+    public static <T> T runWithTimeout(Callable<T> callable, long timeout, TimeUnit timeUnit) throws Exception {
         if (isRunning) {
             final ExecutorService runWithTimeoutExecutor = Executors.newSingleThreadExecutor();
             final Future<T> future = runWithTimeoutExecutor.submit(callable);

@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
@@ -38,6 +40,27 @@ public class MyReadRunnable implements Runnable {
         if (!isRunning()) {
             return;
         }
+
+        long startTime = System.currentTimeMillis();
+        try {
+            LoadTestExecutorService.runWithTimeout(new Callable<String>() {
+                @Override
+                public String call() {
+                    execute();
+                    // runTaskExecutor.execute(worker);
+                    return "";
+                }
+            }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
+        } catch (Exception e) {
+            logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyReadRunnable was interrupted!");
+        }
+    }
+
+    private void execute() {
+        if (!isRunning()) {
+            return;
+        }
+
         long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();
         // Check if we should randomize sleeptime
         if (loadTestConfig.isTest_randomize_sleeptime()) {
