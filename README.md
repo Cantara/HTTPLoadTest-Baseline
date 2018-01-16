@@ -207,10 +207,11 @@ corresponding named variable.
 
 The generated variables can then be used in consequitive commands along with the variables in the command_replacement_map. If you need  a list as a result, you might 
 find the #fizzle(option:#variablename) feature handy. This will pick a random value from the returned response and substitute it in the next
-command.  As of now, only http basic-auth is supported. You can use pre-calculated  and "username/password" or "username:password" is supported.
+command.  As of now, OAUTH2 and http basic-auth is supported. You can use pre-calculated  and "username/password" or "username:password" is supported.
 
 Note: Please note that the variables are shared between the read TestSpesification and the write TestSpecification to allow sharing of data
-between the different simulated scenarios.
+between the different simulated scenarios. As the variables is inherited in strict order (global, load-test-defined, command-defined and resolved from earlier commands), 
+you might want to condider using a naming scheme for variables to avoid values beeing overwritten and thus causing problems for your test-runs.
 
 
 #### Template (command_template) and URL (command_url) special operations
@@ -344,7 +345,7 @@ wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv     // 
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus?test_id=HTTPLOadTest-Health_1516003617097.json
 ```
-* version=0.19.3 
+* version=0.28 
 
 Open in browser:  
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
