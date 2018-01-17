@@ -48,7 +48,7 @@ public class Configuration {
                 return Configuration.class.getClassLoader().getResourceAsStream(name);
             }
         } catch (Exception e) {
-            log.error("Unable to access file:{}, exception {} ", name, e);
+            log.error("Unable to access file:{}, exception: {} ", name, e);
         }
         return null;
     }
