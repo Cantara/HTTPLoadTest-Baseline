@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +107,7 @@ public class ConfigLoadTestResource {
                         "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        ReadTestSpecification:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonreadconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + Charset.forName("UTF-8").encode(jsonreadconfig) + "</textarea><br/><br/>" +
                         "        <input type=\"submit\">" +
                         "    </form>\n" +
                         "\n" +
@@ -145,7 +146,7 @@ public class ConfigLoadTestResource {
                         "  <h3>HTTPLoadTest - Write TestSpecification Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        WriteTestSpecification:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + Charset.forName("UTF-8").encode(jsonwriteconfig) + "</textarea><br/><br/>" +
                         "        <input type=\"submit\"><br/>" +
                         "    </form>\n" +
                         "\n" +
