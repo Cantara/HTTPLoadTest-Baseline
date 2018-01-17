@@ -50,9 +50,9 @@ Let's have a look at the details...
 ### Pipeline usage example
 
 ```jshelllanguage
-wget -post-data "jsonConfig=@loadTestReadSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/read"
-wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/write"
-wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
+wget -post-data "jsonConfig=@loadTestReadSpecification.json" http://localhost:28086/HTTPLoadTest-baseline/loadTest/read
+wget -post-data "jsonConfig=@loadTestWriteSpecification.json" http://localhost:28086/HTTPLoadTest-baseline/loadTest/write
+wget -post-data "jsonConfig=@loadTestConfig.json" http://localhost:28086/HTTPLoadTest-baseline/loadTest
 ##  wait until test is complete
 while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
 # get the result

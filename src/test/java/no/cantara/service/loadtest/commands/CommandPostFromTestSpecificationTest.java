@@ -3,6 +3,7 @@ package no.cantara.service.loadtest.commands;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.commands.oauth2.CommandVerifyTokenTest;
+import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.testsupport.TestServer;
@@ -78,15 +79,22 @@ public class CommandPostFromTestSpecificationTest {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+
         for (TestSpecification testSpecification : readTestSpec) {
+            testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                result = new CommandPostFromTestSpecification(testSpecification).execute();
+                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification);
+                result = commandPostFromTestSpecification.execute();
             } else {
-                result = new CommandGetFromTestSpecification(testSpecification).execute();
+                CommandGetFromTestSpecification commandGetFromTestSpecification = new CommandGetFromTestSpecification(testSpecification);
+                result = commandGetFromTestSpecification.execute();
             }
+            resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
+
             log.debug("Returned result: " + result);
         }
 
