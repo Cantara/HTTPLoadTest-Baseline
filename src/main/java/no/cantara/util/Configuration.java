@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class Configuration {
 
@@ -57,13 +54,7 @@ public class Configuration {
     }
 
     public static String loadFromDiskByName(String name) {
-        try {
-            String contents = new String(Files.readAllBytes(Paths.get(name)));
-            return contents;
-        } catch (Exception e) {
-            log.error("Unable to access file:{}, exception {} ", name, e);
-        }
-        return null;
+        return convertStreamToString(loadByName(name));
     }
 
 
@@ -77,16 +68,4 @@ public class Configuration {
         return "";
     }
 
-    public static String convertStreamToString2(java.io.InputStream is) {
-        StringWriter writer = new StringWriter();
-        String encoding = StandardCharsets.UTF_8.name();
-        try {
-            IOUtils.copy(is, writer, encoding);
-
-            return writer.toString();
-        } catch (Exception e) {
-            log.error("Unable to read inputstream ", e);
-        }
-        return "";
-    }
 }
