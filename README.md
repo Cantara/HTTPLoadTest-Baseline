@@ -327,6 +327,23 @@ login.admin.password=adminservice
 # loadtest.breakflowonfailure=true
 ```
 
+# Setting benchmarks for your load-test run
+```json
+{
+  "benchmark_id": "BenchmarkID",
+  "benchmark_req_sucessrate_percent": 99,
+  "benchmark_req_mean_read_duration_ms": 1010,
+  "benchmark_req_mean_write_duration_ms": 1020,
+  "benchmark_req_90percentile_read_duration_ms": 910,
+  "benchmark_req_90percentile_write_duration_ms": 920
+}
+```
+
+The HTTPLoadTest-baseline comes with a pre-configured benchmark for load-test runs, which is defined in DefaultLoadTestBenchmark.json. We will soon add support
+to post your own benchmarks and add a URI to expose the result of the evaluation of the last load-test run for easy integration to your automated QA processes. If
+you want to play with it, you'll find the result of the evaluation in /health. 
+
+
 * [Clustering HTTPLoadTest-baseline](CLUSTERING.md)
 
 
