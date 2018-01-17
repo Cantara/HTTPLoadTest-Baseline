@@ -103,7 +103,7 @@ public class MyReadRunnable implements Runnable {
                         result = command.execute();
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
-                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") -");
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                         }
                         if (command.isResponseRejected()) {
                             loadTestResult.setTest_deviation_flag(true);
@@ -114,7 +114,7 @@ public class MyReadRunnable implements Runnable {
                         result = command.execute();
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
-                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") -");
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                         }
                         if (command.isResponseRejected()) {
                             loadTestResult.setTest_deviation_flag(true);
@@ -128,7 +128,7 @@ public class MyReadRunnable implements Runnable {
 //            log.trace("Returned result: " + result);
                 if (result == null || result.startsWith("StatusCode:")) {
                     loadTestResult.setTest_success(false);
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") -");
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                 } else {
                     loadTestResult.setTest_success(true);
                     resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
