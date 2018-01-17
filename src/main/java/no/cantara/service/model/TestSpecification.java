@@ -183,6 +183,7 @@ public class TestSpecification implements Serializable {
         }
     }
 
+
     public void resolveVariables(Map<String, String> globalMap, Map<String, String> inheritedVariables, Map<String, String> resolvedResultVariables) {
         loadTemplateReference();
         if (globalMap != null) {
