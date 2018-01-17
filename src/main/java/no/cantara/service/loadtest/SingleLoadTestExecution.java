@@ -14,11 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
@@ -44,7 +40,7 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     private long startTime = System.currentTimeMillis();
     private long stopTime = 0;
     private Thread schedulingThread = null;
-    private boolean isRunning = true;
+    private boolean isRunning = false;
 
     public SingleLoadTestExecution(List<TestSpecification> readTestSpecificationList,
                                    List<TestSpecification> writeTestSpecificationList,
@@ -77,8 +73,8 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
             this.startTime = System.currentTimeMillis();
             startTime = this.startTime;
             schedulingThread = Thread.currentThread();
+            isRunning = true;
         }
-
         final int test_duration_in_seconds = loadTestConfig.getTest_duration_in_seconds();
 
         scheduleAsyncStopAfterDuration((1000 * test_duration_in_seconds) - LOAD_TEST_RAMPDOWN_TIME_MS);

@@ -52,7 +52,7 @@ public class LoadTestResultUtil {
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {
             LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
-        if (loadTestResults == null || (whileRunning == false && LoadTestExecutorService.isRunning() == true)) {
+        if (loadTestResults == null || LoadTestExecutorService.isRunning()) {
             log.info("hasPassedBenchmark skipped - failed");
             return false;  // We ship on empty results and if tests are running and whileRunning flag is not set
         }
@@ -229,13 +229,13 @@ public class LoadTestResultUtil {
             Collections.sort(w_times);
             w_ninety_percentine_success = w_times.get(w_times.size() * 9 / 10);
         }
-        stats = stats + "\n" + String.format(" %4d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results, r_success, (r_results - r_success), r_deviations);
-        stats = stats + "\n" + String.format(" %4d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
-        stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
-        stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, r_success + w_success + success, (r_results + w_results + results) - (r_success + w_success + success), r_deviations + w_deviations + deviations);
-        stats = stats + "\n" + String.format(" %4d tasks scheduled, number of threads configured: %d,  isRunning: %b ", LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
-        stats = stats + "\n" + String.format(" %4d ms mean duraction for successful read tests, %4d ms ninety percentile successful read tests ", r_mean_success, r_ninety_percentine_success);
-        stats = stats + "\n" + String.format(" %4d ms mean duraction for successful write tests, %4d ms ninety percentile successful write tests ", w_mean_success, w_ninety_percentine_success);
+        stats = stats + "\n" + String.format(" %5d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results, r_success, (r_results - r_success), r_deviations);
+        stats = stats + "\n" + String.format(" %5d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
+        stats = stats + "\n" + String.format(" %5d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
+        stats = stats + "\n" + String.format(" %5d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, r_success + w_success + success, (r_results + w_results + results) - (r_success + w_success + success), r_deviations + w_deviations + deviations);
+        stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ", LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
+        stats = stats + "\n" + String.format(" %5d ms mean duraction for successful read tests, %4d ms ninety percentile successful read tests ", r_mean_success, r_ninety_percentine_success);
+        stats = stats + "\n" + String.format(" %5d ms mean duraction for successful write tests, %4d ms ninety percentile successful write tests ", w_mean_success, w_ninety_percentine_success);
 
         String loadTestJson = "";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null) {

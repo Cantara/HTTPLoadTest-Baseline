@@ -40,7 +40,7 @@ public class LoadTestExecutorServiceTest {
 
     }
 
-    @Test(priority = 99, enabled = false)
+    @Test(priority = 99, enabled = true)
     public void executeAsyncTestConfigFromFile() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
@@ -52,7 +52,7 @@ public class LoadTestExecutorServiceTest {
         LoadTestExecutorService.executeLoadTest(fileLoadtest, true);
         long endTime = System.currentTimeMillis();
 
-        Thread.sleep(20000);
+        Thread.sleep(2000);
 
         List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
 //        log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));

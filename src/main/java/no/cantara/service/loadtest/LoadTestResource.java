@@ -22,7 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import java.util.Map;
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
 import static no.cantara.util.Configuration.loadByName;
+import static no.cantara.util.Configuration.loadFromDiskByName;
 
 /**
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-09-12.
@@ -58,8 +58,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response startLoadTest(@RequestBody String json) {
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
@@ -83,8 +83,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response startLoadTestForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked startLoadTestForm with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
@@ -109,8 +109,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form/read")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateReadTestSpecificationForm with {}", json);
         try {
@@ -127,8 +127,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form/write")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateWriteTestSpecificationForm with {}", json);
 
@@ -146,8 +146,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form/select")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
         log.trace("Invoked updateSelectedTestSpecificationForm with {}", testSpecificationNumber);
 
@@ -158,9 +158,9 @@ public class LoadTestResource {
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    InputStream file = loadByName(configuredTests.get(testSpecificationEntry));
+                    String filecontent = loadFromDiskByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> readTestSpec = new ArrayList<>();
-                    readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                    readTestSpec = mapper.readValue(filecontent, new TypeReference<List<TestSpecification>>() {
                     });
                     String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
 
@@ -171,9 +171,9 @@ public class LoadTestResource {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
 //                    File file = new File(configuredTests.get(testSpecificationEntry));
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    InputStream file = loadByName(configuredTests.get(testSpecificationEntry));
+                    String filecontent = loadFromDiskByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> writeTestSpec = new ArrayList<>();
-                    writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                    writeTestSpec = mapper.readValue(filecontent, new TypeReference<List<TestSpecification>>() {
                     });
                     String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
 
@@ -192,30 +192,30 @@ public class LoadTestResource {
 
     @GET
     @Path("/status")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getAllLoadTestsStatusJson() {
         return getAllLoadTests();
     }
 
     @GET
     @Path("/runstatus")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getRunStatusJson() {
         boolean isRunning = LoadTestExecutorService.isRunning();
         if (isRunning) {
-            return Response.status(Response.Status.fromStatusCode(102)).build();
+            return Response.status(409).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"testing in progress\"}").build();
         }
         boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultList(), false);
         if (runSuccess) {
-            return Response.ok("{\"runstatus\":\"success\"").build();
+            return Response.ok("{\"runstatus\":\"success\"}").build();
         }
-        return Response.status(Response.Status.fromStatusCode(422)).build();
+        return Response.status(422).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"fail\"}").build();
     }
 
 
     @GET
     @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getAllLoadTests() {
         log.trace("getAllLoadTests");
         String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
@@ -233,7 +233,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/stop")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response stopLoadTests() {
         LoadTestExecutorService.stop();
         return Response.ok().build();
@@ -242,7 +242,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/fullstatus")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getStatusForLoadTestInstance(@PathParam("test_id") String test_run_filename) {
         log.trace("getStatusForLoadTestInstances loadTestId={}", test_run_filename);
 
@@ -258,7 +258,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/fullstatus_csv")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getCSVStatusForLoadTestInstance(@PathParam("test_id") String test_run_filename) {
         log.trace("getStatusForLoadTestInstances loadTestId={}", test_run_filename);
 

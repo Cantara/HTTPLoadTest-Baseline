@@ -32,10 +32,8 @@ the quality of produces software by making it less "expensive" to add this type 
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
-Open in browser:  
+Then open the simple UI in a web browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
-
-
 
 
 ### Example-oriented documentation to get familiar with the application
@@ -52,11 +50,12 @@ Let's have a look at the details...
 ### Pipeline usage example
 
 ```jshelllanguage
-wget -post-data "jsonConfig=@loadTestReadSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/read"
-wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/write"
-wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
-##  wait and get the result
-sleep 40s
+wget -post-data "jsonConfig=@loadTestReadSpecification.json" http://localhost:28086/HTTPLoadTest-baseline/loadTest/read
+wget -post-data "jsonConfig=@loadTestWriteSpecification.json" http://localhost:28086/HTTPLoadTest-baseline/loadTest/write
+wget -post-data "jsonConfig=@loadTestConfig.json" http://localhost:28086/HTTPLoadTest-baseline/loadTest
+##  wait until test is complete
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
+# get the result
 wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
 wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus
