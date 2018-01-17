@@ -42,6 +42,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
     public static final String APPLICATION_PATH_FORM_SELECT = "/loadTest/form/select";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
+    public static final String APPLICATION_PATH_RUNSTATUS = "/loadTest/runstatus";
     public static final String APPLICATION_PATH_FULLSTATUS = "/loadTest/fullstatus";
     public static final String APPLICATION_PATH_FULLSTATUS_CSV = "/loadTest/fullstatus_csv";
     public static final String APPLICATION_PATH_STOP = "/loadTest/stop";
@@ -195,6 +196,22 @@ public class LoadTestResource {
     public Response getAllLoadTestsStatusJson() {
         return getAllLoadTests();
     }
+
+    @GET
+    @Path("/runstatus")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRunStatusJson() {
+        boolean isRunning = LoadTestExecutorService.isRunning();
+        if (isRunning) {
+            return Response.status(Response.Status.PRECONDITION_REQUIRED).build();
+        }
+        boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultList(), false);
+        if (runSuccess) {
+            return Response.ok("{\"runstatus\":\"success\"").build();
+        }
+        return Response.status(Response.Status.PRECONDITION_FAILED).build();
+    }
+
 
     @GET
     @Path("/")
