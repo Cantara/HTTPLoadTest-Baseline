@@ -1,6 +1,5 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.HTTPResultUtil;
@@ -126,7 +125,7 @@ public class MyReadRunnable implements Runnable {
                     log.error("Unable to instansiate TestSpecification", e);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":Unable to instansiate TestSpecification(" + first50(e.getMessage()) + ") -");
                 }
-//            log.trace("Returned result: " + result);
+                log.info("Returned result: " + result);
                 if (result == null || result.startsWith("StatusCode:")) {
                     loadTestResult.setTest_success(false);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -134,7 +133,7 @@ public class MyReadRunnable implements Runnable {
                     loadTestResult.setTest_success(true);
                     resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
                     log.info("Resolved variables: {}", resolvedResultVariables);
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:vars(" + resolvedResultVariables + ") - ");
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first150(result) + ") -:vars(" + resolvedResultVariables + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                 }
 
             }

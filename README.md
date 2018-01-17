@@ -55,8 +55,9 @@ Let's have a look at the details...
 wget -post-data "jsonConfig=@loadTestReadSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/read"
 wget -post-data "jsonConfig=@loadTestWriteSpecification.json http://localhost:28086/HTTPLoadTest-baseline/loadTest/write"
 wget -post-data "jsonConfig=@loadTestConfig.json http://localhost:28086/HTTPLoadTest-baseline/loadTest"
-##  wait and get the result
-sleep 40s
+##  wait until test is complete
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
+# get the result
 wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
 wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus

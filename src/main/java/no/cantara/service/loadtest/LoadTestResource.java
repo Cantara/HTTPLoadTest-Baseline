@@ -203,13 +203,13 @@ public class LoadTestResource {
     public Response getRunStatusJson() {
         boolean isRunning = LoadTestExecutorService.isRunning();
         if (isRunning) {
-            return Response.status(Response.Status.fromStatusCode(102)).build();
+            return Response.status(409).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"testing in progress\"}").build();
         }
         boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultList(), false);
         if (runSuccess) {
-            return Response.ok("{\"runstatus\":\"success\"").build();
+            return Response.ok("{\"runstatus\":\"success\"}").build();
         }
-        return Response.status(Response.Status.fromStatusCode(422)).build();
+        return Response.status(422).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"fail\"}").build();
     }
 
 
