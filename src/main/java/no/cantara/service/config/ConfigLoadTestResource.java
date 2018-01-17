@@ -7,7 +7,7 @@ import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.model.TestSpecificationLoader;
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

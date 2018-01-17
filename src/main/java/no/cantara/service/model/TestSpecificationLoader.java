@@ -1,6 +1,6 @@
 package no.cantara.service.model;
 
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

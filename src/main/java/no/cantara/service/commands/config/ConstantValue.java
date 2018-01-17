@@ -1,6 +1,6 @@
 package no.cantara.service.commands.config;
 
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 
 public class ConstantValue {
 

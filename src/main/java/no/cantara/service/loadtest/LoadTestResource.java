@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
-import static no.cantara.service.util.Configuration.loadByName;
+import static no.cantara.util.Configuration.loadByName;
 
 /**
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-09-12.

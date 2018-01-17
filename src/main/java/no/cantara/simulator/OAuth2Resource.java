@@ -1,7 +1,7 @@
 package no.cantara.simulator;
 
 import no.cantara.service.commands.oauth2.CommandVerifyToken;
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;

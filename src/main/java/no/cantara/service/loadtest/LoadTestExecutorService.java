@@ -17,7 +17,7 @@ import no.cantara.service.loadtest.util.TimedProcessingUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

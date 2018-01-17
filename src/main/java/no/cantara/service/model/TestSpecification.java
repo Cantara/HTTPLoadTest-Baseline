@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.cantara.service.loadtest.util.TemplateUtil;
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,6 +156,7 @@ public class TestSpecification implements Serializable {
         this.command_http_authstring = command_http_authstring;
     }
 
+
     public Map<String, String> getCommand_response_map() {
         if (command_response_map == null) {
             command_response_map = new HashMap<>();
@@ -208,6 +209,19 @@ public class TestSpecification implements Serializable {
         return "TestSpecification{" +
                 "command_url='" + command_url + '\'' +
                 ", command_http_post=" + command_http_post +
+                '}';
+    }
+
+    public String toLongString() {
+        return "TestSpecification{" +
+                "command_url='" + command_url + '\'' +
+                ", command_contenttype='" + command_contenttype + '\'' +
+                ", command_http_authstring='" + command_http_authstring + '\'' +
+                ", command_http_post=" + command_http_post +
+                ", command_timeout_milliseconds=" + command_timeout_milliseconds +
+                ", command_template='" + command_template + '\'' +
+                ", command_replacement_map=" + command_replacement_map +
+                ", command_response_map=" + command_response_map +
                 '}';
     }
 }

@@ -2,7 +2,7 @@ package no.cantara.service.health;
 
 import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
-import no.cantara.service.util.Configuration;
+import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -24,7 +24,7 @@ public class TestSpecificationLoaderTest {
         Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
         for (String testSpecificationEntry : configuredTests.keySet()) {
-            InputStream file = no.cantara.service.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
+            InputStream file = no.cantara.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
             List<TestSpecification> readTestSpec = new ArrayList<>();
             readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
             });
