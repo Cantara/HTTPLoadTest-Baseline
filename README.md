@@ -32,10 +32,8 @@ the quality of produces software by making it less "expensive" to add this type 
 sudo docker run -d -p 28086:8086  cantara/httploadtest-baseline
 wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
-Open in browser:  
+Then open the simple UI in a web browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
-
-
 
 
 ### Example-oriented documentation to get familiar with the application
