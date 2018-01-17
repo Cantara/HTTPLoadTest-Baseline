@@ -22,13 +22,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
+import static no.cantara.util.Configuration.convertStreamToString;
 import static no.cantara.util.Configuration.loadByName;
 
 /**
@@ -158,9 +158,9 @@ public class LoadTestResource {
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    InputStream file = loadByName(configuredTests.get(testSpecificationEntry));
+                    String filecontent = convertStreamToString(loadByName(configuredTests.get(testSpecificationEntry)));
                     List<TestSpecification> readTestSpec = new ArrayList<>();
-                    readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                    readTestSpec = mapper.readValue(filecontent, new TypeReference<List<TestSpecification>>() {
                     });
                     String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
 
@@ -171,9 +171,9 @@ public class LoadTestResource {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
 //                    File file = new File(configuredTests.get(testSpecificationEntry));
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    InputStream file = loadByName(configuredTests.get(testSpecificationEntry));
+                    String filecontent = convertStreamToString(loadByName(configuredTests.get(testSpecificationEntry)));
                     List<TestSpecification> writeTestSpec = new ArrayList<>();
-                    writeTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                    writeTestSpec = mapper.readValue(filecontent, new TypeReference<List<TestSpecification>>() {
                     });
                     String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
 
