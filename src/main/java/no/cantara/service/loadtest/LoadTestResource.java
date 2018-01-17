@@ -28,8 +28,8 @@ import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
-import static no.cantara.util.Configuration.convertStreamToString;
 import static no.cantara.util.Configuration.loadByName;
+import static no.cantara.util.Configuration.loadFromDiskByName;
 
 /**
  * @author <a href="mailto:erik-dev@fjas.no">Erik Drolshammer</a> 2015-09-12.
@@ -158,7 +158,7 @@ public class LoadTestResource {
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    String filecontent = convertStreamToString(loadByName(configuredTests.get(testSpecificationEntry)));
+                    String filecontent = loadFromDiskByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> readTestSpec = new ArrayList<>();
                     readTestSpec = mapper.readValue(filecontent, new TypeReference<List<TestSpecification>>() {
                     });
@@ -171,7 +171,7 @@ public class LoadTestResource {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".writefilename")) {
 //                    File file = new File(configuredTests.get(testSpecificationEntry));
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
-                    String filecontent = convertStreamToString(loadByName(configuredTests.get(testSpecificationEntry)));
+                    String filecontent = loadFromDiskByName(configuredTests.get(testSpecificationEntry));
                     List<TestSpecification> writeTestSpec = new ArrayList<>();
                     writeTestSpec = mapper.readValue(filecontent, new TypeReference<List<TestSpecification>>() {
                     });
