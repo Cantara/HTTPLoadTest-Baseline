@@ -55,7 +55,9 @@ public class ConfigLoadTestResource {
         }
         String response =
                 "<html>" +
-                        "  <body>\n" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>  <body>\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
@@ -97,6 +99,9 @@ public class ConfigLoadTestResource {
 
         String response =
                 "<html>" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>" +
                         "  <body>\n" +
                         "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
@@ -133,7 +138,10 @@ public class ConfigLoadTestResource {
         }
         String response =
                 "<html>" +
-                        "  <body>\n" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>  " +
+                        "<body>\n" +
                         "  <h3>HTTPLoadTest - Write TestSpecification Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        WriteTestSpecification:<br/>" +
@@ -169,6 +177,9 @@ public class ConfigLoadTestResource {
 
         String response =
                 "<html>" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>" +
                         "  <body>\n" +
                         "  <h3>HTTPLoadTest - Select pre-configured TestSpecification Configuration</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_SELECT + "\" method=\"POST\" '>" +

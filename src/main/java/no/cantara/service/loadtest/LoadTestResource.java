@@ -58,8 +58,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response startLoadTest(@RequestBody String json) {
         log.trace("Invoked startLoadTest with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
@@ -83,8 +83,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response startLoadTestForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked startLoadTestForm with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
@@ -109,8 +109,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form/read")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateReadTestSpecificationForm with {}", json);
         try {
@@ -127,8 +127,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form/write")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateWriteTestSpecificationForm with {}", json);
 
@@ -146,8 +146,8 @@ public class LoadTestResource {
 
     @POST
     @Path("/form/select")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
         log.trace("Invoked updateSelectedTestSpecificationForm with {}", testSpecificationNumber);
 
@@ -192,14 +192,14 @@ public class LoadTestResource {
 
     @GET
     @Path("/status")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getAllLoadTestsStatusJson() {
         return getAllLoadTests();
     }
 
     @GET
     @Path("/runstatus")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getRunStatusJson() {
         boolean isRunning = LoadTestExecutorService.isRunning();
         if (isRunning) {
@@ -215,7 +215,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getAllLoadTests() {
         log.trace("getAllLoadTests");
         String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
@@ -233,7 +233,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/stop")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response stopLoadTests() {
         LoadTestExecutorService.stop();
         return Response.ok().build();
@@ -242,7 +242,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/fullstatus")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getStatusForLoadTestInstance(@PathParam("test_id") String test_run_filename) {
         log.trace("getStatusForLoadTestInstances loadTestId={}", test_run_filename);
 
@@ -258,7 +258,7 @@ public class LoadTestResource {
 
     @GET
     @Path("/fullstatus_csv")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getCSVStatusForLoadTestInstance(@PathParam("test_id") String test_run_filename) {
         log.trace("getStatusForLoadTestInstances loadTestId={}", test_run_filename);
 

@@ -55,8 +55,9 @@ public class Configuration {
     }
 
     public static String convertStreamToString(java.io.InputStream is) {
+        String encoding = StandardCharsets.UTF_8.name();
         try {
-            return IOUtils.toString(is);
+            return IOUtils.toString(is, encoding);
         } catch (Exception e) {
             log.error("Unable to read inputstream ", e);
         }
