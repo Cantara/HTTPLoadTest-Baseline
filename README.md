@@ -320,9 +320,11 @@ GlobalVariable.2.value=PDC-10
 If you want to add basic authentication to HTTLLoadTest, just add the following to config_override/application_override.properties
 ```properties
 loadtest.basicauth=true
-
+#
 login.admin.user=admin
 login.admin.password=adminservice
+#
+# loadtest.breakflowonfailure=true
 ```
 
 * [Clustering HTTPLoadTest-baseline](CLUSTERING.md)

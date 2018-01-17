@@ -127,4 +127,14 @@ public class HTTPResultUtil {
         }
         return s;
     }
+
+    public static String first150(String s) {
+        if (s == null) {
+            return s;
+        }
+        if (s.length() > 50) {
+            return s.substring(0, 50);
+        }
+        return s;
+    }
 }

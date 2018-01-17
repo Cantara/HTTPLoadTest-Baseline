@@ -8,6 +8,7 @@ import no.cantara.service.loadtest.util.TimedProcessingUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
+import no.cantara.service.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
 
 public class MyWriteRunnable implements Runnable {
@@ -26,6 +28,7 @@ public class MyWriteRunnable implements Runnable {
     private static Random r = new Random();
     private final LoadTestResult loadTestResult;
     private final LoadTestConfig loadTestConfig;
+    private static final boolean BREAK_ON_FAILURE = Configuration.getBoolean("loadtest.breakflowonfailure");
     private static final Logger log = LoggerFactory.getLogger(MyWriteRunnable.class);
 
     public MyWriteRunnable(List<TestSpecification> testSpecificationList, LoadTestConfig loadTestConfig, LoadTestResult loadTestResult) {
@@ -96,7 +99,7 @@ public class MyWriteRunnable implements Runnable {
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") -");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
@@ -107,7 +110,7 @@ public class MyWriteRunnable implements Runnable {
                     result = command.execute();
                     if (!command.isSuccessfulExecution()) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") -");
                     }
                     if (command.isResponseRejected()) {
                         loadTestResult.setTest_deviation_flag(true);
@@ -117,7 +120,7 @@ public class MyWriteRunnable implements Runnable {
 //            log.trace("Returned result: " + result);
                 if (result == null || result.startsWith("StatusCode:")) {
                     loadTestResult.setTest_success(false);
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first50(result) + ") -");
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") -");
                 } else {
                     loadTestResult.setTest_success(true);
                     resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
@@ -125,6 +128,11 @@ public class MyWriteRunnable implements Runnable {
                     log.info("Resolved variables: {} result: {} from command_response_map: {}", resolvedResultVariables, result, testSpecification.getCommand_response_map());
                 }
             }
+            // We break the flow if one step fail
+            if (!loadTestResult.isTest_success() && BREAK_ON_FAILURE) {
+                break;
+            }
+
         }
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
