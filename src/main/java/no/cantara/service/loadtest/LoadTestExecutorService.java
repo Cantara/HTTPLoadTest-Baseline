@@ -7,13 +7,6 @@ import com.hazelcast.config.XmlConfigBuilder;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.netflix.hystrix.HystrixCommandProperties;
-import no.cantara.service.Main;
-import no.cantara.service.loadtest.drivers.MyReadRunnable;
-import no.cantara.service.loadtest.drivers.MyRunnable;
-import no.cantara.service.loadtest.drivers.MyWriteRunnable;
-import no.cantara.service.loadtest.util.LoadTestResultUtil;
-import no.cantara.service.loadtest.util.LoadTestThreadPool;
-import no.cantara.service.loadtest.util.TimedProcessingUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -22,38 +15,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LoadTestExecutorService {
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorService.class);
-    public static final int THREAD_READINESS_FACTOR = 10;
-    public static final int LOAD_TEST_RAMPDOWN_TIME_MS = 50;
+
     public static final String RESULT_FILE_PATH = "./results";
-    private static List<LoadTestResult> unsafeList = new ArrayList<>();
-    private static List<LoadTestResult> resultList;// = Collections.synchronizedList(unsafeList);
-    private static List<TestSpecification> readTestSpecificationList;
-    private static List<TestSpecification> writeTestSpecificationList;
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final Random r = new Random();
-    private static long startTime = System.currentTimeMillis();
-    private static long stopTime = 0;
 
-    private static int loadTestRunNo = 0;
-    private static boolean isRunning = false;
-    private static LoadTestConfig activeLoadTestConfig;
-    private static LoadTestThreadPool runTaskThreadPool = new LoadTestThreadPool(7);
+    private static final AtomicReference<List<LoadTestResult>> unsafeList = new AtomicReference<>(new ArrayList<>());
+    private static final AtomicReference<List<LoadTestResult>> resultList = new AtomicReference<>();
+    private static final AtomicReference<List<TestSpecification>> readTestSpecificationList = new AtomicReference<>();
+    private static final AtomicReference<List<TestSpecification>> writeTestSpecificationList = new AtomicReference<>();
 
+    private static final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
+    private static final AtomicInteger loadTestRunNo = new AtomicInteger(0);
+    private static final AtomicReference<LoadTestConfig> activeLoadTestConfig = new AtomicReference<>();
+
+    private static final AtomicReference<SingleLoadTestExecution> activeSingleLoadTestExecution = new AtomicReference<>();
 
     private static final Map<String, Object> configMap;
 
-    private static int threadsScheduled = 0;
-    private static int tasksStarted = 0;
-    private static int threadPoolSize = 0;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
 
@@ -66,27 +59,27 @@ public class LoadTestExecutorService {
             hazelcastConfig.setProperty("hazelcast.logging.type", "slf4j");
             HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(hazelcastConfig);
 
-            resultList = hazelcastInstance.getList("results");
-            log.info("Connecting to list {} - map size: {}", "results", resultList.size());
+            resultList.set(hazelcastInstance.getList("results"));
+            log.info("Connecting to list {} - map size: {}", "results", resultList.get().size());
             configMap = hazelcastInstance.getMap("configmap");
             log.info("Connecting to map {} - map size: {}", "config", configMap.size());
         } else {
-            resultList = Collections.synchronizedList(unsafeList);
-            configMap = new HashMap<>();
+            resultList.set(Collections.synchronizedList(unsafeList.get()));
+            configMap = Collections.synchronizedMap(new HashMap<>());
         }
         if (configMap.size() == 0) {
             try {
 
                 InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
-                readTestSpecificationList = mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
-                });
-                String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
+                readTestSpecificationList.set(mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
+                }));
+                String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList.get());
                 log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
                 InputStream wis = Configuration.loadByName("DefaultWriteTestSpecification.json");
 
-                writeTestSpecificationList = mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
-                });
-                String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
+                writeTestSpecificationList.set(mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
+                }));
+                String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList.get());
                 log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
 
                 updateSpecMap();
@@ -97,21 +90,32 @@ public class LoadTestExecutorService {
             getSpecFromMap();
         }
 
+        LoadTestConfig zeroTestConfig = new LoadTestConfig();
+        zeroTestConfig.setTest_id("zero");
+        zeroTestConfig.setTest_duration_in_seconds(0);
+        zeroTestConfig.setTest_global_variables_map(new HashMap<>());
+        zeroTestConfig.setTest_name("Zero");
+        zeroTestConfig.setTest_no_of_threads(1);
+        zeroTestConfig.setTest_randomize_sleeptime(false);
+        zeroTestConfig.setTest_read_write_ratio(80);
+        zeroTestConfig.setTest_sleep_in_ms(1);
+        activeLoadTestConfig.set(zeroTestConfig);
+        activeSingleLoadTestExecution.set(new SingleLoadTestExecution(readTestSpecificationList.get(), writeTestSpecificationList.get(), zeroTestConfig, loadTestRunNo.get()));
     }
 
     private static void getSpecFromMap() {
         if (Configuration.getBoolean("loadtest.cluster")) {
-            readTestSpecificationList = (List<TestSpecification>) configMap.get("readTestSpecificationList");
-            writeTestSpecificationList = (List<TestSpecification>) configMap.get("writeTestSpecificationList");
-            activeLoadTestConfig = (LoadTestConfig) configMap.get("activeLoadTestConfig");
+            readTestSpecificationList.set((List<TestSpecification>) configMap.get("readTestSpecificationList"));
+            writeTestSpecificationList.set((List<TestSpecification>) configMap.get("writeTestSpecificationList"));
+            activeLoadTestConfig.set((LoadTestConfig) configMap.get("activeLoadTestConfig"));
         }
     }
 
     private static void updateSpecMap() {
         if (Configuration.getBoolean("loadtest.cluster")) {
-            configMap.put("readTestSpecificationList", readTestSpecificationList);
-            configMap.put("writeTestSpecificationList", writeTestSpecificationList);
-            configMap.put("activeLoadTestConfig", activeLoadTestConfig);
+            configMap.put("readTestSpecificationList", readTestSpecificationList.get());
+            configMap.put("writeTestSpecificationList", writeTestSpecificationList.get());
+            configMap.put("activeLoadTestConfig", activeLoadTestConfig.get());
         }
     }
 
@@ -119,7 +123,7 @@ public class LoadTestExecutorService {
     public static String getReadTestSpecificationListJson() {
         String result = "[]";
         try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList.get());
 
         } catch (Exception e) {
             log.error("Unable to create json of readTestSpecification", e);
@@ -130,7 +134,7 @@ public class LoadTestExecutorService {
     public static String getWriteTestSpecificationListJson() {
         String result = "[]";
         try {
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList);
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList.get());
 
         } catch (Exception e) {
             log.error("Unable to create json of writeTestSpecification", e);
@@ -139,199 +143,92 @@ public class LoadTestExecutorService {
     }
 
     public static void setReadTestSpecificationList(List<TestSpecification> readTestSpecificationList) {
-        LoadTestExecutorService.readTestSpecificationList = readTestSpecificationList;
+        LoadTestExecutorService.readTestSpecificationList.set(readTestSpecificationList);
         updateSpecMap();
 
-    }
-
-    public static List<TestSpecification> getReadTestSpecificationList() {
-        return readTestSpecificationList;
-    }
-
-    public static List<TestSpecification> getWriteTestSpecificationList() {
-        return writeTestSpecificationList;
     }
 
     public static void setWriteTestSpecificationList(List<TestSpecification> writeTestSpecificationList) {
-        LoadTestExecutorService.writeTestSpecificationList = writeTestSpecificationList;
+        LoadTestExecutorService.writeTestSpecificationList.set(writeTestSpecificationList);
         updateSpecMap();
 
     }
 
-    public static synchronized void addResult(LoadTestResult loadTestResult) {
-        resultList.add(loadTestResult);
-        reduceThreadsScheduled();
+    static void addResult(LoadTestResult loadTestResult) {
+        resultList.get().add(loadTestResult);
     }
 
-
     public static List getResultList() {
-        return resultList;
+        return resultList.get();
     }
 
     public static List getLatestResultList() {
+        List<LoadTestResult> resultList = LoadTestExecutorService.resultList.get();
+        // TODO this just picks the last 50 entires and returns as "lastest result list", is this correct?
         return resultList.subList(Math.max(resultList.size() - 50, 0), resultList.size());
     }
 
-    public static synchronized void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
+    public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
         /**
          * IExecutorService executor = hz.getExecutorService("executor");
          for (Integer key : map.keySet())
          executor.executeOnKeyOwner(new YourBigTask(), key);
          */
-        unsafeList = new ArrayList<>();
-        resultList = Collections.synchronizedList(unsafeList);
+        unsafeList.set(new ArrayList<>());
+        resultList.set(Collections.synchronizedList(unsafeList.get())); // TODO Should this not be a hazelcast list when running in cluster?
         HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
-        loadTestRunNo++;
-        activeLoadTestConfig = loadTestConfig;
+        loadTestRunNo.incrementAndGet();
+        activeLoadTestConfig.set(loadTestConfig);
         updateSpecMap();
 
-        long loadtestStartTimestamp = System.currentTimeMillis();
-        isRunning = true;
-        log.info("LoadTest {} started, max running time: {} secomnds", activeLoadTestConfig.getTest_id(), activeLoadTestConfig.getTest_duration_in_seconds());
+        log.info("LoadTest {} started, max running time: {} seconds", loadTestConfig.getTest_id(), loadTestConfig.getTest_duration_in_seconds());
+
+        activeSingleLoadTestExecution.set(new SingleLoadTestExecution(readTestSpecificationList.get(), writeTestSpecificationList.get(), loadTestConfig, loadTestRunNo.get()));
+
         if (asNewThread) {
             ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
             loadTestExecutor.submit(new Callable<Object>() {
                                         @Override
                                         public Object call() throws Exception {
-                                            runLoadTest(loadTestConfig);  //runnable.run();
+                                            activeSingleLoadTestExecution.get().runLoadTest();
                                             return null;
                                         }
                                     }
             );
         } else {
-            runLoadTest(loadTestConfig);
+            activeSingleLoadTestExecution.get().runLoadTest();
         }
-        log.info("LoadTest {} completed, ran for {} seconds, max running time: {} seconds", activeLoadTestConfig.getTest_id(), (System.currentTimeMillis() - loadtestStartTimestamp) / 1000, activeLoadTestConfig.getTest_duration_in_seconds());
     }
-
-
-    private static void runLoadTest(LoadTestConfig loadTestConfig) {
-
-        startTime = System.currentTimeMillis();
-        stopTime = 0;
-        try {
-            TimedProcessingUtil.runWithTimeout(new Callable<String>() {
-                @Override
-                public String call() {
-                    logTimedCode(startTime, loadTestConfig.getTest_id() + " - starting processing! max duration:" + loadTestConfig.getTest_duration_in_seconds());
-                    runTask(loadTestConfig);
-                    logTimedCode(startTime, loadTestConfig.getTest_id() + " - processing completed!");
-                    return "";
-                }
-            }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
-        } catch (Exception e) {
-            log.error("Exception {}", e);
-            logTimedCode(startTime, loadTestConfig.getTest_id() + " - LoadTestConfig was interrupted!");
-        }
-        log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", activeLoadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, activeLoadTestConfig.getTest_duration_in_seconds());
-        stop();
-    }
-
-
-    private static void runTask(LoadTestConfig loadTestConfig) {
-        int runNo = 1;
-
-        threadPoolSize = loadTestConfig.getTest_no_of_threads();
-        runTaskThreadPool = new LoadTestThreadPool(threadPoolSize);
-        int read_ratio = loadTestConfig.getTest_read_write_ratio();
-
-        while (isRunning) {
-            int chance = r.nextInt(100);
-            long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
-            if ((maxRunTimeMs > LOAD_TEST_RAMPDOWN_TIME_MS) && isRunning && (threadsScheduled < (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR))) {
-                // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
-                // for long (endurance) loadtest runs
-                log.info("MaxRunInMilliSeconds: {}, LOAD_TEST_RAMPDOWN_TIME_MS:{} , threadsScheduled: {}, maxThreadsAllowed: {}, taskthreads Created: {}", maxRunTimeMs, LOAD_TEST_RAMPDOWN_TIME_MS, threadsScheduled, (loadTestConfig.getTest_no_of_threads() * THREAD_READINESS_FACTOR), tasksStarted);
-                if (read_ratio == 0) {
-                    String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id(loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyRunnable(url, loadTestResult);
-                    threadsScheduled++;
-                    tasksStarted++;
-                    runTaskThreadPool.execute(worker);
-                } else if (chance <= read_ratio) {
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult);
-                    threadsScheduled++;
-                    tasksStarted++;
-                    runTaskThreadPool.execute(worker);
-                } else {
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Runnable worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult);
-                    threadsScheduled++;
-                    tasksStarted++;
-                    runTaskThreadPool.execute(worker);
-
-                }
-            }
-        }
-        stop();
-    }
-
 
     public static boolean isRunning() {
-        return isRunning;
+        return activeSingleLoadTestExecution.get().isRunning();
     }
 
     public static void stop() {
-        isRunning = false;
-        stopTime = System.currentTimeMillis();
-        threadsScheduled = 0;
-        tasksStarted = 0;
-        LoadTestResultUtil.storeResultToFiles();
-    }
-
-
-    public static synchronized void reduceThreadsScheduled() {
-        if (threadsScheduled > 0) {
-            threadsScheduled = threadsScheduled - 1;
-            log.info("scheduledThreads= {}, reduced", threadsScheduled);
-        } else {
-            threadsScheduled = 0;
-            log.info("scheduledThreads=0");
-            if (((System.currentTimeMillis() - startTime) / 1000) < activeLoadTestConfig.getTest_duration_in_seconds()) {
-                log.info("scheduledThreads=0, LoadTestRun completed");
-                //stop();
-            }
-        }
+        activeSingleLoadTestExecution.get().stop();
     }
 
     public static long getStartTime() {
-        return startTime;
+        return activeSingleLoadTestExecution.get().getStartTime();
     }
 
     public static long getStopTime() {
-        return stopTime;
+        return activeSingleLoadTestExecution.get().getStopTime();
     }
 
     public static LoadTestConfig getActiveLoadTestConfig() {
-        return activeLoadTestConfig;
+        return activeLoadTestConfig.get();
     }
 
-    public static int getThreadsScheduled() {
-        return threadsScheduled;
+    public static int getTasksScheduled() {
+        return activeSingleLoadTestExecution.get().getTasksScheduled();
     }
 
     public static int getLoadTestRunNo() {
-        return loadTestRunNo;
+        return loadTestRunNo.get();
     }
 
     public static int getThreadPoolSize() {
-        return threadPoolSize;
+        return activeSingleLoadTestExecution.get().getThreadPoolSize();
     }
-
-    private static void logTimedCode(long startTime, String msg) {
-        long elapsedSeconds = (System.currentTimeMillis() - startTime);
-        log.info("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
-    }
-
 }

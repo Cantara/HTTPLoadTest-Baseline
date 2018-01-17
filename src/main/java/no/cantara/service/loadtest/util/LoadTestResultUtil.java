@@ -22,10 +22,16 @@ import java.util.List;
 
 public class LoadTestResultUtil {
 
+    public static final String RESULT_FILE_PATH = "./results";
+
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final Logger log = LoggerFactory.getLogger(LoadTestResultUtil.class);
 
     private static LoadTestBenchmark loadTestBenchmark;
+
+    public static ObjectMapper mapper() {
+        return mapper;
+    }
 
     static {
         try {
@@ -116,7 +122,7 @@ public class LoadTestResultUtil {
             w_ninety_percentine_success = w_times.get(w_times.size() * 9 / 10);
         }
 
-        int total_successrate = ((r_success + w_success + success) / (r_results + w_results + results));
+        int total_successrate = ((r_success + w_success + success) / Math.max(1, (r_results + w_results + results)));
 
         if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success) {
             log.info("getBenchmark_req_90percentile_read_duration_ms failed");
@@ -141,7 +147,7 @@ public class LoadTestResultUtil {
         return true;
     }
 
-    public static synchronized String printStats(List<LoadTestResult> loadTestResults, boolean whileRunning) {
+    public static String printStats(List<LoadTestResult> loadTestResults, boolean whileRunning) {
         long nowTimestamp = System.currentTimeMillis();
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {
             LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
@@ -227,7 +233,7 @@ public class LoadTestResultUtil {
         stats = stats + "\n" + String.format(" %4d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
         stats = stats + "\n" + String.format(" %4d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
         stats = stats + "\n" + String.format(" %4d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, r_success + w_success + success, (r_results + w_results + results) - (r_success + w_success + success), r_deviations + w_deviations + deviations);
-        stats = stats + "\n" + String.format(" %4d active tests threads scheduled, number of threads configured: %d,  isRunning: %b ", LoadTestExecutorService.getThreadsScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
+        stats = stats + "\n" + String.format(" %4d tasks scheduled, number of threads configured: %d,  isRunning: %b ", LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
         stats = stats + "\n" + String.format(" %4d ms mean duraction for successful read tests, %4d ms ninety percentile successful read tests ", r_mean_success, r_ninety_percentine_success);
         stats = stats + "\n" + String.format(" %4d ms mean duraction for successful write tests, %4d ms ninety percentile successful write tests ", w_mean_success, w_ninety_percentine_success);
 
@@ -249,15 +255,15 @@ public class LoadTestResultUtil {
         try {
 
 
-            File directory = new File(LoadTestExecutorService.RESULT_FILE_PATH);
+            File directory = new File(RESULT_FILE_PATH);
             if (!directory.exists()) {
                 directory.mkdir();
                 // If you require it to make the entire directory path including parents,
             }
-            PrintWriter jsonwriter = new PrintWriter(LoadTestExecutorService.RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".json", "UTF-8");
+            PrintWriter jsonwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".json", "UTF-8");
             jsonwriter.println(LoadTestResource.getJsonResultString());
             jsonwriter.close();
-            PrintWriter cvswriter = new PrintWriter(LoadTestExecutorService.RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".csv", "UTF-8");
+            PrintWriter cvswriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".csv", "UTF-8");
             cvswriter.println(LoadTestResource.getCSVResultString());
             cvswriter.close();
         } catch (Exception e) {
@@ -269,7 +275,7 @@ public class LoadTestResultUtil {
         String resultlistOfResults = "";
         try {
 
-            File folder = new File(LoadTestExecutorService.RESULT_FILE_PATH);
+            File folder = new File(RESULT_FILE_PATH);
             File[] listOfFiles = folder.listFiles();
 
             if (listOfFiles == null) {

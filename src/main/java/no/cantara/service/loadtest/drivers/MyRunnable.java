@@ -1,6 +1,5 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.loadtest.LoadTestExecutorService;
 import no.cantara.service.model.LoadTestResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,22 +7,22 @@ import org.slf4j.LoggerFactory;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static no.cantara.service.loadtest.LoadTestExecutorService.isRunning;
-
 public class MyRunnable implements Runnable {
     private final String url;
     private final LoadTestResult loadTestResult;
+    private final LoadTestExecutionContext loadTestExecutionContext;
     private static final Logger log = LoggerFactory.getLogger(MyRunnable.class);
 
-    public MyRunnable(String url, LoadTestResult loadTestResult) {
+    public MyRunnable(String url, LoadTestResult loadTestResult, LoadTestExecutionContext loadTestExecutionContext) {
         this.url = url;
         this.loadTestResult = loadTestResult;
+        this.loadTestExecutionContext = loadTestExecutionContext;
         this.loadTestResult.setTest_tags("URL: " + url);
     }
 
     @Override
     public void run() {
-        if (!isRunning()) {
+        if (!loadTestExecutionContext.isRunning()) {
             return;
         }
 
@@ -53,7 +52,7 @@ public class MyRunnable implements Runnable {
         log.trace(url + "\t\tStatus:" + result);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
-        LoadTestExecutorService.addResult(loadTestResult);
+        loadTestExecutionContext.addResult(loadTestResult);
 
     }
 
