@@ -228,9 +228,15 @@ public class Main {
             securityHandler.addConstraintMapping(loadSelectTestFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadTestRunStatusEndpointConstraintMapping = new ConstraintMapping();
+            loadTestRunStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestRunStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STATUS);
+            securityHandler.addConstraintMapping(loadTestRunStatusEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestStatusEndpointConstraintMapping = new ConstraintMapping();
             loadTestStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-            loadTestStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STATUS);
+            loadTestStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_RUNSTATUS);
             securityHandler.addConstraintMapping(loadTestStatusEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
