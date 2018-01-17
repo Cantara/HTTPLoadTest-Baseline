@@ -123,7 +123,7 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
         try {
 
-            while (isRunning) {
+            while (isRunning()) {
 
                 int chance = r.nextInt(100);
                 long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
