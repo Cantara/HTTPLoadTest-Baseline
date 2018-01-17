@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import no.cantara.service.loadtest.util.TemplateUtil;
-import no.cantara.util.Configuration;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import static no.cantara.util.Configuration.loadFromDiskByName;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -172,7 +173,7 @@ public class TestSpecification implements Serializable {
         if (getCommand_template().startsWith("FILE:")) {
             String filename = getCommand_template().substring(5, getCommand_template().length());
             try {
-                String contents = Configuration.convertStreamToString(Configuration.loadByName(filename));
+                String contents = loadFromDiskByName(filename);
                 setCommand_template(contents);
                 log.info("loadTemplateReference - Updated FILE; filename:{}, reference with: {} \n template now: {}", filename, contents, getCommand_template());
             } catch (Exception e) {
