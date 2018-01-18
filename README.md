@@ -346,6 +346,13 @@ you want to play with it, you'll find the result of the evaluation in /health.
 * [Clustering HTTPLoadTest-baseline](CLUSTERING.md)
 
 
+# Some ideas of advanced usage
+
+Since HTTPLoadTest is an API-based load-test platform it can be fun to create test-runs, which create new TestSpecifications and then run and verify the generated
+tests. I.e. you can use this to "discover" URI/Paths of an application, and du simple variations to discover potentionally security issues, DoS vectors and the like. 
+If time permits, we'll see if we can make a short intro/demo of such usage sometime in the future.
+
+
 # Development and Contribution
 
 HTTPLoadTest-baseline is still in its early days, but has already proven to be very useful in many sitiuations. We encourage you to
