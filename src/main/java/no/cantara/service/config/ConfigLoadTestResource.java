@@ -145,6 +145,7 @@ public class ConfigLoadTestResource {
                         "\n" +
                         "  </body>" +
                         "</html>";
+        log.trace("presentWriteConfigUI jsonwriteconfig:{}", Charset.forName("UTF-8").encode(jsonwriteconfig));
         return Response.ok(response).build();
     }
 
