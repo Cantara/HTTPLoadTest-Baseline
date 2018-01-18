@@ -4,7 +4,7 @@
     <artifactId>HTTPLoadTest-baseline</artifactId>
     <version>0.35.1-SNAPSHOT</version>
     <name>HTTPLoadTest-baseline</name>
-    <url>https://wiki.cantara.no/</url>
+    <url>https://wiki.cantara.no/display/HLT/Home</url>
 
     <developers>
         <developer>
@@ -16,9 +16,20 @@
             </roles>
             <organization>Cantara</organization>
             <organizationUrl>
-                https://wiki.cantara.no/display/architecture/Typical+micro+service+technology+stack+(java)/
+                https://wiki.cantara.no/
             </organizationUrl>
         </developer>
+        <developer>
+            <id>kimcs</id>
+            <name>Kim Christian Swenson</name>
+            <email>kim.christian.swenson@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <organization>Capra Consulting AS</organization>
+            <organizationUrl>http://www.capraconsulting.no/</organizationUrl>
+        </developer>
+
     </developers>
 
 
@@ -31,7 +42,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
         <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
-        <url>https://wiki.cantara.no/display/architecture/Typical+micro+service+technology+stack+(java)</url>
+        <url>https://wiki.cantara.no/display/HLT/Home</url>
       <tag>HTTPLoadTest-baseline-0.30.2</tag>
   </scm>
 
