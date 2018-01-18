@@ -1,10 +1,10 @@
 package no.cantara.service.loadtest.commands;
 
-
 import com.github.kevinsawicki.http.HttpRequest;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import no.cantara.base.command.HttpSender;
 import no.cantara.base.util.StringConv;
@@ -15,17 +15,26 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import static no.cantara.base.util.StringHelper.hasContent;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
 
-/**
- * Copy from https://github.com/Cantara/Whydah-Java-SDK
- * Created by baardl on 2017-03-03.
- */
 public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> {
+
     protected Logger log;
     protected URI serviceUri;
     protected String TAG = "";
     protected HttpRequest request;
+
+    private static HystrixThreadPoolProperties.Setter threadProperties;
+
+    static {
+        threadProperties = HystrixThreadPoolProperties.Setter();
+        threadProperties.withCoreSize(10);
+        threadProperties.withMaxQueueSize(1000);
+        threadProperties.withMaxQueueSize(10000);
+        HystrixRequestContext.initializeContext();
+
+    }
+
 
     protected MyBaseHttpPostHystrixCommand(URI serviceUri, String hystrixGroupKey, int hystrixExecutionTimeOut) {
         super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)).
@@ -54,6 +63,10 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
     }
 
+    protected R doGetCommand() {
+        return doPostCommand();
+    }
+
     protected R doPostCommand() {
         try {
             String uriString = serviceUri.toString();
@@ -61,7 +74,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
                 uriString += getTargetPath();
             }
 
-            log.trace("TAG" + " - serviceUri={} ", uriString);
+            log.trace("TAG" + " - serviceUri={} myAppTokenId={}", uriString);
 
             if (getQueryParameters() != null && getQueryParameters().length != 0) {
                 request = HttpRequest.post(uriString, true, getQueryParameters());
@@ -71,26 +84,29 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
             request.trustAllCerts();
             request.trustAllHosts();
 
-            String jsonBody = getJsonBody();
-            if (hasContent(jsonBody)) {
-                request.contentType(HttpSender.APPLICATION_JSON);
-                request = dealWithRequestBeforeSend(request);
-                request = request.send(jsonBody);
-                int statusCode = request.code();
-                log.info("Status Code {}. Request {}", statusCode, request);
-            } else if (getFormParameters() != null && !getFormParameters().isEmpty()) {
-//                request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
+            if (getFormParameters() != null && !getFormParameters().isEmpty()) {
+                request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
                 request.form(getFormParameters());
-                request = dealWithRequestBeforeSend(request);
-            } else {
-                request = dealWithRequestBeforeSend(request);
-
             }
 
+            request = dealWithRequestBeforeSend(request);
+
             responseBody = request.bytes();
+            byte[] responseBodyCopy = responseBody.clone();
             int statusCode = request.code();
-            log.debug("Headers {}", request.headers());
-            String responseAsText = StringConv.UTF8(responseBody);
+//            String responseAsText = StringConv.UTF8(responseBodyCopy);
+//            if (responseBodyCopy.length > 0) {
+//                log.trace("resposeBody: {}", responseBodyCopy);
+//				log.trace("StringConv: {}", StringConv.UTF8(responseBodyCopy));
+//				try {
+//					log.trace("responseAsText: {}", CryptoUtil.decrypt(StringConv.UTF8(responseBodyCopy)));
+//					responseAsText = StringConv.UTF8(responseBodyCopy);
+//					responseAsText = CryptoUtil.decrypt(StringConv.UTF8(responseBodyCopy));
+//                } catch (Exception e) {
+//					log.warn("Unable to decrypt - wrong cryptokey?", e.getMessage());
+//				}
+//            }
+            String responseAsText = StringConv.UTF8(responseBodyCopy);
 
             switch (statusCode) {
                 case java.net.HttpURLConnection.HTTP_OK:
@@ -102,7 +118,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new RuntimeException("TAG" + " - doPost failed to execute. Reson: " + ex.getMessage());
+            throw new RuntimeException("TAG" + " - Application authentication failed to execute");
         }
     }
 
@@ -133,14 +149,11 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     }
 
     protected void onCompleted(String responseBody) {
-        log.debug(TAG + " - ok: " + responseBody);
+        log.debug(TAG + " - ok: " + first50(responseBody));
     }
+
 
     protected abstract String getTargetPath();
-
-    protected String getJsonBody() {
-        return null;
-    }
 
     protected Map<String, String> getFormParameters() {
         return new HashMap<String, String>();
@@ -164,6 +177,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     private byte[] responseBody;
 
     public byte[] getResponseBodyAsByteArray() {
-        return responseBody;
+        return responseBody.clone();
     }
 }
+
