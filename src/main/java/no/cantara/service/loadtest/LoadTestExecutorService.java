@@ -178,7 +178,7 @@ public class LoadTestExecutorService {
         unsafeList.set(new ArrayList<>());
         resultList.set(Collections.synchronizedList(unsafeList.get())); // TODO Should this not be a hazelcast list when running in cluster?
         if (Configuration.getBoolean("loadtest.HystrixFallbackIsolationSemaphoreMaxConcurrentRequests")) {
-            HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
+            HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads() * 10);
         }
         loadTestRunNo.incrementAndGet();
         activeLoadTestConfig.set(loadTestConfig);
