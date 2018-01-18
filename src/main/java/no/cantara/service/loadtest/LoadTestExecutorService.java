@@ -158,14 +158,19 @@ public class LoadTestExecutorService {
         resultList.get().add(loadTestResult);
     }
 
-    public static List getResultList() {
-        return resultList.get();
+    public static List<LoadTestResult> getResultListSnapshot() {
+        List<LoadTestResult> resultList = LoadTestExecutorService.resultList.get();
+        synchronized (resultList) {
+            return new ArrayList<>(resultList);
+        }
     }
 
-    public static List getLatestResultList() {
+    public static List getLatestResultListSnapshot() {
         List<LoadTestResult> resultList = LoadTestExecutorService.resultList.get();
         // TODO this just picks the last 50 entires and returns as "lastest result list", is this correct?
-        return resultList.subList(Math.max(resultList.size() - 50, 0), resultList.size());
+        synchronized (resultList) {
+            return new ArrayList<>(resultList.subList(Math.max(resultList.size() - 50, 0), resultList.size()));
+        }
     }
 
     public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {

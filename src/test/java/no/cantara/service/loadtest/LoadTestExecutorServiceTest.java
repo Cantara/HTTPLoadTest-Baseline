@@ -32,7 +32,7 @@ public class LoadTestExecutorServiceTest {
 
         Thread.sleep(200 * fileLoadtest.getTest_no_of_threads());
 
-        List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
+        List<LoadTestResult> resultList = LoadTestExecutorService.getResultListSnapshot();
         log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
         log.info(LoadTestResultUtil.printStats(resultList, true));
@@ -54,7 +54,7 @@ public class LoadTestExecutorServiceTest {
 
         Thread.sleep(2000);
 
-        List<LoadTestResult> resultList = LoadTestExecutorService.getResultList();
+        List<LoadTestResult> resultList = LoadTestExecutorService.getResultListSnapshot();
 //        log.info("Results from tests:" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultList));
 
         log.info(LoadTestResultUtil.printStats(resultList, true));

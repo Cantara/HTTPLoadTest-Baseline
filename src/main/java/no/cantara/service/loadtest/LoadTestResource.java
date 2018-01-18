@@ -205,7 +205,7 @@ public class LoadTestResource {
         if (isRunning) {
             return Response.status(409).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"testing in progress\"}").build();
         }
-        boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultList(), false);
+        boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
         if (runSuccess) {
             return Response.ok("{\"runstatus\":\"success\"}").build();
         }
@@ -218,15 +218,15 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getAllLoadTests() {
         log.trace("getAllLoadTests");
-        String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultList());
+        String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultListSnapshot());
         try {
-            jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getLatestResultList());
+            jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getLatestResultListSnapshot());
         } catch (JsonProcessingException e) {
             log.warn("Could not convert to Json {}", loadTests);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         String response = String.format("{ \"HTTPLoadTest-status\": \n\"%s\", \n\n\"test-run-results\": %s}",
-                LoadTestResultUtil.printStats(LoadTestExecutorService.getResultList(), true), jsonResponse);  // force statistics
+                LoadTestResultUtil.printStats(LoadTestExecutorService.getResultListSnapshot(), true), jsonResponse);  // force statistics
 
         return Response.ok(response).build();
     }
@@ -281,7 +281,7 @@ public class LoadTestResource {
             } else {
                 csvSchema = csvSchema.withoutHeader();
             }
-            csvResult = csvMapper.writer(csvSchema).writeValueAsString(LoadTestExecutorService.getResultList());
+            csvResult = csvMapper.writer(csvSchema).writeValueAsString(LoadTestExecutorService.getResultListSnapshot());
         } catch (IOException e) {
             log.warn("Could not convert to CSV {}", csvResult);
             //     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -292,7 +292,7 @@ public class LoadTestResource {
     public static String getJsonResultString() {
         String jsonResult = "[{}]";
         try {
-            jsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultList());
+            jsonResult = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getResultListSnapshot());
         } catch (IOException e) {
             log.warn("Could not convert to Json {}", jsonResult);
             //       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

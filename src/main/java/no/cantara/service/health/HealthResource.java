@@ -32,14 +32,14 @@ public class HealthResource {
     @GET
     public Response healthCheck() {
         log.trace("healthCheck");
-        String resultsJson = LoadTestResultUtil.printStats(LoadTestExecutorService.getResultList(), false);  // Do not force stats when tests are running
+        String resultsJson = LoadTestResultUtil.printStats(LoadTestExecutorService.getResultListSnapshot(), false);  // Do not force stats when tests are running
         String response = String.format("{ \"HTTPLoadTest-health\": \"OK\", \n\"version\": \"%s\", \n\"now\":\"%s\"," +
                         " \n\"running since\": \"%s\", \n\n\"resultfiles\": \n\"%s\", \n\n\"passed_benchmark\": \"%s\",\n\n\"statistics\": \n\"%s\", \n\n\"readTestSpecification\": \n\"%s\", \n\n\"writeTestSpecification\": \n\"%s\"}",
                 getVersion(),
                 Instant.now(),
                 getRunningSince(),
                 LoadTestResultUtil.listStoredResults(),
-                LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultList(), false),
+                LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false),
                 resultsJson,
                 LoadTestExecutorService.getReadTestSpecificationListJson(),
                 LoadTestExecutorService.getWriteTestSpecificationListJson());
