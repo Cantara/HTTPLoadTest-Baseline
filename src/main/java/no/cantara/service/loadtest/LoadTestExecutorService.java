@@ -15,11 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -181,7 +177,9 @@ public class LoadTestExecutorService {
          */
         unsafeList.set(new ArrayList<>());
         resultList.set(Collections.synchronizedList(unsafeList.get())); // TODO Should this not be a hazelcast list when running in cluster?
-        HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
+        if (Configuration.getBoolean("loadtest.HystrixFallbackIsolationSemaphoreMaxConcurrentRequests")) {
+            HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads());
+        }
         loadTestRunNo.incrementAndGet();
         activeLoadTestConfig.set(loadTestConfig);
         updateSpecMap();
