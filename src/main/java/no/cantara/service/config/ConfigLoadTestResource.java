@@ -116,6 +116,7 @@ public class ConfigLoadTestResource {
     public Response presentWriteConfigUI() {
         log.trace("presentWriteConfigUI");
         String jsonwriteconfig = LoadTestExecutorService.getWriteTestSpecificationListJson();
+        log.trace("presentWriteConfigUI jsonwriteconfig:{}", jsonwriteconfig);
 
         if (jsonwriteconfig == null || jsonwriteconfig.length() < 20) {
             try {
