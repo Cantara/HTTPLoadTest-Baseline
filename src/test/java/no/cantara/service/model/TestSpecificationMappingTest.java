@@ -70,7 +70,6 @@ public class TestSpecificationMappingTest {
         List<TestSpecification> testSpecification1 = mapper.readValue(loadTestJson, new TypeReference<List<TestSpecification>>() {
         });
 
-//        assertTrue(loadTestConfig.getTest_id().equalsIgnoreCase(mappedLoadtest.getTest_id()));
 
 
     }
@@ -89,7 +88,7 @@ public class TestSpecificationMappingTest {
         //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }
 
-    @Test(priority = 1, enabled = false)
+    @Test
     public void testInstanciateTestConfigFromJson() throws Exception {
         String test = "[\n" +
                 "  {\n" +
@@ -129,13 +128,42 @@ public class TestSpecificationMappingTest {
                 "    }\n" +
                 "  }\n" +
                 "]";
-        TestSpecification jsonLoadtest = mapper.readValue(test, TestSpecification.class);
+        List<TestSpecification> testSpecList = new ArrayList<>();
+        testSpecList = mapper.readValue(test, new TypeReference<List<TestSpecification>>() {
+        });
+        String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(testSpecList);
 
 
-        log.info(jsonLoadtest.toString());
+        log.info(loadTestJson.toString());
+        assertTrue(loadTestJson.contains("command_replacement_map"));
 
     }
 
+    @Test
+    public void testInstanciateTestConfigFromJsonWithFILEReference() throws Exception {
+        String test = "" +
+                "  {\n" +
+                "    \"command_url\": \"https://server.privatedns.zone/rest/\",\n" +
+                "    \"command_contenttype\": \"application/json\",\n" +
+                "    \"command_http_post\": true,\n" +
+                "    \"command_timeout_milliseconds\": 5000,\n" +
+                "    \"command_template\": \"FILE:./pom.xml\",\n" +
+                "    \"command_replacement_map\": {\n" +
+                "    }\n" +
+                "  }\n" +
+                "";
+        TestSpecification jsonLoadtest = mapper.readValue(test, TestSpecification.class);
+        jsonLoadtest.resolveVariables(null, null, null);
+
+
+        String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonLoadtest);
+
+
+        log.info(loadTestJson.toString());
+        assertTrue(loadTestJson.contains("command_replacement_map"));
+        assertTrue(loadTestJson.contains("HTTPLoadTest-baseline"));
+
+    }
     @Test
     public void readTestSpecificationWithExternalTemplateMappingFromFile() throws Exception {
 
@@ -170,6 +198,6 @@ public class TestSpecificationMappingTest {
         String result = TemplateUtil.updateTemplateWithValuesFromMap(url, replacements);
 
         URI uri = URI.create(result);
-        assertTrue(url != null);
+        assertTrue(uri != null);
     }
 }

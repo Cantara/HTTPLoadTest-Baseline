@@ -39,18 +39,12 @@ public class ConfigLoadTestResource {
     @GET
     public Response presentConfigUI() {
         log.trace("presentConfigUI");
-
         String jsonconfig = "{}";
-
         try {
-
-            //ClassLoader classLoader = getClass().getClassLoader();
-            //File file = new File(classLoader.getResource("DefaultLoadTestConfig.json").getFile());
             InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
             LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
             jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
             log.trace("Loaded defaultConfig: {}", jsonconfig);
-
         } catch (Exception e) {
             log.error("Unable to read default configuration for LoadTest.", e);
         }
@@ -58,7 +52,8 @@ public class ConfigLoadTestResource {
                 "<html>" +
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
-                        "</head>  <body>\n" +
+                        "</head>  " +
+                        "<body>\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
@@ -120,12 +115,10 @@ public class ConfigLoadTestResource {
     @GET
     public Response presentWriteConfigUI() {
         log.trace("presentWriteConfigUI");
-
         String jsonwriteconfig = LoadTestExecutorService.getWriteTestSpecificationListJson();
 
         if (jsonwriteconfig == null || jsonwriteconfig.length() < 20) {
             try {
-
                 InputStream wfile = Configuration.loadByName("DefaultWriteTestSpecification.json");
                 List<TestSpecification> writeTestSpec =  mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
                 });
@@ -135,7 +128,6 @@ public class ConfigLoadTestResource {
             } catch (Exception e) {
                 log.error("Unable to read default configuration for LoadTest.", e);
             }
-
         }
         String response =
                 "<html>" +
@@ -160,11 +152,7 @@ public class ConfigLoadTestResource {
     @GET
     public Response selectTestSpecificationSet() {
         log.trace("selectTestSpecificationSet");
-
-        String jsonconfig = "{}";
-
         Map<String, String> configuredTestSpecifications = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
-
         String optionString = "";
         for (int n = 0; n < configuredTestSpecifications.size() / 2; n++) {
             int displayvalue = 1 + n;
