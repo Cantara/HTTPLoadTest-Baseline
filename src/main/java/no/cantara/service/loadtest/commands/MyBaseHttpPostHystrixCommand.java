@@ -63,10 +63,6 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
     }
 
-    protected R doGetCommand() {
-        return doPostCommand();
-    }
-
     protected R doPostCommand() {
         try {
             String uriString = serviceUri.toString();
@@ -74,7 +70,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
                 uriString += getTargetPath();
             }
 
-            log.trace("TAG" + " - serviceUri={} myAppTokenId={}", uriString);
+            log.trace("TAG" + " - serviceUri={}", uriString);
 
             if (getQueryParameters() != null && getQueryParameters().length != 0) {
                 request = HttpRequest.post(uriString, true, getQueryParameters());
@@ -94,20 +90,10 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
             responseBody = request.bytes();
             byte[] responseBodyCopy = responseBody.clone();
             int statusCode = request.code();
-//            String responseAsText = StringConv.UTF8(responseBodyCopy);
-//            if (responseBodyCopy.length > 0) {
-//                log.trace("resposeBody: {}", responseBodyCopy);
-//				log.trace("StringConv: {}", StringConv.UTF8(responseBodyCopy));
-//				try {
-//					log.trace("responseAsText: {}", CryptoUtil.decrypt(StringConv.UTF8(responseBodyCopy)));
-//					responseAsText = StringConv.UTF8(responseBodyCopy);
-//					responseAsText = CryptoUtil.decrypt(StringConv.UTF8(responseBodyCopy));
-//                } catch (Exception e) {
-//					log.warn("Unable to decrypt - wrong cryptokey?", e.getMessage());
-//				}
-//            }
             String responseAsText = StringConv.UTF8(responseBodyCopy);
-
+            if (responseBodyCopy.length > 0) {
+                log.trace("StringConv: {}", responseAsText);
+            }
             switch (statusCode) {
                 case java.net.HttpURLConnection.HTTP_OK:
                     onCompleted(responseAsText);
