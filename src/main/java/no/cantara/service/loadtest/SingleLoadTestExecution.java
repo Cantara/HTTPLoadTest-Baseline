@@ -41,6 +41,7 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     private long stopTime = 0;
     private Thread schedulingThread = null;
     private boolean isRunning = false;
+    private boolean stopInitiated = false;
 
     public SingleLoadTestExecution(List<TestSpecification> readTestSpecificationList,
                                    List<TestSpecification> writeTestSpecificationList,
@@ -75,23 +76,32 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
             schedulingThread = Thread.currentThread();
             isRunning = true;
         }
-        final int test_duration_in_seconds = loadTestConfig.getTest_duration_in_seconds();
 
-        scheduleAsyncStopAfterDuration((1000 * test_duration_in_seconds) - LOAD_TEST_RAMPDOWN_TIME_MS);
+        try {
 
-        logTimedCode(startTime, loadTestConfig.getTest_id() + " - starting processing! max duration:" + loadTestConfig.getTest_duration_in_seconds());
+            final int test_duration_in_seconds = loadTestConfig.getTest_duration_in_seconds();
 
-        runTask(loadTestConfig);
+            scheduleAsyncStopAfterDuration((1000 * test_duration_in_seconds) - LOAD_TEST_RAMPDOWN_TIME_MS);
 
-        logTimedCode(startTime, loadTestConfig.getTest_id() + " - processing completed!");
+            logTimedCode(startTime, loadTestConfig.getTest_id() + " - starting processing! max duration:" + loadTestConfig.getTest_duration_in_seconds());
 
-        log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", loadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, loadTestConfig.getTest_duration_in_seconds());
+            runTask(loadTestConfig);
 
-        synchronized (this) {
-            stopTime = System.currentTimeMillis();
+            logTimedCode(startTime, loadTestConfig.getTest_id() + " - processing completed!");
+
+            log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", loadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, loadTestConfig.getTest_duration_in_seconds());
+
+            synchronized (this) {
+                stopTime = System.currentTimeMillis();
+            }
+
+            LoadTestResultUtil.storeResultToFiles();
+
+        } finally {
+            synchronized (this) {
+                isRunning = false;
+            }
         }
-
-        LoadTestResultUtil.storeResultToFiles();
     }
 
     private static void logTimedCode(long startTime, String msg) {
@@ -114,12 +124,11 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     }
 
     private void runTask(LoadTestConfig loadTestConfig) {
-        int runNo = 1;
-        int read_ratio = loadTestConfig.getTest_read_write_ratio();
-
         try {
+            int runNo = 1;
+            int read_ratio = loadTestConfig.getTest_read_write_ratio();
 
-            while (isRunning()) {
+            while (notStopped()) {
 
                 int chance = r.nextInt(100);
                 long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
@@ -166,6 +175,10 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
         }
     }
 
+    private synchronized boolean notStopped() {
+        return !stopInitiated;
+    }
+
     @Override
     public synchronized boolean isRunning() {
         return isRunning;
@@ -173,7 +186,7 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
     public void stop() {
         synchronized (this) {
-            isRunning = false;
+            stopInitiated = true;
             if (schedulingThread != null) {
                 schedulingThread.interrupt();
             }
