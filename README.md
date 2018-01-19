@@ -56,6 +56,9 @@ wget -post-data "jsonConfig=@loadTestConfig.json" http://localhost:28086/HTTPLoa
 ##  wait until test is complete
 while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
 # get the result
+if [ `wget http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus 2>&1 | egrep "HTTP" | awk {'print $6'} == 200 ]; then
+   echo "LoadTest run was marked success for benchmark criterias";
+fi
 wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
 wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus
