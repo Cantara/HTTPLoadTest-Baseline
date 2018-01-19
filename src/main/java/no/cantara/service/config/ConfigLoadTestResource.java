@@ -59,7 +59,7 @@ public class ConfigLoadTestResource {
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
-                        "        <input type=\"submit\">" +
+                        "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <ul>" +
