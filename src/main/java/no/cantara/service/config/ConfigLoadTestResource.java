@@ -180,7 +180,7 @@ public class ConfigLoadTestResource {
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
                         "<body>\n" +
-                        "  <h3>HTTPLoadTest -LoadTestBenchmark Configuration</h3><br/>" +
+                        "  <h3>HTTPLoadTest - LoadTestBenchmark Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_BENCHMARK + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        LoadTestBenchmark:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
