@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"test_id", "test_name", "test_tags", "test_run_no", "test_duration", "test_success", "test_deviation_flag"})
+@JsonPropertyOrder({"test_id", "test_name", "test_run_no", "test_duration", "test_success", "test_deviation_flag", "test_tags"})
 public class LoadTestResult implements Serializable {
     private String test_id;
     private String test_name;
