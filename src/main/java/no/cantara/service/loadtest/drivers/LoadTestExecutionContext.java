@@ -1,20 +1,11 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.model.LoadTestResult;
-
 public interface LoadTestExecutionContext {
 
     /**
-     * Indicate that result from a single test is ready.
-     *
-     * @param loadTestResult
-     */
-    void addResult(LoadTestResult loadTestResult);
-
-    /**
-     * Whether this execution-context is still running.
+     * Whether this execution-context has not yet received a stop signal.
      *
      * @return
      */
-    boolean isRunning();
+    boolean stopped();
 }

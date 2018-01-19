@@ -16,11 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LoadTestExecutorService {
@@ -34,7 +30,6 @@ public class LoadTestExecutorService {
     private static final AtomicReference<List<TestSpecification>> readTestSpecificationList = new AtomicReference<>();
     private static final AtomicReference<List<TestSpecification>> writeTestSpecificationList = new AtomicReference<>();
 
-    private static final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
     private static final AtomicInteger loadTestRunNo = new AtomicInteger(0);
     private static final AtomicReference<LoadTestConfig> activeLoadTestConfig = new AtomicReference<>();
 

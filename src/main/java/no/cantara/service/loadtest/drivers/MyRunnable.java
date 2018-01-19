@@ -6,8 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.Callable;
 
-public class MyRunnable implements Runnable {
+public class MyRunnable implements Callable<LoadTestResult> {
     private final String url;
     private final LoadTestResult loadTestResult;
     private final LoadTestExecutionContext loadTestExecutionContext;
@@ -21,9 +22,9 @@ public class MyRunnable implements Runnable {
     }
 
     @Override
-    public void run() {
-        if (!loadTestExecutionContext.isRunning()) {
-            return;
+    public LoadTestResult call() throws Exception {
+        if (loadTestExecutionContext.stopped()) {
+            return null;
         }
 
         long startTime = System.currentTimeMillis();
@@ -52,8 +53,7 @@ public class MyRunnable implements Runnable {
         log.trace(url + "\t\tStatus:" + result);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
-        loadTestExecutionContext.addResult(loadTestResult);
-
+        return loadTestResult;
     }
 
     private static void logTimedCode(long startTime, String msg) {

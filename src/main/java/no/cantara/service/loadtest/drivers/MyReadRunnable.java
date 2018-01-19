@@ -22,7 +22,7 @@ import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
 
 
-public class MyReadRunnable implements Runnable {
+public class MyReadRunnable implements Callable<LoadTestResult> {
     private static Random r = new Random();
     private final LoadTestResult loadTestResult;
     private final LoadTestConfig loadTestConfig;
@@ -40,29 +40,28 @@ public class MyReadRunnable implements Runnable {
     }
 
     @Override
-    public void run() {
-        if (!loadTestExecutionContext.isRunning()) {
-            return;
+    public LoadTestResult call() {
+        if (loadTestExecutionContext.stopped()) {
+            return null;
         }
 
         long startTime = System.currentTimeMillis();
         try {
-            TimedProcessingUtil.runWithTimeout(new Callable<String>() {
+            return TimedProcessingUtil.runWithTimeout(new Callable<LoadTestResult>() {
                 @Override
-                public String call() {
-                    execute();
-                    // runTaskExecutor.execute(worker);
-                    return "";
+                public LoadTestResult call() {
+                    return execute();
                 }
             }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
         } catch (Exception e) {
             logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyReadRunnable was interrupted!");
+            return null;
         }
     }
 
-    private void execute() {
-        if (!loadTestExecutionContext.isRunning()) {
-            return;
+    private LoadTestResult execute() {
+        if (loadTestExecutionContext.stopped()) {
+            return null;
         }
 
         long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();
@@ -146,7 +145,7 @@ public class MyReadRunnable implements Runnable {
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
-        loadTestExecutionContext.addResult(loadTestResult);
+        return loadTestResult;
 
     }
 
