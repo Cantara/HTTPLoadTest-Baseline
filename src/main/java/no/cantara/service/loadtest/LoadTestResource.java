@@ -8,10 +8,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
-import no.cantara.service.model.LoadTestConfig;
-import no.cantara.service.model.LoadTestResult;
-import no.cantara.service.model.TestSpecification;
-import no.cantara.service.model.TestSpecificationLoader;
+import no.cantara.service.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +37,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
     public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
+    public static final String APPLICATION_PATH_FORM_BENCHMARK = "/loadTest/form/benchmark";
     public static final String APPLICATION_PATH_FORM_SELECT = "/loadTest/form/select";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
     public static final String APPLICATION_PATH_RUNSTATUS = "/loadTest/runstatus";
@@ -140,6 +138,25 @@ public class LoadTestResource {
             return Response.ok(json).build();
         } catch (Exception e) {
             log.warn("/form/write Could not convert to Json {} \n{}", json.toString(), e);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+    @POST
+    @Path("/form/benchmark")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response updateBenchmarkSpecificationForm(@FormParam("jsonConfig") String json) {
+        log.trace("Invoked updateBenchmarkSpecificationForm with {}", json);
+
+        try {
+
+            LoadTestBenchmark loadTestBenchmark = mapper.readValue(json, LoadTestBenchmark.class);
+
+            LoadTestResultUtil.setLoadTestBenchmark(loadTestBenchmark);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            log.warn("/form/benchmark Could not convert to Json {} \n{}", json.toString(), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }

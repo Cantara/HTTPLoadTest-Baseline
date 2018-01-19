@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.model.TestSpecificationLoader;
@@ -30,6 +31,7 @@ public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
+    public static final String CONFIG_PATH_BENCHMARK = "/config/benchmark";
     public static final String CONFIG_PATH_SELECT_TESTSPECIFICATIONSET = "/config/select";
     private static final Logger log = LoggerFactory.getLogger(ConfigLoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -64,6 +66,7 @@ public class ConfigLoadTestResource {
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline "+ HealthResource.getVersion()+"<br/"+
@@ -145,6 +148,48 @@ public class ConfigLoadTestResource {
                         "  </body>" +
                         "</html>";
         log.trace("presentWriteConfigUI jsonwriteconfig:{}", jsonwriteconfig);
+        return Response.ok(response).build();
+    }
+
+
+    @Path("/benchmark")
+    @GET
+    public Response presentBenchmarkConfigUI() {
+        log.trace("presentBenchmarkConfigUI");
+        String jsonbenchmarkconfig = "";
+        try {
+            jsonbenchmarkconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestResultUtil.getLoadTestBenchmark());
+        } catch (Exception e) {
+            log.error("Unable to map configured benchmark to json. {}", e);
+        }
+        log.trace("presentBenchmarkConfigUI jsonbenchmarkconfig:{}", jsonbenchmarkconfig);
+
+        if (jsonbenchmarkconfig == null || jsonbenchmarkconfig.length() < 20) {
+            try {
+
+                jsonbenchmarkconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestResultUtil.getLoadTestBenchmark());
+                log.trace("Loaded DefaultLoadTestBenchmark: {}", jsonbenchmarkconfig);
+
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+        }
+        String response =
+                "<html>" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>  " +
+                        "<body>\n" +
+                        "  <h3>HTTPLoadTest -LoadTestBenchmark Configuration</h3><br/>" +
+                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_BENCHMARK + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                        "        LoadTestBenchmark:<br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
+                        "        <input type=\"submit\"><br/>" +
+                        "    </form>\n" +
+                        "\n" +
+                        "  </body>" +
+                        "</html>";
+        log.trace("presentBenchmarkConfigUI jsonbenchmarkconfig:{}", jsonbenchmarkconfig);
         return Response.ok(response).build();
     }
 

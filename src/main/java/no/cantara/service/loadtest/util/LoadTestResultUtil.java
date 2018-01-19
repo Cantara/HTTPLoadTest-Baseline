@@ -294,4 +294,14 @@ public class LoadTestResultUtil {
         }
         return resultlistOfResults;
     }
+
+    public static LoadTestBenchmark getLoadTestBenchmark() {
+        return loadTestBenchmark;
+    }
+
+    public static void setLoadTestBenchmark(LoadTestBenchmark loadTestBenchmark) {
+        LoadTestResultUtil.loadTestBenchmark = loadTestBenchmark;
+    }
+
+
 }

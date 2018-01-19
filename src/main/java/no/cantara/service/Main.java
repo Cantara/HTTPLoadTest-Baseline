@@ -192,6 +192,12 @@ public class Main {
             securityHandler.addConstraintMapping(configWriteEndpointConstraintMapping);
 
             // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping configBenchmarkEndpointConstraintMapping = new ConstraintMapping();
+            configBenchmarkEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configBenchmarkEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_BENCHMARK);
+            securityHandler.addConstraintMapping(configBenchmarkEndpointConstraintMapping);
+
+            // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configSelectEndpointConstraintMapping = new ConstraintMapping();
             configSelectEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             configSelectEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_SELECT_TESTSPECIFICATIONSET);
@@ -220,6 +226,12 @@ public class Main {
             loadWriteTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             loadWriteTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_WRITE);
             securityHandler.addConstraintMapping(loadWriteTestFormEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadBenchmarkFormEndpointConstraintMapping = new ConstraintMapping();
+            loadBenchmarkFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadBenchmarkFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_BENCHMARK);
+            securityHandler.addConstraintMapping(loadBenchmarkFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadSelectTestFormEndpointConstraintMapping = new ConstraintMapping();
