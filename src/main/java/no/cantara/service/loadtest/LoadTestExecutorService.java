@@ -191,15 +191,14 @@ public class LoadTestExecutorService {
         activeSingleLoadTestExecution.set(new SingleLoadTestExecution(readTestSpecificationList.get(), writeTestSpecificationList.get(), loadTestConfig, loadTestRunNo.get()));
 
         if (asNewThread) {
-            ExecutorService loadTestExecutor = Executors.newFixedThreadPool(1);
-            loadTestExecutor.submit(new Callable<Object>() {
-                                        @Override
-                                        public Object call() throws Exception {
-                                            activeSingleLoadTestExecution.get().runLoadTest();
-                                            return null;
-                                        }
-                                    }
-            );
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    activeSingleLoadTestExecution.get().runLoadTest();
+                }
+            });
+            thread.setName("wrapping-thread-load-test-" + loadTestRunNo.get());
+            thread.start();
         } else {
             activeSingleLoadTestExecution.get().runLoadTest();
         }
