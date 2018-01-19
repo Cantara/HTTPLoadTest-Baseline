@@ -170,6 +170,8 @@ public class LoadTestExecutorService {
     }
 
     public static void executeLoadTest(LoadTestConfig loadTestConfig, boolean asNewThread) {
+        stopPreviousExecutionAndWaitForCompletion();
+
         /**
          * IExecutorService executor = hz.getExecutorService("executor");
          for (Integer key : map.keySet())
@@ -200,6 +202,24 @@ public class LoadTestExecutorService {
             );
         } else {
             activeSingleLoadTestExecution.get().runLoadTest();
+        }
+    }
+
+    private static void stopPreviousExecutionAndWaitForCompletion() {
+        SingleLoadTestExecution previousExecution = activeSingleLoadTestExecution.get();
+        if (!previousExecution.isRunning()) {
+            return;
+        }
+
+        previousExecution.stop();
+
+        // wait for previous execution to stop
+        while (previousExecution.isRunning()) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
