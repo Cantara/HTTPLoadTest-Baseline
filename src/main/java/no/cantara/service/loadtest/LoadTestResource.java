@@ -222,9 +222,27 @@ public class LoadTestResource {
         if (isRunning) {
             return Response.status(409).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"testing in progress\"}").build();
         }
-        boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
+
+        Map<String, String> resultMap = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
+        boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(resultMap);
         if (runSuccess) {
+            resultMap.put("runstatus", "success");
+            try {
+                return Response.ok(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultMap)).build();
+
+            } catch (Exception e) {
+                log.error("Unable to produce jspon from runStatistics");
+            }
+
             return Response.ok("{\"runstatus\":\"success\"}").build();
+
+        }
+        resultMap.put("runstatus", "fail");
+        try {
+            return Response.status(422).type(MediaType.APPLICATION_JSON).entity(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultMap)).build();
+
+        } catch (Exception e) {
+            log.error("Unable to produce jspon from runStatistics");
         }
         return Response.status(422).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"fail\"}").build();
     }

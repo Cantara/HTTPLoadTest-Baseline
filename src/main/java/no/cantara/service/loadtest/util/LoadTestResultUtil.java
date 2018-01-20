@@ -15,10 +15,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class LoadTestResultUtil {
 
@@ -47,14 +44,24 @@ public class LoadTestResultUtil {
         }
     }
 
-    public static boolean hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
+    public static boolean hasPassedBenchmark(Map<String, String> statisticsMap) {
+        if (statisticsMap == null) {
+            return true;
+        }
+        return Boolean.valueOf(statisticsMap.get(statisticsMap.get("isBenchmarkPassed failed")));
+
+    }
+
+    public static Map hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
+        Map<String, String> statisticsMap = new HashMap<>();
         long nowTimestamp = System.currentTimeMillis();
+        statisticsMap.put("timestamp", Long.toString(nowTimestamp));
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {
             LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
         if (loadTestResults == null || LoadTestExecutorService.isRunning()) {
             log.info("hasPassedBenchmark skipped - failed");
-            return false;  // We ship on empty results and if tests are running and whileRunning flag is not set
+            return statisticsMap;  // We ship on empty results and if tests are running and whileRunning flag is not set
         }
         int r_deviations = 0;
         int r_success = 0;
@@ -124,27 +131,62 @@ public class LoadTestResultUtil {
 
         int total_successrate = ((r_success + w_success + success) / Math.max(1, (r_results + w_results + results)));
 
+        statisticsMap.put("r_deviations", Long.toString(r_deviations));
+        statisticsMap.put("r_success", Long.toString(r_success));
+        statisticsMap.put("r_duration", Long.toString(r_duration));
+        statisticsMap.put("w_duration", Long.toString(w_duration));
+        statisticsMap.put("r_results", Long.toString(r_results));
+        statisticsMap.put("w_deviations", Long.toString(w_deviations));
+        statisticsMap.put("w_success", Long.toString(w_success));
+        statisticsMap.put("w_results", Long.toString(w_results));
+        statisticsMap.put("deviations", Long.toString(deviations));
+        statisticsMap.put("success", Long.toString(success));
+        statisticsMap.put("results", Long.toString(results));
+        statisticsMap.put("r_mean_success", Long.toString(r_mean_success));
+        statisticsMap.put("r_ninety_percentine_success", Long.toString(r_ninety_percentine_success));
+        statisticsMap.put("w_mean_success", Long.toString(w_mean_success));
+        statisticsMap.put("w_ninety_percentine_success", Long.toString(w_ninety_percentine_success));
+        statisticsMap.put("total_successrate", Long.toString(total_successrate));
+
+        boolean isBenchmarkPassed = true;
         if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success) {
             log.info("getBenchmark_req_90percentile_read_duration_ms failed");
-            return false;
+            statisticsMap.put("benchmark_req_90percentile_read_duration_ms", Boolean.toString(false));
+            isBenchmarkPassed = false;
+        } else {
+            statisticsMap.put("benchmark_req_90percentile_read_duration_ms", Boolean.toString(true));
+
         }
         if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() <= w_ninety_percentine_success) {
             log.info("getBenchmark_req_90percentile_write_duration_ms failed");
-            return false;
+            statisticsMap.put("benchmark_req_90percentile_write_duration_ms", Boolean.toString(false));
+            isBenchmarkPassed = false;
+        } else {
+            statisticsMap.put("benchmark_req_90percentile_write_duration_ms", Boolean.toString(true));
         }
         if (loadTestBenchmark.getBenchmark_req_mean_read_duration_ms() <= r_mean_success) {
             log.info("getBenchmark_req_mean_read_duration_ms failed");
-            return false;
+            statisticsMap.put("benchmark_req_mean_read_duration_ms", Boolean.toString(false));
+            isBenchmarkPassed = false;
+        } else {
+            statisticsMap.put("benchmark_req_mean_read_duration_ms", Boolean.toString(true));
         }
         if (loadTestBenchmark.getBenchmark_req_mean_write_duration_ms() <= w_mean_success) {
             log.info("getBenchmark_req_mean_write_duration_ms failed");
-            return false;
+            statisticsMap.put("benchmark_req_mean_write_duration_ms", Boolean.toString(false));
+            isBenchmarkPassed = false;
+        } else {
+            statisticsMap.put("benchmark_req_mean_write_duration_ms", Boolean.toString(true));
         }
         if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() <= total_successrate) {
             log.info("getBenchmark_req_sucessrate_percent failed");
-            return false;
+            statisticsMap.put("benchmark_req_sucessrate_percent failed", Boolean.toString(false));
+            isBenchmarkPassed = false;
+        } else {
+            statisticsMap.put("benchmark_req_sucessrate_percent failed", Boolean.toString(true));
         }
-        return true;
+        statisticsMap.put("isBenchmarkPassed failed", Boolean.toString(isBenchmarkPassed));
+        return statisticsMap;
     }
 
     public static String printStats(List<LoadTestResult> loadTestResults, boolean whileRunning) {
