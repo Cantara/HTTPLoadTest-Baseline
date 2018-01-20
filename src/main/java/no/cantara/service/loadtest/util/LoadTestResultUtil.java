@@ -308,6 +308,13 @@ public class LoadTestResultUtil {
             PrintWriter cvswriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".csv", "UTF-8");
             cvswriter.println(LoadTestResource.getCSVResultString());
             cvswriter.close();
+
+
+            // Also persist benchmark result
+            Map<String, String> resultMap = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
+            PrintWriter benchmarkwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_benchmark_result.json", "UTF-8");
+            benchmarkwriter.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultMap));
+            benchmarkwriter.close();
         } catch (Exception e) {
             log.error("Unable to persist resultfiles. ", e);
         }
