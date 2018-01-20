@@ -39,7 +39,7 @@ public class HealthResource {
                 Instant.now(),
                 getRunningSince(),
                 LoadTestResultUtil.listStoredResults(),
-                LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false),
+                LoadTestResultUtil.hasPassedBenchmark(LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false)),
                 resultsJson,
                 LoadTestExecutorService.getReadTestSpecificationListJson(),
                 LoadTestExecutorService.getWriteTestSpecificationListJson());
