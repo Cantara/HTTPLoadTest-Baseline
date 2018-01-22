@@ -25,6 +25,17 @@ the quality of produces software by making it less "expensive" to add this type 
 
 ### Pipeline usage example
 
+#### The process is as follows
+* Register ReadTestSpecification with HTTPLoadTest
+* Register WriteTestSpecification with HTTPLoadTest
+* Register LoadTestBenchmark with HTTPLoadTest
+* Post LoadTestConfig and run the load test
+* Loop while waiting for the Loadtest to complete
+* Get the benchmark result of the load test run 
+* Display the benchmark result
+
+
+- The shellscript ./configure_and_run_loadtest.sh looks like this
 ```jshelllanguage
 #!/bin/bash
 
@@ -48,5 +59,6 @@ wget  --content-on-error http://localhost:8086/HTTPLoadTest-baseline/loadTest/ru
 echo "Complete"
 cat runstatus
 ```
+
 
 

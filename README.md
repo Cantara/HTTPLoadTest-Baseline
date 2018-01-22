@@ -50,14 +50,14 @@ Let's have a look at the details...
 ### Pipeline usage example
 
 ```jshelllanguage
-JSON=$(<ReadTestSpecification-TestHealth.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:8086/HTTPLoadTest-baseline/loadTest/form/read
-JSON=$(<WriteTestSpecification_TestOauth2ProtectedResource.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:8086/HTTPLoadTest-baseline/loadTest/form/write
-JSON=$(<LoadTestBenchmark.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:8086/HTTPLoadTest-baseline/loadTest/form/benchmark
-JSON=$(<LoadTestConfig.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:8086/HTTPLoadTest-baseline/loadTest/form
+JSON=$(<ReadTestSpecification-TestHealth.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:28086/HTTPLoadTest-baseline/loadTest/form/read
+JSON=$(<WriteTestSpecification_TestOauth2ProtectedResource.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:28086/HTTPLoadTest-baseline/loadTest/form/write
+JSON=$(<LoadTestBenchmark.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:28086/HTTPLoadTest-baseline/loadTest/form/benchmark
+JSON=$(<LoadTestConfig.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:28086/HTTPLoadTest-baseline/loadTest/form
 ##  wait until test is complete
-while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
 ## check the results.txt against QA rules
-wget  --content-on-error http://localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus
+wget  --content-on-error http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstatus
 ## To download results from earlier test-runs, use /health to find the name of the test-run, and
 cat runstatus
 ```
