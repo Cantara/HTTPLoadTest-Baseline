@@ -9,13 +9,13 @@ JSON=$(<LoadTestConfig.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST 
 ##  wait until test is complete
 while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus)" == "409" ]]; do sleep 5; done
 # get the result
-#if [ curl -s -o /dev/null -w ''%{http_code}'' localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus)" == "200"  ]; then
+# if [ curl -s -o /dev/null -w ''%{http_code}'' localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus)" == "200"  ]; then
 #   echo "LoadTest run was marked success for benchmark criterias"
-#fi
-wget -o result.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus
+# fi
+wget  http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus
 ## check the results.txt against QA rules
-wget -o benchmark.txt http://localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus
+wget  --content-on-error http://localhost:8086/HTTPLoadTest-baseline/loadTest/runstatus
 ## To download results from earlier test-runs, use /health to find the name of the test-run, and
-#wget  -o mycsv.csv http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
+#  wget  -o mycsv.csv http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 echo "Complete"
-cat benchmark.txt
+cat runstatus
