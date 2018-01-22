@@ -384,7 +384,7 @@ wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstat
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus?test_id=HTTPLOadTest-Health_1516003617097.json
 ```
-* version=0.28 
+* version=0.37.2 
 
 Open in browser:  
 * To configure and start a load test: http://localhost:8086/HTTPLoadTest-baseline/config   
