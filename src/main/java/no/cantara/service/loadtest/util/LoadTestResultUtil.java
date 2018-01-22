@@ -310,6 +310,23 @@ public class LoadTestResultUtil {
             cvswriter.close();
 
 
+            // Persist the specifications for the test-run
+            PrintWriter readSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_read_specififation.json", "UTF-8");
+            readSpecWriter.println(LoadTestExecutorService.getReadTestSpecificationListJson());
+            readSpecWriter.close();
+
+            PrintWriter writeSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_write_specififation.json", "UTF-8");
+            writeSpecWriter.println(LoadTestExecutorService.getWriteTestSpecificationListJson());
+            writeSpecWriter.close();
+
+            PrintWriter loadSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_load_specififation.json", "UTF-8");
+            loadSpecWriter.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getActiveLoadTestConfig()));
+            loadSpecWriter.close();
+
+            PrintWriter benchmarkSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_benchmark_specififation.json", "UTF-8");
+            benchmarkSpecWriter.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestResultUtil.getLoadTestBenchmark()));
+            benchmarkSpecWriter.close();
+
             // Also persist benchmark result
             Map<String, String> resultMap = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
             PrintWriter benchmarkwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_benchmark_result.json", "UTF-8");
