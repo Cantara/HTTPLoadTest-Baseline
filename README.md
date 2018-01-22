@@ -41,13 +41,13 @@ Then open the simple UI in a web browser:
 Since the main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continous investment into software development does not 
 compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
 Company's continous CI/CD processes. This means that the application have two modi:  
-* a) an exploration modi - where you (as in any normal QA åprocess, can 
-analyzy the load-characteristics of your application and 
-* b) easily add the baseline characteristics to the deployment QA pipelines.
+* a) an exploration modi - where you (as in any normal QA process, can 
+analyze the load-characteristics of your application (load-limits, behaviour with excessive load, endurance charasteristics under high load and the like) 
+* b) easily add the baseline characteristics as benchmarks to the deployment QA pipelines and detect when changes break the expectations.
 
-Let's have a look at the details...
+So, let us have a look at the details...
 
-### Pipeline usage example
+### HTTPLoadTest, used as pipeline example
 
 ```jshelllanguage
 JSON=$(<ReadTestSpecification-TestHealth.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:28086/HTTPLoadTest-baseline/loadTest/form/read
