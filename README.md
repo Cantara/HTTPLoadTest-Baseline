@@ -5,22 +5,24 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)    [![Known Vulnerabilities](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline/badge.svg)](https://snyk.io/test/github/Cantara/HTTPLoadTest-baseline)
 
 
-HTTPLoadTest-Baseline is simple starting point for building LoadTests to be used for continuous deploy/continuous production QA pipelines. Baseline projects
-are meant to be a git clone starting point for for software which are expected to grow and flourish in different ways which are not easy to parameterize in 
-early stages. It should be usable for quite a few settings, but is expected to grow in different directions. We would love to receive pull-request for enhancements 
-both on current codebase and extensibility features.
+HTTPLoadTest-Baseline is simple starting point for building LoadTests to be used for continuous deploy/continuous production
+QA pipelines. Baseline projects are meant to be a git clone starting point for for software which are expected to grow and
+flourish in different ways which are not easy to parameterize in early stages. It should be usable for quite a few settings,
+but is expected to grow in different directions. We would love to receive pull-request for enhancements both on current
+codebase and extensibility features.
 
-Why another load-test OpenSource project?  We think this is a reasonable question. There exist quite a few "full-fledged" alternatives. Our concern is that 
-the uptake of those solutions are way below what the industry need, and this is an attempt to try to offer a different alternative which may or may not 
-fulfill you needs/requirements.  The main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continuous investment into
-software development does not compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test 
+Why another load-test OpenSource project?  We think this is a reasonable question. There exist quite a few "full-fledged"
+alternatives. Our concern is that the uptake of those solutions are way below what the industry need, and this is an attempt to try to offer a different alternative which may or may not fulfill you needs/requirements.  The main goal for this codebase
+is to simplify Companies efforts in ensuring that an agile or continuous investment into software development does not
+compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test 
 QA process easily embedable to a Company's continuous CI/CD processes.
 
-We have built HTTPLoadTest-Baseline on an underlaying cicuit-breaker framework called hystrix and timed execution blocks to avoid any blocking or dangeling 
-HTTP requests and internal threads.
+We have built HTTPLoadTest-Baseline on an underlaying cicuit-breaker framework called hystrix and timed execution blocks to
+avoid any blocking or dangeling HTTP requests and internal threads.
 
-Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your requirements/needs might increase 
-the quality of produces software by making it less "expensive" to add this type of quality processes into your software development process.
+Coming from development backgrounds, we hope that a baseline you might contribute to, or just form and change to your
+requirements/needs might increase the quality of produces software by making it less "expensive" to add this type of 
+quality processes into your software development process.
 
 #### The process-flow of load-testing
 
@@ -38,12 +40,14 @@ Then open the simple UI in a web browser:
 
 ### Example-oriented documentation to get familiar with the application
 
-Since the main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continous investment into software development does not 
-compromise the quality assurance processes on non-functional requirements, we have tried to focus on making the load-test QA process easily embeddable to a 
-Company's continous CI/CD processes. This means that the application have two modi:  
-* a) an exploration modi - where you (as in any normal QA process, can 
-analyze the load-characteristics of your application (load-limits, behaviour with excessive load, endurance charasteristics under high load and the like) 
-* b) easily add the baseline characteristics as benchmarks to the deployment QA pipelines and detect when changes break the expectations.
+Since the main goal for this codebase is to simplify Companies efforts in ensuring that an agile or continous investment into
+software development does not compromise the quality assurance processes on non-functional requirements, we have tried to
+focus on making the load-test QA process easily embeddable to a Company's continous CI/CD processes. This means that the
+application have two modi:  
+* a) an exploration modi - where you (as in any normal QA process, can analyze the load-characteristics of your application
+(load-limits, behaviour with excessive load, endurance charasteristics under high load and the like) 
+* b) easily add the baseline characteristics as benchmarks to the deployment QA pipelines and detect when changes break the
+expectations.
 
 So, let us have a look at the details...
 
@@ -83,9 +87,10 @@ cat runstatus
 }
 ```
 
-The LoadTestConfig is the configuration of the top-level parameters of a load test and control the behaviour of the two (read/write) TestSpesifications
-(see further down for more information and examples of how to configure TestSpecifications). The LoadTestConfig also consist of the load-time, which is 
-the longest allowed time the tests are allowed to run.  You can define LoadTest global variables for each LoadTestConfig.
+The LoadTestConfig is the configuration of the top-level parameters of a load test and control the behaviour of the two
+(read/write) TestSpesifications (see further down for more information and examples of how to configure TestSpecifications).
+The LoadTestConfig also consist of the load-time, which is the longest allowed time the tests are allowed to run.  You can
+define LoadTest global variables for each LoadTestConfig.
  
 
 
@@ -122,14 +127,15 @@ the longest allowed time the tests are allowed to run.  You can define LoadTest 
 }
 ```
 
-If we look at the example output above, we see that we have a load-test with a read/write ratio of 90, 
-which mean that we have almost 10 times more runs of the read TestConfiguration than we have invocations of the write TestSpecification. 
-In this run, we have recorded one failed read run, which was a result of a timeout. (If we got non 2xx HTTP codes, the result would be failed test.)
+If we look at the example output above, we see that we have a load-test with a read/write ratio of 90, which mean that we
+have almost 10 times more runs of the read TestConfiguration than we have invocations of the write TestSpecification. In 
+this run, we have recorded one failed read run, which was a result of a timeout. (If we got non 2xx HTTP codes, the result
+would be failed test.)
 
 
-Note: The test_read_write_ratio has to be between 1 (%) and 100 (%) as of now, since we have some special-handling for values outside that
-range. If you want to experience running a single test at a time, you can add the same testSpecification as both read-testSpecification and 
-write-TestSpecification to archieve the same result.
+Note: The test_read_write_ratio has to be between 1 (%) and 100 (%) as of now, since we have some special-handling for values
+outside that range. If you want to experience running a single test at a time, you can add the same testSpecification as both
+read-TestSpecification and write-TestSpecification to archieve the same result.
 
 
 ### Example on test invocation result
@@ -146,11 +152,9 @@ write-TestSpecification to archieve the same result.
 }
 ```
 
-This example show that we have received an HTTP 2xx code, but something unexpected happened and the response was marked as an deviation. The most 
-common cause of deviations in HTTPLoadTest is timeout, as we use an underlaying cicuit-breaker framework called hystrix to avoid blocking and dangeling 
-HTTP requests and internal threads.
-
-
+This example show that we have received an HTTP 2xx code, but something unexpected happened and the response was marked as an
+deviation. The most common cause of deviations in HTTPLoadTest is timeout, as we use an underlaying cicuit-breaker framework
+called hystrix to avoid blocking and dangeling HTTP requests and internal threads.
 
 
 ## Example on read test specification
@@ -159,11 +163,12 @@ HTTP requests and internal threads.
 
 ![The flow of TestSpecification Execution](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/TestSpecificationExecutionFlow.png)
 
-The diagram try to show how a TestSpecification consists of a chain of Comands(HTTP-requests), which all report to a TestResult. The commands use a variable-map
-to replace tags/markers in the command-specification for URL and template to give you flexibility to control parameters++. The result (HTTP-response) is
-parsed with the instructions in the command_response_map and the value of this parsing is put into the named variable in the same map. These calculated variables
-is then added to the command_replacement_map to the next command. The next command also inherit the map from the previos step to ensure you have the same
-variable from thinks like options/set selections.
+The diagram try to show how a TestSpecification consists of a chain of Comands(HTTP-requests), which all report to
+TestResult. The commands use a variable-map to replace tags/markers in the command-specification for URL and template to give
+you flexibility to control parameters++. The result (HTTP-response) is parsed with the instructions in the
+command_response_map and the value of this parsing is put into the named variable in the same map. These calculated variables
+is then added to the command_replacement_map to the next command. The next command also inherit the map from the previos step
+to ensure you have the same variable from thinks like options/set selections.
 
 
 ```json
@@ -201,17 +206,19 @@ variable from thinks like options/set selections.
   } 
 ]
 ```
-From the example above, we can see use of several of HTTPLoadTest features. The command_replacement_map is a supplied variable-set for the given command. This is used
-to replace parts of an URL or parts of an HTTP payload. The command_response_map consist of JsonPath expression which is matched against the response and put into the
+From the example above, we can see use of several of HTTPLoadTest features. The command_replacement_map is a supplied
+variable-set for the given command. This is used to replace parts of an URL or parts of an HTTP payload. The
+command_response_map consist of JsonPath expression which is matched against the response and put into the
 corresponding named variable. 
 
-The generated variables can then be used in consequitive commands along with the variables in the command_replacement_map. If you need  a list as a result, you might 
-find the #fizzle(option:#variablename) feature handy. This will pick a random value from the returned response and substitute it in the next
-command.  As of now, OAUTH2 and http basic-auth is supported. You can use pre-calculated  and "username/password" or "username:password" is supported.
+The generated variables can then be used in consequitive commands along with the variables in the command_replacement_map. If you need  a list as a result, you might find the #fizzle(option:#variablename) feature handy. This will pick a random value
+from the returned response and substitute it in the next command.  As of now, OAUTH2 and http basic-auth is supported. You
+can use pre-calculated  and "username/password" or "username:password" is supported.
 
-Note: Please note that the variables are shared between the read TestSpesification and the write TestSpecification to allow sharing of data
-between the different simulated scenarios. As the variables is inherited in strict order (global, load-test-defined, command-defined and resolved from earlier commands), 
-you might want to condider using a naming scheme for variables to avoid values beeing overwritten and thus causing problems for your test-runs.
+Note: Please note that the variables are shared between the read TestSpesification and the write TestSpecification to allow
+sharing of data between the different simulated scenarios. As the variables is inherited in strict order (global, load-test
+defined, command-defined and resolved from earlier commands). You might want to condider using a naming scheme for variables
+to avoid values beeing overwritten and thus causing problems for your test-runs.
 
 
 #### Template (command_template) and URL (command_url) special operations
@@ -226,13 +233,12 @@ you might want to condider using a naming scheme for variables to avoid values b
 ```
 
 
-Tip: A very useful tip when you are building and testing TestSpecifications is to visit the /health endpoint, as it will display specifications with the
-variables resolved so you can verify that the replacement is what you wanted it to be.
+Tip: A very useful tip when you are building and testing TestSpecifications is to visit the /health endpoint, as it will
+display specifications with the variables resolved so you can verify that the replacement is what you wanted it to be.
 
 
 ### Example on write test specification
 ```json
-
 [
   {
     "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=client_credentials&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
@@ -292,9 +298,9 @@ variables resolved so you can verify that the replacement is what you wanted it 
 ]
 ```
 
-In this example, we use the embedded Oauth2 server simulator to examplify an authorization flow as a part of a test with chaining
-of variables down the chain to use the established oauth2 session in later calls. As of now, HTTPLoadTest-Baseline support jsonpath and xpath
-for parsing results into variables.
+In this example, we use the embedded Oauth2 server simulator to examplify an authorization flow as a part of a test with
+chaining of variables down the chain to use the established oauth2 session in later calls. As of now, HTTPLoadTest-Baseline
+support jsonpath and xpath for parsing results into variables.
 
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
@@ -339,27 +345,27 @@ login.admin.password=adminservice
 }
 ```
 
-The HTTPLoadTest-baseline comes with a pre-configured benchmark for load-test runs, which is defined in DefaultLoadTestBenchmark.json. We will soon add support
-to post your own benchmarks and add a URI to expose the result of the evaluation of the last load-test run for easy integration to your automated QA processes. If
-you want to play with it, you'll find the result of the evaluation in /health. 
-
+The HTTPLoadTest-baseline comes with a pre-configured benchmark for load-test runs, which is defined in
+DefaultLoadTestBenchmark.json. 
 
 * [Clustering HTTPLoadTest-baseline](CLUSTERING.md)
 
 
 # Some ideas of advanced usage
 
-Since HTTPLoadTest is an API-based load-test platform it can be fun to create test-runs, which create new TestSpecifications and then run and verify the generated
-tests. I.e. you can use this to "discover" URI/Paths of an application, and du simple variations to discover potentionally security issues, DoS vectors and the like. 
-If time permits, we'll see if we can make a short intro/demo of such usage sometime in the future.
+Since HTTPLoadTest is an API-based load-test platform it can be fun to create test-runs, which create new TestSpecifications
+and then run and verify the generated tests. I.e. you can use this to "discover" URI/Paths of an application, and du simple
+variations to discover potentionally security issues, DoS vectors and the like. If time permits, we'll see if we can make a
+short intro/demo of such usage sometime in the future.
 
 
 # Development and Contribution
 
-HTTPLoadTest-baseline is still in its early days, but has already proven to be very useful in many sitiuations. We encourage you to
-take it for a spin. If you fork the codebase and use it as a starting poing for making your specialized version or want to contribute
-to the baseline codebase is up to you. We love feedback, so please tell us what you think and do not be afraid to use the github
-issues to flag bugs or new feature requests. We also love comitters and pull-request, so don't be shy...
+HTTPLoadTest-baseline is still in its early days, but has already proven to be very useful in many sitiuations. We encourage
+you to take it for a spin. If you fork the codebase and use it as a starting poing for making your specialized version or
+want to contribute to the baseline codebase is up to you. We love feedback, so please tell us what you think and do not be
+afraid to use the github issues to flag bugs or new feature requests. We also love comitters and pull-request, so don't be
+shy...
  
 
 ### Quick build and verify
