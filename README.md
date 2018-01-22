@@ -62,6 +62,8 @@ wget  --content-on-error http://localhost:28086/HTTPLoadTest-baseline/loadTest/r
 cat runstatus
 ```
 
+* [See also HTTPLoadTest-QAFlow-Demo for more details.](https://github.com/Cantara/HTTPLoadTest-Baseline/blob/master/scripts/HTTPLoadTest-QAFlow-Demo/HTTPLoadTest%20-QAFlow-Demo.md)
+
 
 
 ### Example LoadTestConfig
