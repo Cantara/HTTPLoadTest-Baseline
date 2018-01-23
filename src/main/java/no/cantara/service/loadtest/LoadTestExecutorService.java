@@ -40,7 +40,6 @@ public class LoadTestExecutorService {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     static {
-
         if (Configuration.getBoolean("loadtest.cluster")) {
             InputStream xmlFileName = Configuration.loadByName("hazelcast.xml");
             //        log.info("Loaded hazelcast configuration :" + xmlFileName);
@@ -59,26 +58,29 @@ public class LoadTestExecutorService {
             configMap = Collections.synchronizedMap(new HashMap<>());
         }
         if (configMap.size() == 0) {
-            try {
+            resetConfiguration();
+        }
+        getSpecFromMap();
+    }
 
-                InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
-                readTestSpecificationList.set(mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
-                }));
-                String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList.get());
-                log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-                InputStream wis = Configuration.loadByName("DefaultWriteTestSpecification.json");
+    private static void resetConfiguration() {
+        try {
 
-                writeTestSpecificationList.set(mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
-                }));
-                String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList.get());
-                log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
+            InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
+            readTestSpecificationList.set(mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
+            }));
+            String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList.get());
+            log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
+            InputStream wis = Configuration.loadByName("DefaultWriteTestSpecification.json");
 
-                updateSpecMap();
-            } catch (Exception e) {
-                log.error("Unable to read default configuration for LoadTest.", e);
-            }
-            // Found other cluster nodes, loading speci from them
-            getSpecFromMap();
+            writeTestSpecificationList.set(mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
+            }));
+            String jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpecificationList.get());
+            log.info("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
+
+            updateSpecMap();
+        } catch (Exception e) {
+            log.error("Unable to read default configuration for LoadTest.", e);
         }
 
         LoadTestConfig zeroTestConfig = new LoadTestConfig();
@@ -92,6 +94,7 @@ public class LoadTestExecutorService {
         zeroTestConfig.setTest_sleep_in_ms(1);
         activeLoadTestConfig.set(zeroTestConfig);
         activeSingleLoadTestExecution.set(new SingleLoadTestExecution(readTestSpecificationList.get(), writeTestSpecificationList.get(), zeroTestConfig, loadTestRunNo.get()));
+
     }
 
     private static void getSpecFromMap() {
@@ -177,6 +180,7 @@ public class LoadTestExecutorService {
         if (Configuration.getBoolean("loadtest.HystrixFallbackIsolationSemaphoreMaxConcurrentRequests")) {
             HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads() * 10);
         }
+        resetConfiguration();
         loadTestRunNo.incrementAndGet();
         activeLoadTestConfig.set(loadTestConfig);
         updateSpecMap();

@@ -85,12 +85,12 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
                 stopTime = System.currentTimeMillis();
             }
 
-            LoadTestResultUtil.storeResultToFiles();
 
         } finally {
             synchronized (this) {
                 isRunning = false;
             }
+            LoadTestResultUtil.storeResultToFiles();
         }
     }
 
