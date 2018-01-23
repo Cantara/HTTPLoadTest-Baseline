@@ -87,10 +87,13 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
 
         } finally {
-            synchronized (this) {
-                isRunning = false;
+            try {
+                LoadTestResultUtil.storeResultToFiles();
+            } finally {
+                synchronized (this) {
+                    isRunning = false;
+                }
             }
-            LoadTestResultUtil.storeResultToFiles();
         }
     }
 
