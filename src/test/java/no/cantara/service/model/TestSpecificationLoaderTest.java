@@ -6,8 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,23 @@ public class TestSpecificationLoaderTest {
             }
 
         }
+    }
+
+    @Test
+    public void testCommandPostFromTestSpecification() throws Exception {
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("readconfig.json").getFile());
+        List<TestSpecification> readTestSpec = new ArrayList<>();
+        readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+        });
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+
+        for (TestSpecification testSpecification : readTestSpec) {
+            testSpecification.resolveVariables(null, null, null);//loadTemplateReference();
+            assertTrue(testSpecification.getCommand_url().length() > 0);
+        }
+
     }
 
     @Test

@@ -180,7 +180,7 @@ public class LoadTestExecutorService {
         if (Configuration.getBoolean("loadtest.HystrixFallbackIsolationSemaphoreMaxConcurrentRequests")) {
             HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads() * 10);
         }
-        resetConfiguration();
+        // resetConfiguration();
         loadTestRunNo.incrementAndGet();
         activeLoadTestConfig.set(loadTestConfig);
         updateSpecMap();

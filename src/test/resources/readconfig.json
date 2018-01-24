@@ -24,7 +24,7 @@
   {
     "command_url": "#ehrServer/rest/v1/query",
     "command_contenttype": "application/json",
-    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_http_authstring": "admin:admin",
     "command_http_post": true,
     "command_timeout_milliseconds": 50000,
     "command_template": "{ \"aql\": \"select a/uid/value as id from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0' OFFSET 60 LIMIT 20\", \"aqlParameters\": { \"ehrId\": \"#ehrRead\" }\t}",

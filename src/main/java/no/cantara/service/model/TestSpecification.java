@@ -125,7 +125,7 @@ public class TestSpecification implements Serializable {
             String password = upfields[1];
 
             String authString = name + ":" + password;
-            System.out.println("auth string: " + authString);
+            log.info("auth string: " + authString);
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
 //            String authStringEnc = new String(authEncBytes);
             String authStringEnc = "Basic " + new String(authEncBytes);
@@ -138,7 +138,7 @@ public class TestSpecification implements Serializable {
             String password = upfields[1];
 
             String authString = name + ":" + password;
-            System.out.println("auth string: " + authString);
+            log.info("auth string: " + authString);
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
 //            String authStringEnc = new String(authEncBytes);
             String authStringEnc = "Basic " + new String(authEncBytes);
