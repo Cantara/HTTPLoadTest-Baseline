@@ -78,7 +78,7 @@ public class TestSpecification_http_authstring_Test {
         assertTrue(testSpecification.getCommand_http_authstring().contains("Bearer"));
     }
 
-    @Test
+   /* @Test
     public void testAuthStringVersionsEmpty() {
 
         TestSpecification testSpecification = new TestSpecification();
@@ -89,5 +89,5 @@ public class TestSpecification_http_authstring_Test {
         Map<String, String> dummyMap = new HashMap<>();
         testSpecification.resolveVariables(dummyMap, dummyMap, dummyMap);
         assertTrue(testSpecification.getCommand_http_authstring().contains("Bearer"));
-    }
+    }*/
 }
