@@ -52,8 +52,9 @@ public class LoadTestResultUtil {
 
     }
 
-    public static Map hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
-        Map<String, String> statisticsMap = new HashMap<>();
+    public static SortedMap hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
+//        Map<String, String> statisticsMap = new HashMap<>();
+        SortedMap<String, String> statisticsMap = new TreeMap<String, String>();
         long nowTimestamp = System.currentTimeMillis();
         statisticsMap.put("timestamp", Long.toString(nowTimestamp));
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
@@ -223,7 +224,7 @@ public class LoadTestResource {
             return Response.status(409).type(MediaType.APPLICATION_JSON).entity("{\"runstatus\":\"testing in progress\"}").build();
         }
 
-        Map<String, String> resultMap = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
+        SortedMap<String, String> resultMap = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), false);
         boolean runSuccess = LoadTestResultUtil.hasPassedBenchmark(resultMap);
         if (runSuccess) {
             resultMap.put("runstatus", "success");
