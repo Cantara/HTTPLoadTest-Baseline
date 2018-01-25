@@ -136,29 +136,29 @@ public class LoadTestResultUtil {
 
         int total_successrate = ((r_success + w_success + success) / Math.max(1, (r_results + w_results + results)));
 
-        statisticsMap.put("r_deviations", Long.toString(r_deviations));
-        statisticsMap.put("r_success", Long.toString(r_success));
-        statisticsMap.put("r_duration", Long.toString(r_duration));
-        statisticsMap.put("r_results", Long.toString(r_results));
-        statisticsMap.put("r_failures", Long.toString(r_results - r_success));
-        statisticsMap.put("w_deviations", Long.toString(w_deviations));
-        statisticsMap.put("w_duration", Long.toString(w_duration));
-        statisticsMap.put("w_success", Long.toString(w_success));
-        statisticsMap.put("w_results", Long.toString(w_results));
-        statisticsMap.put("w_failures", Long.toString(w_results - w_success));
-        statisticsMap.put("deviations", Long.toString(deviations));
-        statisticsMap.put("success", Long.toString(success));
-        statisticsMap.put("results", Long.toString(results));
-        statisticsMap.put("failures", Long.toString(results - success));
-        statisticsMap.put("t_deviations", Long.toString(r_deviations + w_deviations + deviations));
-        statisticsMap.put("t_success", Long.toString(r_success + w_success + success));
-        statisticsMap.put("t_results", Long.toString(r_results + w_results + results));
-        statisticsMap.put("t_failures", Long.toString(r_results + w_results + results - r_success + w_success + success));
-        statisticsMap.put("r_mean_success", Long.toString(r_mean_success));
-        statisticsMap.put("r_ninety_percentine_success", Long.toString(r_ninety_percentine_success));
-        statisticsMap.put("w_mean_success", Long.toString(w_mean_success));
-        statisticsMap.put("w_ninety_percentine_success", Long.toString(w_ninety_percentine_success));
-        statisticsMap.put("total_successrate", Long.toString(total_successrate));
+        statisticsMap.put("stats_r_deviations", Long.toString(r_deviations));
+        statisticsMap.put("stats_r_success", Long.toString(r_success));
+        statisticsMap.put("stats_r_duration", Long.toString(r_duration));
+        statisticsMap.put("stats_r_results", Long.toString(r_results));
+        statisticsMap.put("stats_r_failures", Long.toString(r_results - r_success));
+        statisticsMap.put("stats_w_deviations", Long.toString(w_deviations));
+        statisticsMap.put("stats_w_duration", Long.toString(w_duration));
+        statisticsMap.put("stats_w_success", Long.toString(w_success));
+        statisticsMap.put("stats_w_results", Long.toString(w_results));
+        statisticsMap.put("stats_w_failures", Long.toString(w_results - w_success));
+        statisticsMap.put("stats_o_deviations", Long.toString(deviations));
+        statisticsMap.put("stats_o_success", Long.toString(success));
+        statisticsMap.put("stats_o_results", Long.toString(results));
+        statisticsMap.put("stats_o_failures", Long.toString(results - success));
+        statisticsMap.put("stats_t_deviations", Long.toString(r_deviations + w_deviations + deviations));
+        statisticsMap.put("stats_t_success", Long.toString(r_success + w_success + success));
+        statisticsMap.put("stats_t_results", Long.toString(r_results + w_results + results));
+        statisticsMap.put("stats_t_failures", Long.toString(r_results + w_results + results - (r_success + w_success + success)));
+        statisticsMap.put("stats_r_mean_success", Long.toString(r_mean_success));
+        statisticsMap.put("stats_r_ninety_percentine_success", Long.toString(r_ninety_percentine_success));
+        statisticsMap.put("stats_w_mean_success", Long.toString(w_mean_success));
+        statisticsMap.put("stats_w_ninety_percentine_success", Long.toString(w_ninety_percentine_success));
+        statisticsMap.put("stats_total_successrate", Long.toString(total_successrate));
 
         boolean isBenchmarkPassed = true;
         if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success) {
@@ -217,19 +217,19 @@ public class LoadTestResultUtil {
 
         if (statsMap.size() > 10) {
             stats = stats + "\n" + String.format(" %5d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("r_results")), Integer.parseInt(statsMap.get("r_success")), Integer.parseInt(statsMap.get("r_failures")), Integer.parseInt(statsMap.get("r_deviations")));
+                    Integer.parseInt(statsMap.get("stats_r_results")), Integer.parseInt(statsMap.get("stats_r_success")), Integer.parseInt(statsMap.get("stats_r_failures")), Integer.parseInt(statsMap.get("stats_r_deviations")));
             stats = stats + "\n" + String.format(" %5d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("w_results")), Integer.parseInt(statsMap.get("w_success")), Integer.parseInt(statsMap.get("w_failures")), Integer.parseInt(statsMap.get("w_deviations")));
+                    Integer.parseInt(statsMap.get("stats_w_results")), Integer.parseInt(statsMap.get("stats_w_success")), Integer.parseInt(statsMap.get("stats_w_failures")), Integer.parseInt(statsMap.get("stats_w_deviations")));
             stats = stats + "\n" + String.format(" %5d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("results")), Integer.parseInt(statsMap.get("success")), Integer.parseInt(statsMap.get("failures")), Integer.parseInt(statsMap.get("deviations")));
+                    Integer.parseInt(statsMap.get("stats_o_results")), Integer.parseInt(statsMap.get("stats_o_success")), Integer.parseInt(statsMap.get("stats_o_failures")), Integer.parseInt(statsMap.get("stats_o_deviations")));
             stats = stats + "\n" + String.format(" %5d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("results")), Integer.parseInt(statsMap.get("t_success")), Integer.parseInt(statsMap.get("t_failures")), Integer.parseInt(statsMap.get("t_deviations")));
+                    Integer.parseInt(statsMap.get("stats_t_results")), Integer.parseInt(statsMap.get("stats_t_success")), Integer.parseInt(statsMap.get("stats_t_failures")), Integer.parseInt(statsMap.get("stats_t_deviations")));
             stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ",
                     LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
             stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms ninety percentile successful read tests ",
-                    Integer.parseInt(statsMap.get("r_mean_success")), Integer.parseInt(statsMap.get("r_ninety_percentine_success")));
+                    Integer.parseInt(statsMap.get("stats_r_mean_success")), Integer.parseInt(statsMap.get("stats_r_ninety_percentine_success")));
             stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms ninety percentile successful write tests ",
-                    Integer.parseInt(statsMap.get("w_mean_success")), Integer.parseInt(statsMap.get("w_ninety_percentine_success")));
+                    Integer.parseInt(statsMap.get("stats_w_mean_success")), Integer.parseInt(statsMap.get("stats_w_ninety_percentine_success")));
         }
         String loadTestJson = "";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null) {
