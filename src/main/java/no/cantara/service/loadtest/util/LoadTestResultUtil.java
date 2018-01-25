@@ -48,7 +48,7 @@ public class LoadTestResultUtil {
         if (statisticsMap == null || statisticsMap.size() < 10) {
             return true;
         }
-        return Boolean.valueOf(statisticsMap.get(statisticsMap.get("isBenchmarkPassed failed")));
+        return Boolean.valueOf(statisticsMap.get("isBenchmarkPassed"));
 
     }
 
@@ -191,16 +191,16 @@ public class LoadTestResultUtil {
         } else {
             statisticsMap.put("benchmark_req_mean_write_duration_ms", Boolean.toString(true));
         }
-        if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() <= total_successrate) {
+        if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() >= total_successrate) {
             log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
-            statisticsMap.put("benchmark_req_sucessrate_percent failed", Boolean.toString(false));
+            statisticsMap.put("benchmark_req_sucessrate_percent", Boolean.toString(false));
             isBenchmarkPassed = false;
         } else {
             log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
-            statisticsMap.put("benchmark_req_sucessrate_percent failed", Boolean.toString(true));
+            statisticsMap.put("benchmark_req_sucessrate_percent", Boolean.toString(true));
             //    isBenchmarkPassed = true;
         }
-        statisticsMap.put("isBenchmarkPassed failed", Boolean.toString(isBenchmarkPassed));
+        statisticsMap.put("isBenchmarkPassed", Boolean.toString(isBenchmarkPassed));
         return statisticsMap;
     }
 
