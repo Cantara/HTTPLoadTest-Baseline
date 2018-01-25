@@ -57,4 +57,39 @@ cat runstatus
 ```
 
 
-
+### An example on the returned json report below
+```jshelllanguage
+{
+  "stats_w_mean_success" : "511",
+  "stats_r_duration" : "57019",
+  "stats_w_failures" : "0",
+  "stats_t_failures" : "0",
+  "stats_w_ninety_percentine_success" : "839",
+  "benchmark_req_90percentile_write_duration_ms" : "true",
+  "stats_r_mean_success" : "212",
+  "stats_t_deviations" : "0",
+  "stats_w_deviations" : "0",
+  "stats_o_failures" : "0",
+  "stats_o_deviations" : "0",
+  "benchmark_req_90percentile_read_duration_ms" : "true",
+  "stats_r_failures" : "0",
+  "stats_w_success" : "33",
+  "stats_o_results" : "0",
+  "timestamp" : "1516870838583",
+  "stats_t_success" : "301",
+  "runstatus" : "fail",
+  "stats_total_successrate" : "1",
+  "stats_t_results" : "301",
+  "stats_r_ninety_percentine_success" : "466",
+  "stats_r_success" : "268",
+  "benchmark_req_sucessrate_percent failed" : "true",
+  "stats_r_deviations" : "0",
+  "stats_r_results" : "268",
+  "stats_w_duration" : "16866",
+  "stats_o_success" : "0",
+  "stats_w_results" : "33",
+  "benchmark_req_mean_read_duration_ms" : "true",
+  "benchmark_req_mean_write_duration_ms" : "true",
+  "isBenchmarkPassed failed" : "true"
+}
+```
