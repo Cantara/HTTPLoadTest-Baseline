@@ -59,9 +59,14 @@ public class LoadTestResultUtil {
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {
             LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
-        if (loadTestResults == null || LoadTestExecutorService.isRunning()) {
-            log.info("hasPassedBenchmark skipped - failed");
+        if (loadTestResults == null) {
+            log.info("hasPassedBenchmark - no results - skipping");
             return statisticsMap;  // We ship on empty results and if tests are running and whileRunning flag is not set
+        }
+        if (!whileRunning && LoadTestExecutorService.isRunning()) {
+            log.info("hasPassedBenchmark - is running - whileRunning=false - skipping");
+            return statisticsMap;  // We ship on empty results and if tests are running and whileRunning flag is not set
+
         }
         int r_deviations = 0;
         int r_success = 0;
@@ -134,14 +139,21 @@ public class LoadTestResultUtil {
         statisticsMap.put("r_deviations", Long.toString(r_deviations));
         statisticsMap.put("r_success", Long.toString(r_success));
         statisticsMap.put("r_duration", Long.toString(r_duration));
-        statisticsMap.put("w_duration", Long.toString(w_duration));
         statisticsMap.put("r_results", Long.toString(r_results));
+        statisticsMap.put("r_failures", Long.toString(r_results - r_success));
         statisticsMap.put("w_deviations", Long.toString(w_deviations));
+        statisticsMap.put("w_duration", Long.toString(w_duration));
         statisticsMap.put("w_success", Long.toString(w_success));
         statisticsMap.put("w_results", Long.toString(w_results));
+        statisticsMap.put("w_failures", Long.toString(w_results - w_success));
         statisticsMap.put("deviations", Long.toString(deviations));
         statisticsMap.put("success", Long.toString(success));
         statisticsMap.put("results", Long.toString(results));
+        statisticsMap.put("failures", Long.toString(results - success));
+        statisticsMap.put("t_deviations", Long.toString(r_deviations + w_deviations + deviations));
+        statisticsMap.put("t_success", Long.toString(r_success + w_success + success));
+        statisticsMap.put("t_results", Long.toString(r_results + w_results + results));
+        statisticsMap.put("t_failures", Long.toString(r_results + w_results + results - r_success + w_success + success));
         statisticsMap.put("r_mean_success", Long.toString(r_mean_success));
         statisticsMap.put("r_ninety_percentine_success", Long.toString(r_ninety_percentine_success));
         statisticsMap.put("w_mean_success", Long.toString(w_mean_success));
@@ -190,95 +202,35 @@ public class LoadTestResultUtil {
     }
 
     public static String printStats(List<LoadTestResult> loadTestResults, boolean whileRunning) {
-        long nowTimestamp = System.currentTimeMillis();
-        if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {
-            LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
-        }
-        if (loadTestResults == null || (whileRunning == false && LoadTestExecutorService.isRunning() == true)) {
-            return "";  // We ship on empty results and if tests are running and whileRunning flag is not set
-        }
-        int r_deviations = 0;
-        int r_success = 0;
-        long r_duration = 0;
-        long w_duration = 0;
-        int r_results = 0;
-        int w_deviations = 0;
-        int w_success = 0;
-        int w_results = 0;
-        int deviations = 0;
-        int success = 0;
-        int results = 0;
-        long r_mean_success = 0;
-        long r_ninety_percentine_success = 0;
-        long w_mean_success = 0;
-        long w_ninety_percentine_success = 0;
-        List<Long> r_times = new ArrayList<Long>();
-        List<Long> w_times = new ArrayList<Long>();
-        for (LoadTestResult loadTestResult : loadTestResults) {
-            if (loadTestResult.getTest_id().startsWith("r-")) {
-                r_results++;
-                if (loadTestResult.isTest_deviation_flag()) {
-                    r_deviations++;
-                }
-                if (loadTestResult.isTest_success()) {
-                    r_success++;
-                    r_duration = r_duration + loadTestResult.getTest_duration();
-                    r_times.add(loadTestResult.getTest_duration());
-                }
-
-            } else {
-                if (loadTestResult.getTest_id().startsWith("w-")) {
-                    w_results++;
-                    if (loadTestResult.isTest_deviation_flag()) {
-                        w_deviations++;
-                    }
-                    if (loadTestResult.isTest_success()) {
-                        w_success++;
-                        w_duration = w_duration + loadTestResult.getTest_duration();
-                        w_times.add(loadTestResult.getTest_duration());
-                    }
-
-                } else {
-                    results++;
-                    if (loadTestResult.isTest_deviation_flag()) {
-                        deviations++;
-                    }
-                    if (loadTestResult.isTest_success()) {
-                        success++;
-                    }
-
-                }
-            }
-        }
+        Map<String, String> statsMap = hasPassedBenchmark(loadTestResults, whileRunning);
         DateFormat df = new SimpleDateFormat("dd/MM-yyyy  HH:mm:ss");
         String stats;
         if (LoadTestExecutorService.getLoadTestRunNo() > 0) {
             if (LoadTestExecutorService.getStopTime() == 0) {
-                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(nowTimestamp)) + "  Running for " + (nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
+                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + "  Running for " + (Long.parseLong(statsMap.get("timestamp")) - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
             } else {
-                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(nowTimestamp)) + "  Ran for " + (LoadTestExecutorService.getStopTime() - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
+                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + "  Ran for " + (LoadTestExecutorService.getStopTime() - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
             }
         } else {
-            stats = "Started: " + df.format(new Date(nowTimestamp)) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(nowTimestamp)) + "\n";
+            stats = "Started: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + "\n";
         }
-        if (r_success > 0) {
-            r_mean_success = r_duration / r_success;
-            Collections.sort(r_times);
-            r_ninety_percentine_success = r_times.get(r_times.size() * 9 / 10);
-        }
-        if (w_success > 0) {
-            w_mean_success = w_duration / w_success;
-            Collections.sort(w_times);
-            w_ninety_percentine_success = w_times.get(w_times.size() * 9 / 10);
-        }
-        stats = stats + "\n" + String.format(" %5d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results, r_success, (r_results - r_success), r_deviations);
-        stats = stats + "\n" + String.format(" %5d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", w_results, w_success, (w_results - w_success), w_deviations);
-        stats = stats + "\n" + String.format(" %5d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).", results, success, (results - success), deviations);
-        stats = stats + "\n" + String.format(" %5d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).", r_results + w_results + results, r_success + w_success + success, (r_results + w_results + results) - (r_success + w_success + success), r_deviations + w_deviations + deviations);
-        stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ", LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
-        stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms ninety percentile successful read tests ", r_mean_success, r_ninety_percentine_success);
-        stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms ninety percentile successful write tests ", w_mean_success, w_ninety_percentine_success);
 
+        if (statsMap.size() > 10) {
+            stats = stats + "\n" + String.format(" %5d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
+                    Integer.parseInt(statsMap.get("r_results")), Integer.parseInt(statsMap.get("r_success")), Integer.parseInt(statsMap.get("r_failures")), Integer.parseInt(statsMap.get("r_deviations")));
+            stats = stats + "\n" + String.format(" %5d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
+                    Integer.parseInt(statsMap.get("w_results")), Integer.parseInt(statsMap.get("w_success")), Integer.parseInt(statsMap.get("w_failures")), Integer.parseInt(statsMap.get("w_deviations")));
+            stats = stats + "\n" + String.format(" %5d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).",
+                    Integer.parseInt(statsMap.get("results")), Integer.parseInt(statsMap.get("success")), Integer.parseInt(statsMap.get("failures")), Integer.parseInt(statsMap.get("deviations")));
+            stats = stats + "\n" + String.format(" %5d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
+                    Integer.parseInt(statsMap.get("results")), Integer.parseInt(statsMap.get("t_success")), Integer.parseInt(statsMap.get("t_failures")), Integer.parseInt(statsMap.get("t_deviations")));
+            stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ",
+                    LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
+            stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms ninety percentile successful read tests ",
+                    Integer.parseInt(statsMap.get("r_mean_success")), Integer.parseInt(statsMap.get("r_ninety_percentine_success")));
+            stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms ninety percentile successful write tests ",
+                    Integer.parseInt(statsMap.get("w_mean_success")), Integer.parseInt(statsMap.get("w_ninety_percentine_success")));
+        }
         String loadTestJson = "";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null) {
             try {
@@ -291,6 +243,7 @@ public class LoadTestResultUtil {
         }
         return stats + "\n\n" + loadTestJson;
     }
+
 
     public static void storeResultToFiles() {
 
