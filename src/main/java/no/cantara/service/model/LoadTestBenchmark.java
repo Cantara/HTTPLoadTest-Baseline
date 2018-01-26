@@ -15,10 +15,14 @@ public class LoadTestBenchmark implements Serializable {
     private String test_name;
     private int benchmark_req_sucessrate_percent = 99;
 
-    private int benchmark_req_mean_read_duration_ms = 1010;
-    private int benchmark_req_mean_write_duration_ms = 1020;
-    private int benchmark_req_90percentile_read_duration_ms = 910;
-    private int benchmark_req_90percentile_write_duration_ms = 920;
+    private int benchmark_req_mean_read_duration_ms = 0;
+    private int benchmark_req_mean_write_duration_ms = 0;
+    private int benchmark_req_90percentile_read_duration_ms = 0;
+    private int benchmark_req_90percentile_write_duration_ms = 0;
+    private int benchmark_req_95percentile_read_duration_ms = 0;
+    private int benchmark_req_95percentile_write_duration_ms = 0;
+    private int benchmark_req_99percentile_read_duration_ms = 0;
+    private int benchmark_req_99percentile_write_duration_ms = 0;
 
 
     private static final Logger log = LoggerFactory.getLogger(LoadTestBenchmark.class);
@@ -29,14 +33,40 @@ public class LoadTestBenchmark implements Serializable {
                              @JsonProperty("benchmark_req_mean_read_duration_ms") String benchmark_req_mean_read_duration_ms,
                              @JsonProperty("benchmark_req_mean_write_duration_ms") String benchmark_req_mean_write_duration_ms,
                              @JsonProperty("benchmark_req_90percentile_read_duration_ms") String benchmark_req_90percentile_read_duration_ms,
-                             @JsonProperty("benchmark_req_90percentile_write_duration_ms") String benchmark_req_90percentile_write_duration_ms) {
+                             @JsonProperty("benchmark_req_90percentile_write_duration_ms") String benchmark_req_90percentile_write_duration_ms,
+                             @JsonProperty("benchmark_req_95percentile_read_duration_ms") String benchmark_req_95percentile_read_duration_ms,
+                             @JsonProperty("benchmark_req_95percentile_write_duration_ms") String benchmark_req_95percentile_write_duration_ms,
+                             @JsonProperty("benchmark_req_99percentile_read_duration_ms") String benchmark_req_99percentile_read_duration_ms,
+                             @JsonProperty("benchmark_req_99percentile_write_duration_ms") String benchmark_req_99percentile_write_duration_ms)
+
+    {
         this.benchmark_id = id;
         this.test_name = test_name;
         this.benchmark_req_sucessrate_percent = Integer.parseInt(benchmark_req_sucessrate);
-        this.benchmark_req_mean_read_duration_ms = Integer.parseInt(benchmark_req_mean_read_duration_ms);
-        this.benchmark_req_mean_write_duration_ms = Integer.parseInt(benchmark_req_mean_write_duration_ms);
-        this.benchmark_req_90percentile_read_duration_ms = Integer.parseInt(benchmark_req_90percentile_read_duration_ms);
-        this.benchmark_req_90percentile_write_duration_ms = Integer.parseInt(benchmark_req_90percentile_write_duration_ms);
+        if (benchmark_req_mean_read_duration_ms != null) {
+            this.benchmark_req_mean_read_duration_ms = Integer.parseInt(benchmark_req_mean_read_duration_ms);
+        }
+        if (benchmark_req_mean_write_duration_ms != null) {
+            this.benchmark_req_mean_write_duration_ms = Integer.parseInt(benchmark_req_mean_write_duration_ms);
+        }
+        if (benchmark_req_90percentile_read_duration_ms != null) {
+            this.benchmark_req_90percentile_read_duration_ms = Integer.parseInt(benchmark_req_90percentile_read_duration_ms);
+        }
+        if (benchmark_req_90percentile_write_duration_ms != null) {
+            this.benchmark_req_90percentile_write_duration_ms = Integer.parseInt(benchmark_req_90percentile_write_duration_ms);
+        }
+        if (benchmark_req_95percentile_read_duration_ms != null) {
+            this.benchmark_req_95percentile_read_duration_ms = Integer.parseInt(benchmark_req_95percentile_read_duration_ms);
+        }
+        if (benchmark_req_95percentile_write_duration_ms != null) {
+            this.benchmark_req_95percentile_write_duration_ms = Integer.parseInt(benchmark_req_95percentile_write_duration_ms);
+        }
+        if (benchmark_req_99percentile_read_duration_ms != null) {
+            this.benchmark_req_99percentile_read_duration_ms = Integer.parseInt(benchmark_req_99percentile_read_duration_ms);
+        }
+        if (benchmark_req_99percentile_write_duration_ms != null) {
+            this.benchmark_req_99percentile_write_duration_ms = Integer.parseInt(benchmark_req_99percentile_write_duration_ms);
+        }
 
     }
 
@@ -97,6 +127,38 @@ public class LoadTestBenchmark implements Serializable {
 
     public void setBenchmark_req_90percentile_write_duration_ms(int benchmark_req_90percentile_write_duration_ms) {
         this.benchmark_req_90percentile_write_duration_ms = benchmark_req_90percentile_write_duration_ms;
+    }
+
+    public int getBenchmark_req_95percentile_read_duration_ms() {
+        return benchmark_req_95percentile_read_duration_ms;
+    }
+
+    public void setBenchmark_req_95percentile_read_duration_ms(int benchmark_req_95percentile_read_duration_ms) {
+        this.benchmark_req_95percentile_read_duration_ms = benchmark_req_95percentile_read_duration_ms;
+    }
+
+    public int getBenchmark_req_95percentile_write_duration_ms() {
+        return benchmark_req_95percentile_write_duration_ms;
+    }
+
+    public void setBenchmark_req_95percentile_write_duration_ms(int benchmark_req_95percentile_write_duration_ms) {
+        this.benchmark_req_95percentile_write_duration_ms = benchmark_req_95percentile_write_duration_ms;
+    }
+
+    public int getBenchmark_req_99percentile_read_duration_ms() {
+        return benchmark_req_99percentile_read_duration_ms;
+    }
+
+    public void setBenchmark_req_99percentile_read_duration_ms(int benchmark_req_99percentile_read_duration_ms) {
+        this.benchmark_req_99percentile_read_duration_ms = benchmark_req_99percentile_read_duration_ms;
+    }
+
+    public int getBenchmark_req_99percentile_write_duration_ms() {
+        return benchmark_req_99percentile_write_duration_ms;
+    }
+
+    public void setBenchmark_req_99percentile_write_duration_ms(int benchmark_req_99percentile_write_duration_ms) {
+        this.benchmark_req_99percentile_write_duration_ms = benchmark_req_99percentile_write_duration_ms;
     }
 }
 

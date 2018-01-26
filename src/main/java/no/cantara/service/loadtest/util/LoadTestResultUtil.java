@@ -54,6 +54,10 @@ public class LoadTestResultUtil {
     public static final String STATS_TOTAL_SUCCESSRATE = "stats_total_successrate";
     public static final String BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS = "benchmark_req_90percentile_read_duration_ms";
     public static final String BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS = "benchmark_req_90percentile_write_duration_ms";
+    public static final String BENCHMARK_REQ_95_PERCENTILE_READ_DURATION_MS = "benchmark_req_95percentile_read_duration_ms";
+    public static final String BENCHMARK_REQ_95_PERCENTILE_WRITE_DURATION_MS = "benchmark_req_95percentile_write_duration_ms";
+    public static final String BENCHMARK_REQ_99_PERCENTILE_READ_DURATION_MS = "benchmark_req_99percentile_read_duration_ms";
+    public static final String BENCHMARK_REQ_99_PERCENTILE_WRITE_DURATION_MS = "benchmark_req_99percentile_write_duration_ms";
     public static final String BENCHMARK_REQ_MEAN_READ_DURATION_MS = "benchmark_req_mean_read_duration_ms";
     public static final String BENCHMARK_REQ_MEAN_WRITE_DURATION_MS = "benchmark_req_mean_write_duration_ms";
     public static final String BENCHMARK_REQ_SUCESSRATE_PERCENT = "benchmark_req_sucessrate_percent";
@@ -226,43 +230,88 @@ public class LoadTestResultUtil {
         statisticsMap.put(STATS_TOTAL_SUCCESSRATE, Long.toString(total_successrate));
 
         boolean isBenchmarkPassed = true;
-        if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success_ms) {
-            log.info("getBenchmark_req_90percentile_read_duration_ms failed");
-            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS, Boolean.toString(false));
-            isBenchmarkPassed = false;
-        } else {
-            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS, Boolean.toString(true));
-
+        if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success_ms) {
+                log.info("getBenchmark_req_90percentile_read_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS, Boolean.toString(true));
+            }
         }
-        if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() <= w_ninety_percentine_success_ms) {
-            log.info("getBenchmark_req_90percentile_write_duration_ms failed");
-            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(false));
-            isBenchmarkPassed = false;
-        } else {
-            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(true));
+        if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() <= w_ninety_percentine_success_ms) {
+                log.info("getBenchmark_req_90percentile_write_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(true));
+            }
         }
-        if (loadTestBenchmark.getBenchmark_req_mean_read_duration_ms() <= r_mean_success_ms) {
-            log.info("getBenchmark_req_mean_read_duration_ms failed");
-            statisticsMap.put(BENCHMARK_REQ_MEAN_READ_DURATION_MS, Boolean.toString(false));
-            isBenchmarkPassed = false;
-        } else {
-            statisticsMap.put(BENCHMARK_REQ_MEAN_READ_DURATION_MS, Boolean.toString(true));
+        if (loadTestBenchmark.getBenchmark_req_95percentile_read_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_95percentile_read_duration_ms() <= r_ninetyfive_percentine_success_ms) {
+                log.info("getBenchmark_req_95percentile_read_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_95_PERCENTILE_READ_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_95_PERCENTILE_READ_DURATION_MS, Boolean.toString(true));
+            }
         }
-        if (loadTestBenchmark.getBenchmark_req_mean_write_duration_ms() <= w_mean_success_ms) {
-            log.info("getBenchmark_req_mean_write_duration_ms failed");
-            statisticsMap.put(BENCHMARK_REQ_MEAN_WRITE_DURATION_MS, Boolean.toString(false));
-            isBenchmarkPassed = false;
-        } else {
-            statisticsMap.put(BENCHMARK_REQ_MEAN_WRITE_DURATION_MS, Boolean.toString(true));
+        if (loadTestBenchmark.getBenchmark_req_95percentile_write_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_95percentile_write_duration_ms() <= w_ninetyfive_percentine_success_ms) {
+                log.info("getBenchmark_req_95percentile_write_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_95_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_95_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(true));
+            }
         }
-        if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() >= total_successrate) {
-            log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
-            statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(false));
-            isBenchmarkPassed = false;
-        } else {
-            log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
-            statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(true));
-            //    isBenchmarkPassed = true;
+        if (loadTestBenchmark.getBenchmark_req_99percentile_read_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_99percentile_read_duration_ms() <= r_ninetynine_percentine_success_ms) {
+                log.info("getBenchmark_req_99percentile_read_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_99_PERCENTILE_READ_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_99_PERCENTILE_READ_DURATION_MS, Boolean.toString(true));
+            }
+        }
+        if (loadTestBenchmark.getBenchmark_req_99percentile_write_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() <= w_ninetynine_percentine_success_ms) {
+                log.info("getBenchmark_req_99percentile_write_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_99_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_99_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(true));
+            }
+        }
+        if (loadTestBenchmark.getBenchmark_req_mean_read_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_mean_read_duration_ms() <= r_mean_success_ms) {
+                log.info("getBenchmark_req_mean_read_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_MEAN_READ_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_MEAN_READ_DURATION_MS, Boolean.toString(true));
+            }
+        }
+        if (loadTestBenchmark.getBenchmark_req_mean_write_duration_ms() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_mean_write_duration_ms() <= w_mean_success_ms) {
+                log.info("getBenchmark_req_mean_write_duration_ms failed");
+                statisticsMap.put(BENCHMARK_REQ_MEAN_WRITE_DURATION_MS, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                statisticsMap.put(BENCHMARK_REQ_MEAN_WRITE_DURATION_MS, Boolean.toString(true));
+            }
+        }
+        if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() > 0) {
+            if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() >= total_successrate) {
+                log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
+                statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(false));
+                isBenchmarkPassed = false;
+            } else {
+                log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
+                statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(true));
+                //    isBenchmarkPassed = true;
+            }
         }
         statisticsMap.put(IS_BENCHMARK_PASSED, Boolean.toString(isBenchmarkPassed));
         return statisticsMap;

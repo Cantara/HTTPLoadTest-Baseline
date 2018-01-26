@@ -58,7 +58,7 @@ public class ConfigLoadTestResource {
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"14\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
                         "    </form>" +
                         "  <br/><br/>" +
@@ -183,7 +183,7 @@ public class ConfigLoadTestResource {
                         "  <h3>HTTPLoadTest - LoadTestBenchmark Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_BENCHMARK + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        LoadTestBenchmark:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"20\" cols=\"80\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\"><br/>" +
                         "    </form>\n" +
                         "\n" +

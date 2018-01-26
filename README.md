@@ -43,9 +43,13 @@ http://localhost:2086/HTTPLoadTest-baseline/loadTest/runstatus
 {
   "benchmark_req_90percentile_read_duration_ms" : "true",
   "benchmark_req_90percentile_write_duration_ms" : "true",
+  "benchmark_req_95percentile_read_duration_ms" : "true",
+  "benchmark_req_95percentile_write_duration_ms" : "true",
+  "benchmark_req_99percentile_read_duration_ms" : "true",
+  "benchmark_req_99percentile_write_duration_ms" : "false",
   "benchmark_req_mean_read_duration_ms" : "true",
   "benchmark_req_mean_write_duration_ms" : "true",
-  "benchmark_req_sucessrate_percent" : "false",
+  "benchmark_req_sucessrate_percent" : "true",
   "isBenchmarkPassed" : "false",
   "runstatus" : "fail",
   "stats_o_deviations" : "0",
@@ -53,31 +57,31 @@ http://localhost:2086/HTTPLoadTest-baseline/loadTest/runstatus
   "stats_o_results" : "0",
   "stats_o_success" : "0",
   "stats_r_deviations" : "0",
-  "stats_r_duration_ms" : "233018",
-  "stats_r_failures" : "1",
-  "stats_r_mean_success_ms" : "131",
-  "stats_r_median_success_ms" : "93",
-  "stats_r_ninety_percentine_success_ms" : "257",
-  "stats_r_ninetyfive_percentine_success_ms" : "439",
-  "stats_r_ninetynine_percentine_success_ms" : "805",
-  "stats_r_results" : "1767",
-  "stats_r_success" : "1766",
+  "stats_r_duration_ms" : "228282",
+  "stats_r_failures" : "0",
+  "stats_r_mean_success_ms" : "108",
+  "stats_r_median_success_ms" : "80",
+  "stats_r_ninety_percentine_success_ms" : "204",
+  "stats_r_ninetyfive_percentine_success_ms" : "277",
+  "stats_r_ninetynine_percentine_success_ms" : "748",
+  "stats_r_results" : "2110",
+  "stats_r_success" : "2110",
   "stats_t_deviations" : "0",
-  "stats_t_failures" : "1",
-  "stats_t_results" : "1913",
-  "stats_t_success" : "1912",
-  "stats_total_successrate" : "0",
+  "stats_t_failures" : "0",
+  "stats_t_results" : "2300",
+  "stats_t_success" : "2300",
+  "stats_total_successrate" : "100",
   "stats_w_deviations" : "0",
-  "stats_w_duration_ms" : "49868",
+  "stats_w_duration_ms" : "52139",
   "stats_w_failures" : "0",
-  "stats_w_mean_success_ms" : "341",
-  "stats_w_median_success_ms" : "262",
-  "stats_w_ninety_percentine_success_ms" : "700",
-  "stats_w_ninetyfive_percentine_success_ms" : "1134",
-  "stats_w_ninetynine_percentine_success_ms" : "1496",
-  "stats_w_results" : "146",
-  "stats_w_success" : "146",
-  "timestamp" : "1516959681172"
+  "stats_w_mean_success_ms" : "274",
+  "stats_w_median_success_ms" : "221",
+  "stats_w_ninety_percentine_success_ms" : "446",
+  "stats_w_ninetyfive_percentine_success_ms" : "893",
+  "stats_w_ninetynine_percentine_success_ms" : "1307",
+  "stats_w_results" : "190",
+  "stats_w_success" : "190",
+  "timestamp" : "1516966252860"
 }
 ```
 
@@ -379,17 +383,22 @@ login.admin.password=adminservice
 # Setting benchmarks for evaluating your load-test run(s)
 ```json
 {
-  "benchmark_id": "BenchmarkID",
-  "benchmark_req_sucessrate_percent": 99,
-  "benchmark_req_mean_read_duration_ms": 1010,
-  "benchmark_req_mean_write_duration_ms": 1020,
-  "benchmark_req_90percentile_read_duration_ms": 910,
-  "benchmark_req_90percentile_write_duration_ms": 920
+  "benchmark_id" : "BenchmarkID",
+  "benchmark_req_sucessrate_percent" : 99,
+  "benchmark_req_mean_read_duration_ms" : 1010,
+  "benchmark_req_mean_write_duration_ms" : 1020,
+  "benchmark_req_90percentile_read_duration_ms" : 910,
+  "benchmark_req_90percentile_write_duration_ms" : 920,
+  "benchmark_req_95percentile_read_duration_ms" : 1110,
+  "benchmark_req_95percentile_write_duration_ms" : 1120,
+  "benchmark_req_99percentile_read_duration_ms" : 1130,
+  "benchmark_req_99percentile_write_duration_ms" : 1140
 }
 ```
 
 The HTTPLoadTest-baseline comes with a pre-configured benchmark for load-test runs, which is defined in
-DefaultLoadTestBenchmark.json. 
+DefaultLoadTestBenchmark.json. Only "benchmark_id" and "benchmark_req_sucessrate_percent" are required values. If you specify
+"0" or omit the json property no validation will be done for that requirement.
 
 * [Clustering HTTPLoadTest-baseline](CLUSTERING.md)
 
