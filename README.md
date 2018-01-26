@@ -101,7 +101,7 @@ expectations.
 
 So, let us have a look at the details...
 
-### HTTPLoadTest, used as pipeline example
+### HTTPLoadTest, used as pipeline example (bash example)
 
 ```jshelllanguage
 JSON=$(<ReadTestSpecification-TestHealth.json ); wget -v --post-data "jsonConfig=${JSON}" -X POST  http://localhost:28086/HTTPLoadTest-baseline/loadTest/form/read
