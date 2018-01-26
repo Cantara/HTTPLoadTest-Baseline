@@ -332,19 +332,19 @@ public class LoadTestResultUtil {
         }
 
         if (statsMap.size() > 10) {
-            stats = stats + "\n" + String.format(" %5d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
+            stats = stats + "\n" + String.format(" %7d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
                     Integer.parseInt(statsMap.get(STATS_R_RESULTS)), Integer.parseInt(statsMap.get(STATS_R_SUCCESS)), Integer.parseInt(statsMap.get(STATS_R_FAILURES)), Integer.parseInt(statsMap.get(STATS_R_DEVIATIONS)));
-            stats = stats + "\n" + String.format(" %5d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
+            stats = stats + "\n" + String.format(" %7d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
                     Integer.parseInt(statsMap.get(STATS_W_RESULTS)), Integer.parseInt(statsMap.get(STATS_W_SUCCESS)), Integer.parseInt(statsMap.get(STATS_W_FAILURES)), Integer.parseInt(statsMap.get(STATS_W_DEVIATIONS)));
-            stats = stats + "\n" + String.format(" %5d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).",
+            stats = stats + "\n" + String.format(" %7d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).",
                     Integer.parseInt(statsMap.get(STATS_O_RESULTS)), Integer.parseInt(statsMap.get(STATS_O_SUCCESS)), Integer.parseInt(statsMap.get(STATS_O_FAILURES)), Integer.parseInt(statsMap.get(STATS_O_DEVIATIONS)));
-            stats = stats + "\n" + String.format(" %5d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
+            stats = stats + "\n" + String.format(" %7d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
                     Integer.parseInt(statsMap.get(STATS_T_RESULTS)), Integer.parseInt(statsMap.get(STATS_T_SUCCESS)), Integer.parseInt(statsMap.get(STATS_T_FAILURES)), Integer.parseInt(statsMap.get(STATS_T_DEVIATIONS)));
-            stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ",
+            stats = stats + "\n" + String.format(" %7d tasks scheduled, number of threads configured: %d, isRunning: %b ",
                     LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
-            stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms 90% percentile successful read tests, %4d ms 95% percentile successful read tests",
+            stats = stats + "\n" + String.format(" %7d ms mean duration for successful read tests, %4d ms 90% percentile successful read tests, %4d ms 95% percentile successful read tests",
                     Integer.parseInt(statsMap.get(STATS_R_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETY_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETYFIVE_PERCENTINE_SUCCESS_MS)));
-            stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms 90% percentile successful write tests, %4d ms 95% percentile successful write tests",
+            stats = stats + "\n" + String.format(" %7d ms mean duration for successful write tests, %4d ms 90% percentile successful write tests, %4d ms 95% percentile successful write tests",
                     Integer.parseInt(statsMap.get(STATS_W_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETY_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS)));
         }
         String loadTestJson = "";
