@@ -270,6 +270,8 @@ sharing of data between the different simulated scenarios. As the variables is i
 defined, command-defined and resolved from earlier commands). You might want to condider using a naming scheme for variables
 to avoid values beeing overwritten and thus causing problems for your test-runs.
 
+![The LoadTest data structures](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-DataStructures-Detailed.png)
+
 
 #### Template (command_template) and URL (command_url) special operations
 
