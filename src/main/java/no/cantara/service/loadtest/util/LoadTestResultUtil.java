@@ -344,7 +344,7 @@ public class LoadTestResultUtil {
                     LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
             stats = stats + "\n" + String.format(" %7d ms mean duration, %4d ms 90%% percentile, %4d ms 95%% percentile, %4d ms 99%% percentile successful read tests",
                     Integer.parseInt(statsMap.get(STATS_R_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETY_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETYFIVE_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETYNINE_PERCENTINE_SUCCESS_MS)));
-            stats = stats + "\n" + String.format(" %7d ms mean duration, %4d ms 90%% percentile, %4d ms 95%% percentile, %4d ms 95%% percentile successful write tests",
+            stats = stats + "\n" + String.format(" %7d ms mean duration, %4d ms 90%% percentile, %4d ms 95%% percentile, %4d ms 99%% percentile successful write tests",
                     Integer.parseInt(statsMap.get(STATS_W_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETY_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETYNINE_PERCENTINE_SUCCESS_MS)));
         }
         String loadTestJson = "";

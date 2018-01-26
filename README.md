@@ -154,13 +154,13 @@ define LoadTest global variables for each LoadTestConfig.
 "resulfiles": 
   "HTTPLoadTest-Health_1516012005749.json, HTTPLOadTest-Health_1516003617097.csv, HTTPLoadTest-Health_1516008000667.json, HTTPLoadTest-Health_1516012005749.csv", 
 
-  101 read tests resulted in 101 successful runs where 0 was marked failure and 0 was marked as deviation(s).
-    8 write tests resulted in 6 successful runs where 2 was marked failure and 0 was marked as deviation(s).
-    0 unmarked tests resulted in 0 successful runs where 0 was marked failure and  0 was marked as deviation(s).
-  109 total tests resulted in 109 successful runs where 0 was marked failure and 0 was marked as deviation(s).
-   88 active tests threads scheduled, number of threads configured: 10,  isRunning: false 
-  928 ms mean duraction for successful read tests, 1286 ms ninety percentile successful read tests 
- 11801 ms mean duraction for successful write tests, 1762 ms ninety percentile successful write tests 
+    7661 read tests resulted in 7606 successful runs where 55 was marked failure and 0 was marked as deviation(s).
+     783 write tests resulted in 783 successful runs where 0 was marked failure and 0 was marked as deviation(s).
+       0 unmarked tests resulted in 0 successful runs where 0 was marked failure and  0 was marked as deviation(s).
+    8444 total tests resulted in 8389 successful runs where 55 was marked failure and 0 was marked as deviation(s).
+    8504 tasks scheduled, number of threads configured: 30, isRunning: false 
+     305 ms mean duration,  379 ms 90% percentile,  411 ms 95% percentile,  577 ms 99% percentile successful read tests
+     561 ms mean duration,  664 ms 90% percentile,  701 ms 95% percentile,  838 ms 99% percentile successful write tests
 
 {
   "test_id" : "Default-1234",
