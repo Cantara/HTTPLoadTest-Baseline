@@ -44,9 +44,11 @@ public class LoadTestResultUtil {
     public static final String STATS_R_MEAN_SUCCESS_MS = "stats_r_mean_success_ms";
     public static final String STATS_R_MEDIAN_SUCCESS_MS = "stats_r_median_success_ms";
     public static final String STATS_R_NINETY_PERCENTINE_SUCCESS_MS = "stats_r_ninety_percentine_success_ms";
+    public static final String STATS_R_NINETYFIVE_PERCENTINE_SUCCESS_MS = "stats_r_ninetyfive_percentine_success_ms";
     public static final String STATS_W_MEAN_SUCCESS_MS = "stats_w_mean_success_ms";
     public static final String STATS_W_MEDIAN_SUCCESS_MS = "stats_w_median_success_ms";
     public static final String STATS_W_NINETY_PERCENTINE_SUCCESS_MS = "stats_w_ninety_percentine_success_ms";
+    public static final String STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS = "stats_w_ninetyfive_percentine_success_ms";
     public static final String STATS_TOTAL_SUCCESSRATE = "stats_total_successrate";
     public static final String BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS = "benchmark_req_90percentile_read_duration_ms";
     public static final String BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS = "benchmark_req_90percentile_write_duration_ms";
@@ -115,9 +117,11 @@ public class LoadTestResultUtil {
         long r_mean_success_ms = 0;
         double r_median_success_ms = 0;
         long r_ninety_percentine_success_ms = 0;
+        long r_ninetyfive_percentine_success_ms = 0;
         long w_mean_success_ms = 0;
         double w_median_success_ms = 0;
         long w_ninety_percentine_success_ms = 0;
+        long w_ninetyfive_percentine_success_ms = 0;
         List<Long> r_times = new ArrayList<Long>();
         List<Long> w_times = new ArrayList<Long>();
         for (LoadTestResult loadTestResult : loadTestResults) {
@@ -162,6 +166,7 @@ public class LoadTestResultUtil {
             r_mean_success_ms = r_duration_ms / r_success;
             Collections.sort(r_times);
             r_ninety_percentine_success_ms = r_times.get(r_times.size() * 9 / 10);
+            r_ninetyfive_percentine_success_ms = r_times.get(r_times.size() * 95 / 100);
 
             Long[] r_times_array = r_times.toArray(new Long[r_times.size()]);
             if (r_times_array.length % 2 == 0)
@@ -173,6 +178,7 @@ public class LoadTestResultUtil {
             w_mean_success_ms = w_duration_ms / w_success;
             Collections.sort(w_times);
             w_ninety_percentine_success_ms = w_times.get(w_times.size() * 9 / 10);
+            w_ninetyfive_percentine_success_ms = w_times.get(w_times.size() * 95 / 100);
 
             Long[] w_times_array = w_times.toArray(new Long[w_times.size()]);
             if (w_times_array.length % 2 == 0)
@@ -204,9 +210,11 @@ public class LoadTestResultUtil {
         statisticsMap.put(STATS_R_MEAN_SUCCESS_MS, Long.toString(r_mean_success_ms));
         statisticsMap.put(STATS_R_MEDIAN_SUCCESS_MS, Long.toString((long) r_median_success_ms));
         statisticsMap.put(STATS_R_NINETY_PERCENTINE_SUCCESS_MS, Long.toString(r_ninety_percentine_success_ms));
+        statisticsMap.put(STATS_R_NINETYFIVE_PERCENTINE_SUCCESS_MS, Long.toString(r_ninetyfive_percentine_success_ms));
         statisticsMap.put(STATS_W_MEAN_SUCCESS_MS, Long.toString(w_mean_success_ms));
         statisticsMap.put(STATS_W_MEDIAN_SUCCESS_MS, Long.toString((long) w_median_success_ms));
         statisticsMap.put(STATS_W_NINETY_PERCENTINE_SUCCESS_MS, Long.toString(w_ninety_percentine_success_ms));
+        statisticsMap.put(STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS, Long.toString(w_ninetyfive_percentine_success_ms));
         statisticsMap.put(STATS_TOTAL_SUCCESSRATE, Long.toString(total_successrate));
 
         boolean isBenchmarkPassed = true;
