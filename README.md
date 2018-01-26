@@ -38,7 +38,7 @@ Then open the simple UI in a web browser:
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
 ### A typical example of the result of a loadtest
-
+http://localhost:2086/HTTPLoadTest-baseline/loadTest/runstatus
 ```json
 {
   "benchmark_req_90percentile_read_duration_ms" : "true",
