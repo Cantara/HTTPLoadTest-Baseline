@@ -250,6 +250,8 @@ public class LoadTestResultUtil {
 
     public static void storeResultToFiles() {
 
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+
         try {
 
 
@@ -258,34 +260,34 @@ public class LoadTestResultUtil {
                 directory.mkdir();
                 // If you require it to make the entire directory path including parents,
             }
-            PrintWriter jsonwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".json", "UTF-8");
+            PrintWriter jsonwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + ".json", "UTF-8");
             jsonwriter.println(LoadTestResource.getJsonResultString());
             jsonwriter.close();
-            PrintWriter cvswriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + ".csv", "UTF-8");
+            PrintWriter cvswriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + ".csv", "UTF-8");
             cvswriter.println(LoadTestResource.getCSVResultString());
             cvswriter.close();
 
 
             // Persist the specifications for the test-run
-            PrintWriter readSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_read_specififation.json", "UTF-8");
+            PrintWriter readSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + "_read_specififation.json", "UTF-8");
             readSpecWriter.println(LoadTestExecutorService.getReadTestSpecificationListJson());
             readSpecWriter.close();
 
-            PrintWriter writeSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_write_specififation.json", "UTF-8");
+            PrintWriter writeSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + "_write_specififation.json", "UTF-8");
             writeSpecWriter.println(LoadTestExecutorService.getWriteTestSpecificationListJson());
             writeSpecWriter.close();
 
-            PrintWriter loadSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_load_specififation.json", "UTF-8");
+            PrintWriter loadSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + "_load_specififation.json", "UTF-8");
             loadSpecWriter.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getActiveLoadTestConfig()));
             loadSpecWriter.close();
 
-            PrintWriter benchmarkSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_benchmark_specififation.json", "UTF-8");
+            PrintWriter benchmarkSpecWriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + "_benchmark_specififation.json", "UTF-8");
             benchmarkSpecWriter.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestResultUtil.getLoadTestBenchmark()));
             benchmarkSpecWriter.close();
 
             // Also persist benchmark result
             Map<String, String> resultMap = LoadTestResultUtil.hasPassedBenchmark(LoadTestExecutorService.getResultListSnapshot(), true);
-            PrintWriter benchmarkwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + LoadTestExecutorService.getStartTime() + "_benchmark_result.json", "UTF-8");
+            PrintWriter benchmarkwriter = new PrintWriter(RESULT_FILE_PATH + File.separator + LoadTestExecutorService.getActiveLoadTestConfig().getTest_id() + "_" + df.format(new Date(LoadTestExecutorService.getStartTime())) + "_benchmark_result.json", "UTF-8");
             benchmarkwriter.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(resultMap));
             benchmarkwriter.close();
         } catch (Exception e) {
