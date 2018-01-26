@@ -48,7 +48,6 @@ public class LoadTestResource {
     private static final Logger log = LoggerFactory.getLogger(LoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final CsvMapper csvMapper = new CsvMapper();
-    private final String loadTest = "{}";
     private final String loadTests = "{}";
 
     @Autowired
