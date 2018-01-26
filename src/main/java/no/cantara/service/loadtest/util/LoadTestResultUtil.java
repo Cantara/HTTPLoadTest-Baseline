@@ -23,6 +23,36 @@ public class LoadTestResultUtil {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     private static final Logger log = LoggerFactory.getLogger(LoadTestResultUtil.class);
+    public static final String STATS_R_DEVIATIONS = "stats_r_deviations";
+    public static final String STATS_R_SUCCESS = "stats_r_success";
+    public static final String STATS_R_DURATION_MS = "stats_r_duration_ms";
+    public static final String STATS_R_RESULTS = "stats_r_results";
+    public static final String STATS_R_FAILURES = "stats_r_failures";
+    public static final String STATS_W_DEVIATIONS = "stats_w_deviations";
+    public static final String STATS_W_DURATION_MS = "stats_w_duration_ms";
+    public static final String STATS_W_SUCCESS = "stats_w_success";
+    public static final String STATS_W_RESULTS = "stats_w_results";
+    public static final String STATS_W_FAILURES = "stats_w_failures";
+    public static final String STATS_O_DEVIATIONS = "stats_o_deviations";
+    public static final String STATS_O_SUCCESS = "stats_o_success";
+    public static final String STATS_O_RESULTS = "stats_o_results";
+    public static final String STATS_O_FAILURES = "stats_o_failures";
+    public static final String STATS_T_DEVIATIONS = "stats_t_deviations";
+    public static final String STATS_T_SUCCESS = "stats_t_success";
+    public static final String STATS_T_RESULTS = "stats_t_results";
+    public static final String STATS_T_FAILURES = "stats_t_failures";
+    public static final String STATS_R_MEAN_SUCCESS_MS = "stats_r_mean_success_ms";
+    public static final String STATS_R_NINETY_PERCENTINE_SUCCESS_MS = "stats_r_ninety_percentine_success_ms";
+    public static final String STATS_W_MEAN_SUCCESS_MS = "stats_w_mean_success_ms";
+    public static final String STATS_W_NINETY_PERCENTINE_SUCCESS_MS = "stats_w_ninety_percentine_success_ms";
+    public static final String STATS_TOTAL_SUCCESSRATE = "stats_total_successrate";
+    public static final String BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS = "benchmark_req_90percentile_read_duration_ms";
+    public static final String BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS = "benchmark_req_90percentile_write_duration_ms";
+    public static final String BENCHMARK_REQ_MEAN_READ_DURATION_MS = "benchmark_req_mean_read_duration_ms";
+    public static final String BENCHMARK_REQ_MEAN_WRITE_DURATION_MS = "benchmark_req_mean_write_duration_ms";
+    public static final String BENCHMARK_REQ_SUCESSRATE_PERCENT = "benchmark_req_sucessrate_percent";
+    public static final String TIMESTAMP = "timestamp";
+    public static final String IS_BENCHMARK_PASSED = "isBenchmarkPassed";
 
     private static LoadTestBenchmark loadTestBenchmark;
 
@@ -48,7 +78,7 @@ public class LoadTestResultUtil {
         if (statisticsMap == null || statisticsMap.size() < 10) {
             return true;
         }
-        return Boolean.valueOf(statisticsMap.get("isBenchmarkPassed"));
+        return Boolean.valueOf(statisticsMap.get(IS_BENCHMARK_PASSED));
 
     }
 
@@ -56,7 +86,7 @@ public class LoadTestResultUtil {
 //        Map<String, String> statisticsMap = new HashMap<>();
         SortedMap<String, String> statisticsMap = new TreeMap<String, String>();
         long nowTimestamp = System.currentTimeMillis();
-        statisticsMap.put("timestamp", Long.toString(nowTimestamp));
+        statisticsMap.put(TIMESTAMP, Long.toString(nowTimestamp));
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && LoadTestExecutorService.getStopTime() == 0 && ((nowTimestamp - LoadTestExecutorService.getStartTime()) / 1000) > LoadTestExecutorService.getActiveLoadTestConfig().getTest_duration_in_seconds()) {
             LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
@@ -71,8 +101,8 @@ public class LoadTestResultUtil {
         }
         int r_deviations = 0;
         int r_success = 0;
-        long r_duration = 0;
-        long w_duration = 0;
+        long r_duration_ms = 0;
+        long w_duration_ms = 0;
         int r_results = 0;
         int w_deviations = 0;
         int w_success = 0;
@@ -80,10 +110,10 @@ public class LoadTestResultUtil {
         int deviations = 0;
         int success = 0;
         int results = 0;
-        long r_mean_success = 0;
-        long r_ninety_percentine_success = 0;
-        long w_mean_success = 0;
-        long w_ninety_percentine_success = 0;
+        long r_mean_success_ms = 0;
+        long r_ninety_percentine_success_ms = 0;
+        long w_mean_success_ms = 0;
+        long w_ninety_percentine_success_ms = 0;
         List<Long> r_times = new ArrayList<Long>();
         List<Long> w_times = new ArrayList<Long>();
         for (LoadTestResult loadTestResult : loadTestResults) {
@@ -94,7 +124,7 @@ public class LoadTestResultUtil {
                 }
                 if (loadTestResult.isTest_success()) {
                     r_success++;
-                    r_duration = r_duration + loadTestResult.getTest_duration();
+                    r_duration_ms = r_duration_ms + loadTestResult.getTest_duration();
                     r_times.add(loadTestResult.getTest_duration());
                 }
 
@@ -106,7 +136,7 @@ public class LoadTestResultUtil {
                     }
                     if (loadTestResult.isTest_success()) {
                         w_success++;
-                        w_duration = w_duration + loadTestResult.getTest_duration();
+                        w_duration_ms = w_duration_ms + loadTestResult.getTest_duration();
                         w_times.add(loadTestResult.getTest_duration());
                     }
 
@@ -125,82 +155,82 @@ public class LoadTestResultUtil {
 
         // Evaluate
         if (r_success > 0) {
-            r_mean_success = r_duration / r_success;
+            r_mean_success_ms = r_duration_ms / r_success;
             Collections.sort(r_times);
-            r_ninety_percentine_success = r_times.get(r_times.size() * 9 / 10);
+            r_ninety_percentine_success_ms = r_times.get(r_times.size() * 9 / 10);
         }
         if (w_success > 0) {
-            w_mean_success = w_duration / w_success;
+            w_mean_success_ms = w_duration_ms / w_success;
             Collections.sort(w_times);
-            w_ninety_percentine_success = w_times.get(w_times.size() * 9 / 10);
+            w_ninety_percentine_success_ms = w_times.get(w_times.size() * 9 / 10);
         }
 
         int total_successrate = 100 * ((r_success + w_success + success) / Math.max(1, (r_results + w_results + results)));
 
-        statisticsMap.put("stats_r_deviations", Long.toString(r_deviations));
-        statisticsMap.put("stats_r_success", Long.toString(r_success));
-        statisticsMap.put("stats_r_duration", Long.toString(r_duration));
-        statisticsMap.put("stats_r_results", Long.toString(r_results));
-        statisticsMap.put("stats_r_failures", Long.toString(r_results - r_success));
-        statisticsMap.put("stats_w_deviations", Long.toString(w_deviations));
-        statisticsMap.put("stats_w_duration", Long.toString(w_duration));
-        statisticsMap.put("stats_w_success", Long.toString(w_success));
-        statisticsMap.put("stats_w_results", Long.toString(w_results));
-        statisticsMap.put("stats_w_failures", Long.toString(w_results - w_success));
-        statisticsMap.put("stats_o_deviations", Long.toString(deviations));
-        statisticsMap.put("stats_o_success", Long.toString(success));
-        statisticsMap.put("stats_o_results", Long.toString(results));
-        statisticsMap.put("stats_o_failures", Long.toString(results - success));
-        statisticsMap.put("stats_t_deviations", Long.toString(r_deviations + w_deviations + deviations));
-        statisticsMap.put("stats_t_success", Long.toString(r_success + w_success + success));
-        statisticsMap.put("stats_t_results", Long.toString(r_results + w_results + results));
-        statisticsMap.put("stats_t_failures", Long.toString(r_results + w_results + results - (r_success + w_success + success)));
-        statisticsMap.put("stats_r_mean_success", Long.toString(r_mean_success));
-        statisticsMap.put("stats_r_ninety_percentine_success", Long.toString(r_ninety_percentine_success));
-        statisticsMap.put("stats_w_mean_success", Long.toString(w_mean_success));
-        statisticsMap.put("stats_w_ninety_percentine_success", Long.toString(w_ninety_percentine_success));
-        statisticsMap.put("stats_total_successrate", Long.toString(total_successrate));
+        statisticsMap.put(STATS_R_DEVIATIONS, Long.toString(r_deviations));
+        statisticsMap.put(STATS_R_SUCCESS, Long.toString(r_success));
+        statisticsMap.put(STATS_R_DURATION_MS, Long.toString(r_duration_ms));
+        statisticsMap.put(STATS_R_RESULTS, Long.toString(r_results));
+        statisticsMap.put(STATS_R_FAILURES, Long.toString(r_results - r_success));
+        statisticsMap.put(STATS_W_DEVIATIONS, Long.toString(w_deviations));
+        statisticsMap.put(STATS_W_DURATION_MS, Long.toString(w_duration_ms));
+        statisticsMap.put(STATS_W_SUCCESS, Long.toString(w_success));
+        statisticsMap.put(STATS_W_RESULTS, Long.toString(w_results));
+        statisticsMap.put(STATS_W_FAILURES, Long.toString(w_results - w_success));
+        statisticsMap.put(STATS_O_DEVIATIONS, Long.toString(deviations));
+        statisticsMap.put(STATS_O_SUCCESS, Long.toString(success));
+        statisticsMap.put(STATS_O_RESULTS, Long.toString(results));
+        statisticsMap.put(STATS_O_FAILURES, Long.toString(results - success));
+        statisticsMap.put(STATS_T_DEVIATIONS, Long.toString(r_deviations + w_deviations + deviations));
+        statisticsMap.put(STATS_T_SUCCESS, Long.toString(r_success + w_success + success));
+        statisticsMap.put(STATS_T_RESULTS, Long.toString(r_results + w_results + results));
+        statisticsMap.put(STATS_T_FAILURES, Long.toString(r_results + w_results + results - (r_success + w_success + success)));
+        statisticsMap.put(STATS_R_MEAN_SUCCESS_MS, Long.toString(r_mean_success_ms));
+        statisticsMap.put(STATS_R_NINETY_PERCENTINE_SUCCESS_MS, Long.toString(r_ninety_percentine_success_ms));
+        statisticsMap.put(STATS_W_MEAN_SUCCESS_MS, Long.toString(w_mean_success_ms));
+        statisticsMap.put(STATS_W_NINETY_PERCENTINE_SUCCESS_MS, Long.toString(w_ninety_percentine_success_ms));
+        statisticsMap.put(STATS_TOTAL_SUCCESSRATE, Long.toString(total_successrate));
 
         boolean isBenchmarkPassed = true;
-        if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success) {
+        if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() <= r_ninety_percentine_success_ms) {
             log.info("getBenchmark_req_90percentile_read_duration_ms failed");
-            statisticsMap.put("benchmark_req_90percentile_read_duration_ms", Boolean.toString(false));
+            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS, Boolean.toString(false));
             isBenchmarkPassed = false;
         } else {
-            statisticsMap.put("benchmark_req_90percentile_read_duration_ms", Boolean.toString(true));
+            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS, Boolean.toString(true));
 
         }
-        if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() <= w_ninety_percentine_success) {
+        if (loadTestBenchmark.getBenchmark_req_90percentile_write_duration_ms() <= w_ninety_percentine_success_ms) {
             log.info("getBenchmark_req_90percentile_write_duration_ms failed");
-            statisticsMap.put("benchmark_req_90percentile_write_duration_ms", Boolean.toString(false));
+            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(false));
             isBenchmarkPassed = false;
         } else {
-            statisticsMap.put("benchmark_req_90percentile_write_duration_ms", Boolean.toString(true));
+            statisticsMap.put(BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS, Boolean.toString(true));
         }
-        if (loadTestBenchmark.getBenchmark_req_mean_read_duration_ms() <= r_mean_success) {
+        if (loadTestBenchmark.getBenchmark_req_mean_read_duration_ms() <= r_mean_success_ms) {
             log.info("getBenchmark_req_mean_read_duration_ms failed");
-            statisticsMap.put("benchmark_req_mean_read_duration_ms", Boolean.toString(false));
+            statisticsMap.put(BENCHMARK_REQ_MEAN_READ_DURATION_MS, Boolean.toString(false));
             isBenchmarkPassed = false;
         } else {
-            statisticsMap.put("benchmark_req_mean_read_duration_ms", Boolean.toString(true));
+            statisticsMap.put(BENCHMARK_REQ_MEAN_READ_DURATION_MS, Boolean.toString(true));
         }
-        if (loadTestBenchmark.getBenchmark_req_mean_write_duration_ms() <= w_mean_success) {
+        if (loadTestBenchmark.getBenchmark_req_mean_write_duration_ms() <= w_mean_success_ms) {
             log.info("getBenchmark_req_mean_write_duration_ms failed");
-            statisticsMap.put("benchmark_req_mean_write_duration_ms", Boolean.toString(false));
+            statisticsMap.put(BENCHMARK_REQ_MEAN_WRITE_DURATION_MS, Boolean.toString(false));
             isBenchmarkPassed = false;
         } else {
-            statisticsMap.put("benchmark_req_mean_write_duration_ms", Boolean.toString(true));
+            statisticsMap.put(BENCHMARK_REQ_MEAN_WRITE_DURATION_MS, Boolean.toString(true));
         }
         if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() >= total_successrate) {
             log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
-            statisticsMap.put("benchmark_req_sucessrate_percent", Boolean.toString(false));
+            statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(false));
             isBenchmarkPassed = false;
         } else {
             log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
-            statisticsMap.put("benchmark_req_sucessrate_percent", Boolean.toString(true));
+            statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(true));
             //    isBenchmarkPassed = true;
         }
-        statisticsMap.put("isBenchmarkPassed", Boolean.toString(isBenchmarkPassed));
+        statisticsMap.put(IS_BENCHMARK_PASSED, Boolean.toString(isBenchmarkPassed));
         return statisticsMap;
     }
 
@@ -210,29 +240,29 @@ public class LoadTestResultUtil {
         String stats;
         if (LoadTestExecutorService.getLoadTestRunNo() > 0) {
             if (LoadTestExecutorService.getStopTime() == 0) {
-                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + "  Running for " + (Long.parseLong(statsMap.get("timestamp")) - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
+                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get(TIMESTAMP)))) + "  Running for " + (Long.parseLong(statsMap.get("timestamp")) - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
             } else {
-                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + "  Ran for " + (LoadTestExecutorService.getStopTime() - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
+                stats = "Started: " + df.format(new Date(LoadTestExecutorService.getStartTime())) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get(TIMESTAMP)))) + "  Ran for " + (LoadTestExecutorService.getStopTime() - LoadTestExecutorService.getStartTime()) / 1000 + " seconds.\n";
             }
         } else {
-            stats = "Started: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get("timestamp")))) + "\n";
+            stats = "Started: " + df.format(new Date(Long.parseLong(statsMap.get(TIMESTAMP)))) + " Version:" + HealthResource.getVersion() + "  Now: " + df.format(new Date(Long.parseLong(statsMap.get(TIMESTAMP)))) + "\n";
         }
 
         if (statsMap.size() > 10) {
             stats = stats + "\n" + String.format(" %5d read tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("stats_r_results")), Integer.parseInt(statsMap.get("stats_r_success")), Integer.parseInt(statsMap.get("stats_r_failures")), Integer.parseInt(statsMap.get("stats_r_deviations")));
+                    Integer.parseInt(statsMap.get(STATS_R_RESULTS)), Integer.parseInt(statsMap.get(STATS_R_SUCCESS)), Integer.parseInt(statsMap.get(STATS_R_FAILURES)), Integer.parseInt(statsMap.get(STATS_R_DEVIATIONS)));
             stats = stats + "\n" + String.format(" %5d write tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("stats_w_results")), Integer.parseInt(statsMap.get("stats_w_success")), Integer.parseInt(statsMap.get("stats_w_failures")), Integer.parseInt(statsMap.get("stats_w_deviations")));
+                    Integer.parseInt(statsMap.get(STATS_W_RESULTS)), Integer.parseInt(statsMap.get(STATS_W_SUCCESS)), Integer.parseInt(statsMap.get(STATS_W_FAILURES)), Integer.parseInt(statsMap.get(STATS_W_DEVIATIONS)));
             stats = stats + "\n" + String.format(" %5d unmarked tests resulted in %d successful runs where %d was marked failure and  %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("stats_o_results")), Integer.parseInt(statsMap.get("stats_o_success")), Integer.parseInt(statsMap.get("stats_o_failures")), Integer.parseInt(statsMap.get("stats_o_deviations")));
+                    Integer.parseInt(statsMap.get(STATS_O_RESULTS)), Integer.parseInt(statsMap.get(STATS_O_SUCCESS)), Integer.parseInt(statsMap.get(STATS_O_FAILURES)), Integer.parseInt(statsMap.get(STATS_O_DEVIATIONS)));
             stats = stats + "\n" + String.format(" %5d total tests resulted in %d successful runs where %d was marked failure and %d was marked as deviation(s).",
-                    Integer.parseInt(statsMap.get("stats_t_results")), Integer.parseInt(statsMap.get("stats_t_success")), Integer.parseInt(statsMap.get("stats_t_failures")), Integer.parseInt(statsMap.get("stats_t_deviations")));
+                    Integer.parseInt(statsMap.get(STATS_T_RESULTS)), Integer.parseInt(statsMap.get(STATS_T_SUCCESS)), Integer.parseInt(statsMap.get(STATS_T_FAILURES)), Integer.parseInt(statsMap.get(STATS_T_DEVIATIONS)));
             stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ",
                     LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
             stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms ninety percentile successful read tests ",
-                    Integer.parseInt(statsMap.get("stats_r_mean_success")), Integer.parseInt(statsMap.get("stats_r_ninety_percentine_success")));
+                    Integer.parseInt(statsMap.get(STATS_R_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETY_PERCENTINE_SUCCESS_MS)));
             stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms ninety percentile successful write tests ",
-                    Integer.parseInt(statsMap.get("stats_w_mean_success")), Integer.parseInt(statsMap.get("stats_w_ninety_percentine_success")));
+                    Integer.parseInt(statsMap.get(STATS_W_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETY_PERCENTINE_SUCCESS_MS)));
         }
         String loadTestJson = "";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null) {

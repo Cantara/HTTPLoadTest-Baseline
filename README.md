@@ -37,6 +37,43 @@ wget http://localhost:28086/HTTPLoadTest-baseline/health
 Then open the simple UI in a web browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
+### A typical example of the result of a loadtest
+
+```json
+{
+  "benchmark_req_90percentile_read_duration_ms" : "true",
+  "benchmark_req_90percentile_write_duration_ms" : "false",
+  "benchmark_req_mean_read_duration_ms" : "true",
+  "benchmark_req_mean_write_duration_ms" : "true",
+  "benchmark_req_sucessrate_percent" : "true",
+  "isBenchmarkPassed" : "false",
+  "runstatus" : "fail",
+  "stats_o_deviations" : "0",
+  "stats_o_failures" : "0",
+  "stats_o_results" : "0",
+  "stats_o_success" : "0",
+  "stats_r_deviations" : "0",
+  "stats_r_duration_ms" : "235211",
+  "stats_r_failures" : "0",
+  "stats_r_mean_success_ms" : "192",
+  "stats_r_ninety_percentine_success_ms" : "419",
+  "stats_r_results" : "1220",
+  "stats_r_success" : "1220",
+  "stats_t_deviations" : "0",
+  "stats_t_failures" : "0",
+  "stats_t_results" : "1356",
+  "stats_t_success" : "1356",
+  "stats_total_successrate" : "100",
+  "stats_w_deviations" : "0",
+  "stats_w_duration_ms" : "69873",
+  "stats_w_failures" : "0",
+  "stats_w_mean_success_ms" : "513",
+  "stats_w_ninety_percentine_success_ms" : "1089",
+  "stats_w_results" : "136",
+  "stats_w_success" : "136",
+  "timestamp" : "1516953925139"
+}
+```
 
 ### Example-oriented documentation to get familiar with the application
 
