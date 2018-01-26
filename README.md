@@ -37,6 +37,9 @@ wget http://localhost:28086/HTTPLoadTest-baseline/health
 Then open the simple UI in a web browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
 
+### Quick overview of the key data concepts
+![The LoadTest data structures](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-DataStructures.png)
+
 ### A typical example of the result of a loadtest
 http://localhost:2086/HTTPLoadTest-baseline/loadTest/runstatus
 ```json
