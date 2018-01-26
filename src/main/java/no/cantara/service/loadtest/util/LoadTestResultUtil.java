@@ -342,10 +342,10 @@ public class LoadTestResultUtil {
                     Integer.parseInt(statsMap.get(STATS_T_RESULTS)), Integer.parseInt(statsMap.get(STATS_T_SUCCESS)), Integer.parseInt(statsMap.get(STATS_T_FAILURES)), Integer.parseInt(statsMap.get(STATS_T_DEVIATIONS)));
             stats = stats + "\n" + String.format(" %5d tasks scheduled, number of threads configured: %d,  isRunning: %b ",
                     LoadTestExecutorService.getTasksScheduled(), LoadTestExecutorService.getThreadPoolSize(), LoadTestExecutorService.isRunning());
-            stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms ninety percentile successful read tests ",
-                    Integer.parseInt(statsMap.get(STATS_R_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETY_PERCENTINE_SUCCESS_MS)));
-            stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms ninety percentile successful write tests ",
-                    Integer.parseInt(statsMap.get(STATS_W_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETY_PERCENTINE_SUCCESS_MS)));
+            stats = stats + "\n" + String.format(" %5d ms mean duration for successful read tests, %4d ms 90% percentile successful read tests, %4d ms 95% percentile successful read tests",
+                    Integer.parseInt(statsMap.get(STATS_R_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETY_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_R_NINETYFIVE_PERCENTINE_SUCCESS_MS)));
+            stats = stats + "\n" + String.format(" %5d ms mean duration for successful write tests, %4d ms 90% percentile successful write tests, %4d ms 95% percentile successful write tests",
+                    Integer.parseInt(statsMap.get(STATS_W_MEAN_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETY_PERCENTINE_SUCCESS_MS)), Integer.parseInt(statsMap.get(STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS)));
         }
         String loadTestJson = "";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null) {
