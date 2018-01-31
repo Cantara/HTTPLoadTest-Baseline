@@ -86,14 +86,14 @@ public class FileFinder extends SimpleFileVisitor<Path> {
         if (name != null && matcher.matches(name)) {
             numMatches++;
             filenames.add(file.toString());
-            System.out.println(file);
+            log.info("Found: {}", file);
         }
     }
 
     // Prints the total number of
     // matches to standard out.
     public ArrayList<String> done() {
-        System.out.println("Matched: "
+        log.info("Matched: "
                 + numMatches);
         return filenames;
     }
@@ -110,16 +110,14 @@ public class FileFinder extends SimpleFileVisitor<Path> {
     // Invoke the pattern matching
     // method on each directory.
     @Override
-    public FileVisitResult preVisitDirectory(Path dir,
-                                             BasicFileAttributes attrs) {
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
         find(dir);
         return CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file,
-                                           IOException exc) {
-        System.err.println(exc);
+    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+        log.error("visitFileFailed - ", exc);
         return CONTINUE;
     }
 
@@ -127,7 +125,7 @@ public class FileFinder extends SimpleFileVisitor<Path> {
     static void usage() {
         System.err.println("java Find <path>" +
                 " -name \"<glob_pattern>\"");
-        System.exit(-1);
+        //System.exit(-1);
     }
 
     public static void main(String[] args)
