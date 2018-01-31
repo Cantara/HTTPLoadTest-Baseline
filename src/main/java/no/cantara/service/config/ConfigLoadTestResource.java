@@ -108,7 +108,7 @@ public class ConfigLoadTestResource {
             Files.walkFileTree(startingDir, finder);
             filenames = finder.done();
 
-            for (int n = 0; n < filenames.size() / 2; n++) {
+            for (int n = 0; n < filenames.size(); n++) {
                 optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
             }
         } catch (Exception e) {
@@ -125,12 +125,14 @@ public class ConfigLoadTestResource {
         if (optionString != null && optionString.length() > 5) {
             response = response +
                     "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" '>" +
+                    "        Select stored ReadTestSpecifications:<br/>" +
                     "        <select name=\"jsonConfig\">" +
                     "        " + optionString +
                     "        </select>" +
                     "        <br/><br/>" +
-                    "        <input type=\"submit\">" +
-                    "    </form>";
+                    "        <input type=\"submit\" value=\"Select\">" +
+                    "    </form>" +
+                    "    <br/><br/>";
         }
 
         response = response +
@@ -173,7 +175,7 @@ public class ConfigLoadTestResource {
             Files.walkFileTree(startingDir, finder);
             filenames = finder.done();
 
-            for (int n = 0; n < filenames.size() / 2; n++) {
+            for (int n = 0; n < filenames.size(); n++) {
                 optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
             }
         } catch (Exception e) {
@@ -191,12 +193,14 @@ public class ConfigLoadTestResource {
         if (optionString != null && optionString.length() > 5) {
             response = response +
                     "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" '>" +
+                    "        Select stored WriteTestSpecifications:<br/>" +
                     "        <select name=\"jsonConfig\">" +
                     "        " + optionString +
                     "        </select>" +
                     "        <br/><br/>" +
-                    "        <input type=\"submit\">" +
-                    "    </form>";
+                    "        <input type=\"submit\" value=\"Select\">" +
+                    "    </form>" +
+                    "    <br/><br/>";
         }
         response = response +
 
