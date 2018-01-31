@@ -111,6 +111,12 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateReadTestSpecificationForm with {}", json);
+
+        if (json.startsWith("FILE:")) {
+            json = loadFromDiskByName(json.substring(5, json.length()));
+
+        }
+
         try {
 
             List<TestSpecification> readTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
@@ -129,6 +135,11 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json) {
         log.trace("Invoked updateWriteTestSpecificationForm with {}", json);
+
+        if (json.startsWith("FILE:")) {
+            json = loadFromDiskByName(json.substring(5, json.length()));
+
+        }
 
         try {
 

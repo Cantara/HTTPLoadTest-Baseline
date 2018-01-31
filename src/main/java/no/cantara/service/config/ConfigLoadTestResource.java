@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.loadtest.util.FileFinder;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
@@ -18,6 +19,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +39,7 @@ public class ConfigLoadTestResource {
     public static final String CONFIG_PATH_SELECT_TESTSPECIFICATIONSET = "/config/select";
     private static final Logger log = LoggerFactory.getLogger(ConfigLoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
+    public static final String TEST_SPECIFICATION_ROOT_PATH = Configuration.getString("loadtest.testspecification.rootpath");  //./src";
 
 
     @GET
@@ -69,7 +74,7 @@ public class ConfigLoadTestResource {
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
-                        "  HTTPLoadTest-Baseline "+ HealthResource.getVersion()+"<br/"+
+                        "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();
@@ -79,20 +84,35 @@ public class ConfigLoadTestResource {
     @GET
     public Response presentReadConfigUI() {
         log.trace("presentReadConfigUI");
-
         String jsonreadconfig = LoadTestExecutorService.getReadTestSpecificationListJson();
         if (jsonreadconfig == null || jsonreadconfig.length() < 20) {
             try {
 
                 InputStream file = Configuration.loadByName("DefaultReadTestSpecification.json");
-                List<TestSpecification>  readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+                List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
                 log.trace("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
 
+
             } catch (Exception e) {
                 log.error("Unable to read default configuration for LoadTest.", e);
             }
+        }
+        String optionString = "";
+        try {
+            ArrayList<String> filenames = null;
+            java.nio.file.Path startingDir = Paths.get(TEST_SPECIFICATION_ROOT_PATH);
+            String pattern = Configuration.getString("loadtest.testspecification.read.filematcher");
+            FileFinder finder = new FileFinder(pattern);
+            Files.walkFileTree(startingDir, finder);
+            filenames = finder.done();
+
+            for (int n = 0; n < filenames.size() / 2; n++) {
+                optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
+            }
+        } catch (Exception e) {
+            log.error("Unable to read default configuration for LoadTest.", e);
         }
 
         String response =
@@ -101,15 +121,27 @@ public class ConfigLoadTestResource {
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>" +
                         "  <body>\n" +
-                        "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>" +
-                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
-                        "        ReadTestSpecification:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonreadconfig + "</textarea><br/><br/>" +
-                        "        <input type=\"submit\">" +
-                        "    </form>\n" +
-                        "\n" +
-                        "  </body>" +
-                        "</html>";
+                        "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>";
+        if (optionString != null && optionString.length() > 5) {
+            response = response +
+                    "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" '>" +
+                    "        <select name=\"jsonConfig\">" +
+                    "        " + optionString +
+                    "        </select>" +
+                    "        <br/><br/>" +
+                    "        <input type=\"submit\">" +
+                    "    </form>";
+        }
+
+        response = response +
+                "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                "        ReadTestSpecification:<br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonreadconfig + "</textarea><br/><br/>" +
+                "        <input type=\"submit\">" +
+                "    </form>\n" +
+                "\n" +
+                "  </body>" +
+                "</html>";
         return Response.ok(response).build();
     }
 
@@ -123,7 +155,7 @@ public class ConfigLoadTestResource {
         if (jsonwriteconfig == null || jsonwriteconfig.length() < 20) {
             try {
                 InputStream wfile = Configuration.loadByName("DefaultWriteTestSpecification.json");
-                List<TestSpecification> writeTestSpec =  mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
+                List<TestSpecification> writeTestSpec = mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);
                 log.trace("Loaded DefaultWriteTestSpecification: {}", jsonwriteconfig);
@@ -132,14 +164,43 @@ public class ConfigLoadTestResource {
                 log.error("Unable to read default configuration for LoadTest.", e);
             }
         }
+        String optionString = "";
+        try {
+            ArrayList<String> filenames = null;
+            java.nio.file.Path startingDir = Paths.get(TEST_SPECIFICATION_ROOT_PATH);
+            String pattern = Configuration.getString("loadtest.testspecification.write.filematcher");
+            FileFinder finder = new FileFinder(pattern);
+            Files.walkFileTree(startingDir, finder);
+            filenames = finder.done();
+
+            for (int n = 0; n < filenames.size() / 2; n++) {
+                optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
+            }
+        } catch (Exception e) {
+            log.error("Unable to read default configuration for LoadTest.", e);
+        }
+
+
         String response =
                 "<html>" +
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
                         "<body>\n" +
-                        "  <h3>HTTPLoadTest - Write TestSpecification Configuration</h3><br/>" +
-                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                        "  <h3>HTTPLoadTest - Write TestSpecification Configuration</h3><br/>";
+        if (optionString != null && optionString.length() > 5) {
+            response = response +
+                    "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" '>" +
+                    "        <select name=\"jsonConfig\">" +
+                    "        " + optionString +
+                    "        </select>" +
+                    "        <br/><br/>" +
+                    "        <input type=\"submit\">" +
+                    "    </form>";
+        }
+        response = response +
+
+                "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        WriteTestSpecification:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\"><br/>" +
@@ -226,7 +287,7 @@ public class ConfigLoadTestResource {
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/>" +
-                        "HTTPLoadTest-Baseline "+ HealthResource.getVersion()+"<br/"+
+                        "HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();

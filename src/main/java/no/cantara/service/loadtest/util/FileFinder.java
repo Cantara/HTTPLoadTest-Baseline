@@ -74,14 +74,14 @@ public class FileFinder extends SimpleFileVisitor<Path> {
     private int numMatches = 0;
     private ArrayList<String> filenames = new ArrayList<>();
 
-    FileFinder(String pattern) {
+    public FileFinder(String pattern) {
         matcher = FileSystems.getDefault()
                              .getPathMatcher("glob:" + pattern);
     }
 
     // Compares the glob pattern against
     // the file or directory name.
-    void find(Path file) {
+    public void find(Path file) {
         Path name = file.getFileName();
         if (name != null && matcher.matches(name)) {
             numMatches++;
@@ -92,7 +92,7 @@ public class FileFinder extends SimpleFileVisitor<Path> {
 
     // Prints the total number of
     // matches to standard out.
-    ArrayList<String> done() {
+    public ArrayList<String> done() {
         System.out.println("Matched: "
                 + numMatches);
         return filenames;
