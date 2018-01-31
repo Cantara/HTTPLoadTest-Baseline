@@ -5,6 +5,11 @@ login.password=baretillesing
 login.admin.user=admin
 login.admin.password=adminservice
 
+# let HTTPLoadTest locate read/write TestSpecifications on the filesystem
+loadtest.testspecification.rootpath=./specifications
+loadtest.testspecification.read.filematcher=*ReadTest*.json
+loadtest.testspecification.write.filematcher=*WriteTest*.json
+
 TestSpecification.1.displayname=Bootstrap TestSpecifications
 TestSpecification.1.read.filename=/src/cantara/HTTPLoadTest-Baseline/src/main/resources/DefaultReadTestSpecification.json
 TestSpecification.1.write.filename=/src/cantara/HTTPLoadTest-Baseline/src/main/resources/DefaultWriteTestSpecification.json

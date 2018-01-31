@@ -363,6 +363,12 @@ TestSpecification.1.write.filename=./specifications/FirstWriteTestSpecification.
 TestSpecification.2.displayname=Normal Simulated TestSpecifications
 TestSpecification.2.read.filename=./specifications/SecondReadTestSpecification.json
 TestSpecification.2.write.filename=./specifications/SecondWriteTestSpecification.json
+
+# Or just let HTTPLoadTest locate read/write TestSpecifications on the filesystem
+loadtest.testspecification.rootpath=./specifications
+loadtest.testspecification.read.filematcher=*ReadTest*.json
+loadtest.testspecification.write.filematcher=*WriteTest*.json
+
 ```
 
 #### If you want completely global variables, you might add something like this to ./config_override/application_override.properties
