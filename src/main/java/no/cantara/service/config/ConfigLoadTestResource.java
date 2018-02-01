@@ -278,7 +278,7 @@ public class ConfigLoadTestResource {
         String response =
                 "<html>" +
                         "<head>\n" +
-                        "  <meta charset=\"UTF-8\">\n" +
+                        "  <meta charset=\"UTF-8\">" +
                         "</head>" +
                         "  <body>\n" +
                         "  <h3>HTTPLoadTest - Select pre-configured TestSpecification Configuration</h3><br/><br/>" +
@@ -288,6 +288,12 @@ public class ConfigLoadTestResource {
                         "        </select>" +
                         "        <br/><br/>" +
                         "        <input type=\"submit\">" +
+                        "    </form>" +
+                        "    <br/<<br/>" +
+                        "    Choose file to upload<br>\n" +
+                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_ZIP + "\" method=\"post\" enctype=\"multipart/form-data\">" +
+                        "        <input name=\"file\" id=\"filename\" type=\"file\" /><br><br>\n" +
+                        "        <button name=\"submit\" type=\"submit\">Upload</button>\n" +
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/>" +

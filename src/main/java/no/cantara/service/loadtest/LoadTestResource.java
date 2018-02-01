@@ -8,7 +8,10 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
+import no.cantara.service.loadtest.util.UnzipStream;
 import no.cantara.service.model.*;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,7 @@ import static no.cantara.util.Configuration.loadFromDiskByName;
 @Path(LoadTestResource.APPLICATION_PATH)
 public class LoadTestResource {
     public static final String APPLICATION_PATH = "/loadTest";
+    public static final String APPLICATION_PATH_ZIP = "/loadTest/zip";
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
     public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
@@ -78,6 +83,51 @@ public class LoadTestResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+/*
+    @POST
+    @Path("/zip")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response uploadFile(@QueryParam("file") String uploadedInputString) {
+        try {
+            InputStream uploadedInputStream = new ByteArrayInputStream(uploadedInputString.getBytes(StandardCharsets.UTF_8.name()));
+            // check if all form parameters are provided
+            if (uploadedInputStream == null )
+                return Response.status(400).entity("Invalid form data").build();
+            // create our destination folder, if it not exists
+            UnzipStream.unzip(uploadedInputStream);
+        } catch (Exception se) {
+            log.error("Exception in receiving and handling zip-file with testspecifications",se);
+            return Response.status(500)
+                           .entity("Can not create destination folder on server")
+                           .build();
+        }
+        return Response.status(200).entity("ZipFile successfully added " ).build();
+    }*/
+
+    @POST
+    @Path("/zip")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response uploadFile(
+            @FormDataParam("file") InputStream inputStream,
+            @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        log.debug("upload - ");
+
+        try {
+            UnzipStream.unzip(inputStream);
+            log.debug(">>>>> upload size of the file in byte: ");
+
+        } catch (IOException e) {
+            log.error("Exception in receiving and handling zip-file with testspecifications", e);
+            return Response.status(500)
+                           .entity("Can not create destination folder on server")
+                           .build();
+        }
+        return Response.status(200).entity("ZipFile successfully added ").build();
+
+    }
+
 
     @POST
     @Path("/form")
@@ -143,7 +193,7 @@ public class LoadTestResource {
 
         try {
 
-            List<TestSpecification> writeTestSpec =  mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
+            List<TestSpecification> writeTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
             });
             LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
             return Response.ok(json).build();

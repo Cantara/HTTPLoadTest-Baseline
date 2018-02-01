@@ -19,6 +19,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.security.Password;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
@@ -93,6 +94,7 @@ public class Main {
 
         ResourceConfig jerseyResourceConfig = new ResourceConfig();
         jerseyResourceConfig.packages("no.cantara");
+        jerseyResourceConfig.register(MultiPartFeature.class);
         ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(jerseyResourceConfig));
         context.addServlet(jerseyServlet, "/*");
 
@@ -208,6 +210,12 @@ public class Main {
             loadTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             loadTestEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH);
             securityHandler.addConstraintMapping(loadTestEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadTestZipEndpointConstraintMapping = new ConstraintMapping();
+            loadTestZipEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestZipEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_ZIP);
+            securityHandler.addConstraintMapping(loadTestZipEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestFormEndpointConstraintMapping = new ConstraintMapping();
