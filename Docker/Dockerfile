@@ -35,6 +35,8 @@ RUN chmod 755 $HOME/*.sh
 RUN mkdir $HOME/logs
 RUN mkdir $HOME/db
 COPY config_override_templates/* $HOME/config_override/
+COPY specifications/* $HOME/specifications/
+
 
 ##Configure crontab
 ADD crontab /etc/cron.d/HTTPLoadTest
