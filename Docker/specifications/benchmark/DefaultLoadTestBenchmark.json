@@ -1,0 +1,12 @@
+{
+  "benchmark_id": "Benchmark Example No 5",
+  "benchmark_req_sucessrate_percent": 99,
+  "benchmark_req_mean_read_duration_ms": 710,
+  "benchmark_req_mean_write_duration_ms": 720,
+  "benchmark_req_90percentile_read_duration_ms": 910,
+  "benchmark_req_90percentile_write_duration_ms": 920,
+  "benchmark_req_95percentile_read_duration_ms": 960,
+  "benchmark_req_95percentile_write_duration_ms": 1020,
+  "benchmark_req_99percentile_read_duration_ms": 980,
+  "benchmark_req_99percentile_write_duration_ms": 1130
+}
