@@ -27,7 +27,7 @@ RUN wget https://raw.githubusercontent.com/Cantara/devops/master/pull_deploy/lin
 -P $HOME
 
 ## Configure application
-#COPY application_scripts/* $HOME/
+COPY scripts/* $HOME/
 COPY CRON $HOME/
 RUN chmod 755 $HOME/*.sh
 
