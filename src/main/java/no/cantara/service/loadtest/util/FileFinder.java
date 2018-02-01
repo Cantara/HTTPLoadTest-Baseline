@@ -75,8 +75,7 @@ public class FileFinder extends SimpleFileVisitor<Path> {
     private ArrayList<String> filenames = new ArrayList<>();
 
     public FileFinder(String pattern) {
-        matcher = FileSystems.getDefault()
-                             .getPathMatcher("glob:" + pattern);
+        matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
     }
 
     // Compares the glob pattern against
@@ -86,15 +85,14 @@ public class FileFinder extends SimpleFileVisitor<Path> {
         if (name != null && matcher.matches(name)) {
             numMatches++;
             filenames.add(file.toString());
-            log.info("Found: {}", file);
+            log.trace("Found: {}", file);
         }
     }
 
     // Prints the total number of
     // matches to standard out.
     public ArrayList<String> done() {
-        log.info("Matched: "
-                + numMatches);
+        log.debug("Matched: {}", numMatches);
         return filenames;
     }
 
@@ -117,7 +115,7 @@ public class FileFinder extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc) {
-        log.error("visitFileFailed - ", exc);
+        log.error("visitFileFailed - {}", exc);
         return CONTINUE;
     }
 
