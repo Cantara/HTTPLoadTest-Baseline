@@ -450,6 +450,9 @@ wget -o result.txt http://localhost:28086/HTTPLoadTest-baseline/loadTest/runstat
 #
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus_csv?test_id=HTTPLOadTest-Health_1516003617097.csv
 wget http://localhost:8086/HTTPLoadTest-baseline/loadTest/fullstatus?test_id=HTTPLOadTest-Health_1516003617097.json
+#
+## Upload a zip-file with specifications
+curl -F "file=@specifications.zip;filename=specifications.zip" http://localhost:8086/HTTPLoadTest-baseline/loadTest/zip
 ```
 * version=0.37.2 
 
