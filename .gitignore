@@ -18,8 +18,7 @@ target/
 /.project
 /.classpath
 
-configservice/.classpath
-configservice/.project
-configservice/.settings/
 
 /results
+/specifications
+/logs
