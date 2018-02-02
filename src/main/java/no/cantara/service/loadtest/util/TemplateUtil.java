@@ -64,7 +64,7 @@ public class TemplateUtil {
             return frontTemplate + Fizzler.getRandomHEXCharacter(fizzSize) + backTemplate;
         }
         if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(5))) {
-            return frontTemplate + Fizzler.getRandomSetValue(backtemp.substring(0, backtemp.indexOf(")"))) + backTemplate;
+            return frontTemplate + Fizzler.getRandomSetValue(backtemp.substring(0, backtemp.indexOf(")") - 1)) + backTemplate;
         }
         return template;
     }
