@@ -31,6 +31,7 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
         //super.dealWithRequestBeforeSend(request);
         if (this.httpAuthorizationString != null && this.httpAuthorizationString.length() > 10) {
+
             log.info("Added authorizarion header: {}", this.httpAuthorizationString);
             if (getFormParameters() == null || getFormParameters().isEmpty()) {
                 return request.authorization(this.httpAuthorizationString).contentType(contentType).send(this.template);

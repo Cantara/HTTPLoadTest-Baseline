@@ -51,7 +51,7 @@ public class TestSpecificationLoaderTest {
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
         for (TestSpecification testSpecification : readTestSpec) {
-            testSpecification.resolveVariables(null, null, null);//loadTemplateReference();
+            testSpecification.resolveVariables(null, null, resolvedResultVariables);//loadTemplateReference();
             assertTrue(testSpecification.getCommand_url().length() > 0);
         }
 

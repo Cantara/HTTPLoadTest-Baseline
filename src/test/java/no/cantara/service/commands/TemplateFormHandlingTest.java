@@ -14,4 +14,17 @@ public class TemplateFormHandlingTest {
 
         }
     }
+
+    /*@Test
+    public void testLocationToJson() {
+        String locationExample = "Location: https://qa-no.melinmedical.com/mmsysapi/api/authorize?code=317c2fba518b354457733c0d19484c43e7e5bfb4&state=placeholder";
+        String[] formParams = locationExample.split("\?");
+        for (String formParam : formParams) {
+            String key = formParam.substring(0, formParam.indexOf("="));
+            String value = formParam.substring(formParam.indexOf("=") + 1, formParam.length());
+
+        }
+
+    }*/
+
 }

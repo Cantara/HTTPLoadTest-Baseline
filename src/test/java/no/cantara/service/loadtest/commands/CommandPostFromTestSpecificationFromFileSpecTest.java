@@ -2,6 +2,7 @@ package no.cantara.service.loadtest.commands;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.testsupport.TestServer;
 import no.cantara.util.Configuration;
@@ -12,7 +13,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -42,8 +45,10 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
         });
         CommandGetFromTestSpecification myGetCommand = null;
         CommandPostFromTestSpecification myPostCommand = null;
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+
         for (TestSpecification testSpecification : readTestSpec) {
-            testSpecification.resolveVariables(null, null, null);
+            testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
@@ -55,6 +60,8 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
                 result = myGetCommand.execute();
             }
             log.debug("Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
+            resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
+
         }
 
     }

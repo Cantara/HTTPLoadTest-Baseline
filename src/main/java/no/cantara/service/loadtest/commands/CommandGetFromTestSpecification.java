@@ -1,14 +1,13 @@
 package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import no.cantara.base.command.BaseHttpGetHystrixCommand;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
 import java.util.Random;
 
-public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<String> {
+public class CommandGetFromTestSpecification extends MyBaseHttpGetHystrixCommand<String> {
 
     String contentType = "text/xml;charset=UTF-8";
     String httpAuthorizationString;
@@ -81,6 +80,12 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
     @Override
     protected String dealWithFailedResponse(String responseBody, int statusCode) {
         if (statusCode < 300 && statusCode >= 200) {
+            return responseBody;
+        }
+        if (statusCode == 302) {
+            responseBody = "[{\"code\": \""
+                    + responseBody.substring(responseBody.indexOf("code=") + 5, responseBody.indexOf("&state"))
+                    + "\"}]";
             return responseBody;
         }
         return "StatusCode:" + statusCode + ":" + responseBody;

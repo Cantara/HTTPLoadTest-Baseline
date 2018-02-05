@@ -1,70 +1,37 @@
 [
   {
-    "command_url": "#ehrServer/rest/v1/query",
-    "command_contenttype": "application/json",
-    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
-    "command_http_post": true,
-    "command_timeout_milliseconds": 50000,
-    "command_template": "{ \"aql\": \"select count(a/uid/value) as count from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0'\", \"aqlParameters\": { \"ehrId\": \"#ehrRead\" }\t}",
+    "command_url": "https://qa-portal.gel.camp/auth/authorize?client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET&response_type=code&redirect_uri=#REDIRECT_URI/authorize&state=placeholder&user_id=00000000-0000-4000-a007-000000000001&user_terminology=reference.actor.user.agent&accountable_id=00000000-0000-4000-a007-000000000001&accountable_terminology=reference.platform.tenant.platform&tenant_id=00000000-0000-4000-a010-000000001337&tenant_terminology=reference.platform.tenant.platform",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "X-AUTH-PROTOCOL-VERSION: 2",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 2000,
+    "command_template": "",
     "command_replacement_map": {
-      "#cluster03EhrIds": "{2b46b33e-1d1e-4604-b558-0032ec7f0e44}",
-      "#Passord": "TestPassord",
-      "#ehrRead": "2b79d203-00c5-48e7-8215-42f14d234899",
-      "#Password": "MyTestPasseord",
-      "#ehrWrite": "9209d882-b551-443f-851f-68275a086c5e",
-      "#UserID": "MyTestUser",
-      "#BrukerID": "TestBruker",
-      "#committerName": "Jesper",
-      "#committerId": "id",
-      "#cluster02EhrIds": "{2583bb3e-88a2-4dc7-b6fe-be79d8d9f0f4}",
-      "#ehrServer": "http://10.50.115.61:8081"
-    },
-    "command_response_map": {}
-  },
-  {
-    "command_url": "#ehrServer/rest/v1/query",
-    "command_contenttype": "application/json",
-    "command_http_authstring": "admin:admin",
-    "command_http_post": true,
-    "command_timeout_milliseconds": 50000,
-    "command_template": "{ \"aql\": \"select a/uid/value as id from EHR[ehr_id/value=:ehrId] contains COMPOSITION a where a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.encounter.v1' or a/archetype_details/archetype_id/value='openEHR-EHR-COMPOSITION.journal_event_psky.v0' OFFSET 60 LIMIT 20\", \"aqlParameters\": { \"ehrId\": \"#ehrRead\" }\t}",
-    "command_replacement_map": {
-      "#cluster03EhrIds": "{2b46b33e-1d1e-4604-b558-0032ec7f0e44}",
-      "#Passord": "TestPassord",
-      "#ehrRead": "2b79d203-00c5-48e7-8215-42f14d234899",
-      "#Password": "MyTestPasseord",
-      "#ehrWrite": "9209d882-b551-443f-851f-68275a086c5e",
-      "#UserID": "MyTestUser",
-      "#BrukerID": "TestBruker",
-      "#committerName": "Jesper",
-      "#committerId": "id",
-      "#cluster02EhrIds": "{2583bb3e-88a2-4dc7-b6fe-be79d8d9f0f4}",
-      "#ehrServer": "http://10.50.115.61:8081"
+      "#REDIRECT_URI": "https://qa-no.melinmedical.com/mmsysapi/api",
+      "#CLIENT_ID": "00000000-0000-4000-a006-000000000009",
+      "#CLIENT_SECRET": "secret9"
     },
     "command_response_map": {
-      "#compositionIds": "$.resultSet[*].id"
+      "#code": "$..code"
     }
   },
   {
-    "command_url": "#ehrServer/rest/v1/composition/getByUids?format=STRUCTURED",
-    "command_contenttype": "application/json",
-    "command_http_authstring": "Basic YWRtaW46YWRtaW4=",
+    "command_url": "https://qa-portal.gel.camp/auth/token",
+    "command_contenttype": "application/x-www-form-urlencoded;charset=UTF-8",
+    "command_http_authstring": "00000000-0000-4000-a006-000000000009:secret9",
     "command_http_post": true,
-    "command_timeout_milliseconds": 50000,
-    "command_template": "{\"uids\": #compositionIds}",
+    "command_timeout_milliseconds": 2000,
+    "command_template": "grant_type=authorization_code&code=#fizzle(optionvalue:#code)&redirect_uri=#REDIRECT_URI/authorize",
     "command_replacement_map": {
-      "#cluster03EhrIds": "{2b46b33e-1d1e-4604-b558-0032ec7f0e44}",
-      "#Passord": "TestPassord",
-      "#ehrRead": "2b79d203-00c5-48e7-8215-42f14d234899",
-      "#Password": "MyTestPasseord",
-      "#ehrWrite": "9209d882-b551-443f-851f-68275a086c5e",
-      "#UserID": "MyTestUser",
-      "#BrukerID": "TestBruker",
-      "#committerName": "Jesper",
-      "#committerId": "id",
-      "#cluster02EhrIds": "{2583bb3e-88a2-4dc7-b6fe-be79d8d9f0f4}",
-      "#ehrServer": "http://10.50.115.61:8081"
     },
-    "command_response_map": {}
+    "command_response_map": {
+      "#access_token2": "$..access_token",
+      "#token_type": "$..token_type",
+      "#expires_in": "$..expires_in",
+      "#refresh_token": "$..refresh_token",
+      "#scope": "$..scope",
+      "#uid": "$..uid",
+      "#info": "$..info"
+    }
   }
 ]

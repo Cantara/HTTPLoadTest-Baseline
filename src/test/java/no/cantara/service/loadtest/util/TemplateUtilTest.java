@@ -92,4 +92,17 @@ public class TemplateUtilTest {
 
 
     }
+
+    @Test
+    public void testTemplateUtilWithSetFizzlingFromVariable() {
+        replacements.put("#code", "[ \"b9210739319b13582b42fa89a16432c55345f847\" ]");
+        String template = "Text to be replaced #fizzle(optionvalue:#code) before this";
+
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
+        log.trace("Fizzled result: {}", result);
+        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
+
+
+    }
+
 }
