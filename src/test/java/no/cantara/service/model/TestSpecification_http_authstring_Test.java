@@ -12,10 +12,11 @@ public class TestSpecification_http_authstring_Test {
 
 
     @Test
-    public void testAuthStringVersionsUP1() {
+    public void testAuthStringVersionsUP1() throws Exception {
 
-        TestSpecification testSpecification = new TestSpecification();
-        testSpecification.setCommand_http_authstring("admin:admin");
+        TestSpecification templateSpecification = new TestSpecification();
+        templateSpecification.setCommand_http_authstring("admin:admin");
+        TestSpecification testSpecification = templateSpecification.clone();
         assertTrue(testSpecification.getCommand_http_authstring().contains("Basic"));
         testSpecification.resolveVariables(null, null, null);
         assertTrue(testSpecification.getCommand_http_authstring().contains("Basic"));
@@ -25,10 +26,11 @@ public class TestSpecification_http_authstring_Test {
     }
 
     @Test
-    public void testAuthStringVersionsUP2() {
+    public void testAuthStringVersionsUP2() throws Exception {
 
-        TestSpecification testSpecification = new TestSpecification();
-        testSpecification.setCommand_http_authstring("admin/admin");
+        TestSpecification templateSpecification = new TestSpecification();
+        templateSpecification.setCommand_http_authstring("admin/admin");
+        TestSpecification testSpecification = templateSpecification.clone();
         assertTrue(testSpecification.getCommand_http_authstring().contains("Basic"));
         testSpecification.resolveVariables(null, null, null);
         assertTrue(testSpecification.getCommand_http_authstring().contains("Basic"));
@@ -38,10 +40,11 @@ public class TestSpecification_http_authstring_Test {
     }
 
     @Test
-    public void testAuthStringVersionsPreCalculated() {
+    public void testAuthStringVersionsPreCalculated() throws Exception {
 
-        TestSpecification testSpecification = new TestSpecification();
-        testSpecification.setCommand_http_authstring("Basic YWRtaW46YWRtaW4=");
+        TestSpecification templateSpecification = new TestSpecification();
+        templateSpecification.setCommand_http_authstring("Basic YWRtaW46YWRtaW4=");
+        TestSpecification testSpecification = templateSpecification.clone();
         assertTrue(testSpecification.getCommand_http_authstring().contains("Basic"));
         testSpecification.resolveVariables(null, null, null);
         assertTrue(testSpecification.getCommand_http_authstring().contains("Basic"));
@@ -52,10 +55,11 @@ public class TestSpecification_http_authstring_Test {
 
 
     @Test
-    public void testAuthStringVersionsOAuth() {
+    public void testAuthStringVersionsOAuth() throws Exception {
 
-        TestSpecification testSpecification = new TestSpecification();
-        testSpecification.setCommand_http_authstring("Bearer " + ConstantValue.ATOKEN);
+        TestSpecification templateSpecification = new TestSpecification();
+        templateSpecification.setCommand_http_authstring("Bearer " + ConstantValue.ATOKEN);
+        TestSpecification testSpecification = templateSpecification.clone();
         assertTrue(testSpecification.getCommand_http_authstring().contains("Bearer"));
         testSpecification.resolveVariables(null, null, null);
         assertTrue(testSpecification.getCommand_http_authstring().contains("Bearer"));
@@ -66,10 +70,11 @@ public class TestSpecification_http_authstring_Test {
 
 
     @Test
-    public void testAuthStringVersionsOAuth3() {
+    public void testAuthStringVersionsOAuth3() throws Exception {
 
-        TestSpecification testSpecification = new TestSpecification();
-        testSpecification.setCommand_http_authstring("Bearer [" + ConstantValue.ATOKEN + "]");
+        TestSpecification templateSpecification = new TestSpecification();
+        templateSpecification.setCommand_http_authstring("Bearer [" + ConstantValue.ATOKEN + "]");
+        TestSpecification testSpecification = templateSpecification.clone();
         assertTrue(testSpecification.getCommand_http_authstring().contains("Bearer"));
         testSpecification.resolveVariables(null, null, null);
         assertTrue(testSpecification.getCommand_http_authstring().contains("Bearer"));

@@ -153,13 +153,15 @@ public class TestSpecificationMappingTest {
                 "  }\n" +
                 "";
         TestSpecification jsonLoadtest = mapper.readValue(test, TestSpecification.class);
-        jsonLoadtest.resolveVariables(null, null, null);
+
+        TestSpecification testSpecification = jsonLoadtest.clone();
+        testSpecification.resolveVariables(null, null, null);
 
 
-        String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonLoadtest);
+        String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(testSpecification);
 
 
-        log.info(loadTestJson.toString());
+        log.info(testSpecification.toString());
         assertTrue(loadTestJson.contains("command_replacement_map"));
         assertTrue(loadTestJson.contains("HTTPLoadTest-baseline"));
 

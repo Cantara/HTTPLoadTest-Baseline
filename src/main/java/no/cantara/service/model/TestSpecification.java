@@ -16,7 +16,7 @@ import static no.cantara.util.Configuration.loadFromDiskByName;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TestSpecification implements Serializable {
+public class TestSpecification implements Serializable, Cloneable {
     private String command_url;
     private String command_contenttype = "application/json";
     private String command_http_authstring;
@@ -25,6 +25,8 @@ public class TestSpecification implements Serializable {
     private String command_template = "";
     private Map<String, String> command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
     private Map<String, String> command_response_map = new HashMap<>();
+
+    private boolean isTemplate = true;
 
     private static final Logger log = LoggerFactory.getLogger(TestSpecification.class);
 
@@ -52,6 +54,11 @@ public class TestSpecification implements Serializable {
     public TestSpecification() {
     }
 
+    public TestSpecification clone() throws CloneNotSupportedException {
+        TestSpecification cloneSpecification = (TestSpecification) super.clone();
+        cloneSpecification.isTemplate = false;
+        return cloneSpecification;
+    }
 
     public String getCommand_url() {
         return command_url;
@@ -115,6 +122,9 @@ public class TestSpecification implements Serializable {
     }
 
     public String getCommand_http_authstring() {
+        if (isTemplate) {
+            return command_http_authstring;
+        }
 
         if (command_http_authstring == null || command_http_authstring.length() < 1) {
             return null;
@@ -173,6 +183,10 @@ public class TestSpecification implements Serializable {
     }
 
     private void loadTemplateReference() {
+        if (isTemplate) {
+            log.error("Attempt to resolve variables on template, user clone() ");
+            return;
+        }
         if (getCommand_template().startsWith("FILE:")) {
             String filename = getCommand_template().substring(5, getCommand_template().length());
             try {
@@ -188,6 +202,9 @@ public class TestSpecification implements Serializable {
 
 
     public void resolveVariables(Map<String, String> globalMap, Map<String, String> inheritedVariables, Map<String, String> resolvedResultVariables) {
+        if (isTemplate) {
+            return;
+        }
         loadTemplateReference();
         if (globalMap != null) {
             addMapToCommand_replacement_map(globalMap);
@@ -229,4 +246,6 @@ public class TestSpecification implements Serializable {
                 ", command_response_map=" + command_response_map +
                 '}';
     }
+
+
 }

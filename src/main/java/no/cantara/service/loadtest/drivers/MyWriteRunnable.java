@@ -83,54 +83,61 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
         Map<String, String> inheritedVariables = new HashMap<>();
 
         int writeCommandNo = 1;
-        for (TestSpecification testSpecification : testSpecificationList) {
-            testSpecification.resolveVariables(loadTestConfig.getTest_global_variables_map(), inheritedVariables, resolvedResultVariables);
-            inheritedVariables = testSpecification.getCommand_replacement_map();
+        for (TestSpecification testSpecificationo : testSpecificationList) {
+            try {
+                TestSpecification testSpecification = testSpecificationo.clone();
 
-            if (testSpecification.getCommand_url().length() > 0) {
-                log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
-                loadTestResult.setTest_success(false);
-                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + "/" +
-                        Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
-                String result;
-                if (testSpecification.isCommand_http_post()) {
-                    CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
-                    result = command.execute();
-                    if (!command.isSuccessfulExecution()) {
-                        loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
-                    }
-                    if (command.isResponseRejected()) {
-                        loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
-                    }
-                } else {
-                    CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
-                    result = command.execute();
-                    if (!command.isSuccessfulExecution()) {
-                        loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
-                    }
-                    if (command.isResponseRejected()) {
-                        loadTestResult.setTest_deviation_flag(true);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
-                    }
-                }
-//            log.trace("Returned result: " + result);
-                if (result == null || result.startsWith("StatusCode:")) {
+                testSpecification.resolveVariables(loadTestConfig.getTest_global_variables_map(), inheritedVariables, resolvedResultVariables);
+                inheritedVariables = testSpecification.getCommand_replacement_map();
+
+                if (testSpecification.getCommand_url().length() > 0) {
+                    log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
                     loadTestResult.setTest_success(false);
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
-                } else {
-                    loadTestResult.setTest_success(true);
-                    resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
-                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Vars(" + resolvedResultVariables + ") - ");
-                    log.info("Resolved variables: {} result: {} from command_response_map: {}", resolvedResultVariables, result, testSpecification.getCommand_response_map());
+                    loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + "/" +
+                            Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
+                    String result;
+                    if (testSpecification.isCommand_http_post()) {
+                        CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+                        result = command.execute();
+                        if (!command.isSuccessfulExecution()) {
+                            loadTestResult.setTest_success(false);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                        }
+                        if (command.isResponseRejected()) {
+                            loadTestResult.setTest_deviation_flag(true);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
+                        }
+                    } else {
+                        CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
+                        result = command.execute();
+                        if (!command.isSuccessfulExecution()) {
+                            loadTestResult.setTest_success(false);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                        }
+                        if (command.isResponseRejected()) {
+                            loadTestResult.setTest_deviation_flag(true);
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
+                        }
+                    }
+//            log.trace("Returned result: " + result);
+                    if (result == null || result.startsWith("StatusCode:")) {
+                        loadTestResult.setTest_success(false);
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                    } else {
+                        loadTestResult.setTest_success(true);
+                        resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Vars(" + resolvedResultVariables + ") - ");
+                        log.info("Resolved variables: {} result: {} from command_response_map: {}", resolvedResultVariables, result, testSpecification.getCommand_response_map());
+                    }
                 }
+                // We break the flow if one step fail
+                if (!loadTestResult.isTest_success() && BREAK_ON_FAILURE) {
+                    break;
+                }
+            } catch (Exception e) {
+                log.error("Unable to clone TestSpecification");
             }
-            // We break the flow if one step fail
-            if (!loadTestResult.isTest_success() && BREAK_ON_FAILURE) {
-                break;
-            }
+
 
         }
         loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));

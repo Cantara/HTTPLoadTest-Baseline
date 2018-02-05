@@ -41,7 +41,7 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
         String filenameIntestResourcesToCreateAndRunTestFrom = "readconfig.json";
 
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
-        List<TestSpecification> readTestSpec = readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
+        List<TestSpecification> readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
         });
         CommandGetFromTestSpecification myGetCommand = null;
         CommandPostFromTestSpecification myPostCommand = null;

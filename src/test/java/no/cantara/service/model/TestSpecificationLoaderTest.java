@@ -45,8 +45,7 @@ public class TestSpecificationLoaderTest {
 
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("readconfig.json").getFile());
-        List<TestSpecification> readTestSpec = new ArrayList<>();
-        readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+        List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
