@@ -132,6 +132,8 @@ public class TestSpecification implements Serializable, Cloneable {
         if (command_http_authstring == null || command_http_authstring.length() < 1) {
             return null;
         }
+        setCommand_http_authstring(TemplateUtil.updateTemplateWithValuesFromMap(command_http_authstring, getCommand_replacement_map()));
+
         if (command_http_authstring.startsWith("X-AUTH")) {
             return command_http_authstring;
         }
