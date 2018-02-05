@@ -62,7 +62,7 @@ public class TestSpecification implements Serializable, Cloneable {
 
     public String getCommand_url() {
         if (!isTemplate && command_template.contains("#")) {
-            setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_url(), getCommand_replacement_map()));
+            setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(command_url, getCommand_replacement_map()));
         }
         return command_url;
     }
