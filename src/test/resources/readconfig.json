@@ -1,37 +1,13 @@
-[
-  {
-    "command_url": "https://qa-portal.gel.camp/auth/authorize?client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET&response_type=code&redirect_uri=#REDIRECT_URI/authorize&state=placeholder&user_id=00000000-0000-4000-a007-000000000001&user_terminology=reference.actor.user.agent&accountable_id=00000000-0000-4000-a007-000000000001&accountable_terminology=reference.platform.tenant.platform&tenant_id=00000000-0000-4000-a010-000000001337&tenant_terminology=reference.platform.tenant.platform",
-    "command_contenttype": "application/json;charset=UTF-8",
-    "command_http_authstring": "X-AUTH-PROTOCOL-VERSION: 2",
-    "command_http_post": false,
-    "command_timeout_milliseconds": 2000,
-    "command_template": "",
-    "command_replacement_map": {
-      "#REDIRECT_URI": "https://qa-no.melinmedical.com/mmsysapi/api",
-      "#CLIENT_ID": "00000000-0000-4000-a006-000000000009",
-      "#CLIENT_SECRET": "secret9"
-    },
-    "command_response_map": {
-      "#code": "$..code"
-    }
-  },
-  {
-    "command_url": "https://qa-portal.gel.camp/auth/token",
-    "command_contenttype": "application/x-www-form-urlencoded;charset=UTF-8",
-    "command_http_authstring": "00000000-0000-4000-a006-000000000009:secret9",
-    "command_http_post": true,
-    "command_timeout_milliseconds": 2000,
-    "command_template": "grant_type=authorization_code&code=#fizzle(optionvalue:#code)&redirect_uri=#REDIRECT_URI/authorize",
-    "command_replacement_map": {
-    },
-    "command_response_map": {
-      "#access_token2": "$..access_token",
-      "#token_type": "$..token_type",
-      "#expires_in": "$..expires_in",
-      "#refresh_token": "$..refresh_token",
-      "#scope": "$..scope",
-      "#uid": "$..uid",
-      "#info": "$..info"
-    }
+{
+  "test_id": "HTTPLoadTest-Health",
+  "test_name": "Example loadtest, using internal /health for read and write example",
+  "test_no_of_threads": 5,
+  "test_read_write_ratio": 90,
+  "test_sleep_in_ms": 50,
+  "test_randomize_sleeptime": true,
+  "test_duration_in_seconds": 10,
+  "test_global_variables_map": {
+    "#Password": "MyTestPassword",
+    "#UserID": "MyTestUser"
   }
-]
+}
