@@ -5,6 +5,8 @@ import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
@@ -25,14 +27,18 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
     }
 
 
-
-
     @Override
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
         //super.dealWithRequestBeforeSend(request);
         if (this.httpAuthorizationString != null && this.httpAuthorizationString.length() > 10) {
             log.info("Added authorizarion header: {}", this.httpAuthorizationString);
-            return request.authorization(this.httpAuthorizationString).contentType(contentType).send(this.template);
+            if (getFormParameters() == null || getFormParameters().isEmpty()) {
+                return request.authorization(this.httpAuthorizationString).contentType(contentType).send(this.template);
+
+            } else {
+                return request.authorization(this.httpAuthorizationString).contentType(contentType);
+
+            }
         }
 
         if (template.contains("soapenv:Envelope")) {
@@ -40,6 +46,30 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
         }
 
         return request.contentType(contentType).send(this.template);
+    }
+
+
+    @Override
+    protected Map<String, String> getFormParameters() {
+        try {
+
+            String[] formParams = template.split("&");
+            Map<String, String> data = new HashMap<String, String>();
+            for (String formParam : formParams) {
+                if (formParam.indexOf("=") > 1) {
+
+                    String key = formParam.substring(0, formParam.indexOf("="));
+                    String value = formParam.substring(formParam.indexOf("=") + 1, formParam.length());
+
+                    data.put(key, value);
+                }
+            }
+            return data;
+        } catch (Exception e) {
+            log.error("Unable to resove form", e);
+
+        }
+        return null;
     }
 
     @Override

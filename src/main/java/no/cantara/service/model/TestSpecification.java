@@ -119,6 +119,9 @@ public class TestSpecification implements Serializable {
         if (command_http_authstring == null || command_http_authstring.length() < 1) {
             return null;
         }
+        if (command_http_authstring.startsWith("X-AUTH")) {
+            return command_http_authstring;
+        }
         if (command_http_authstring != null && !command_http_authstring.contains("Bearer") && command_http_authstring.split("/").length == 2) {
             String[] upfields = command_http_authstring.split("/");
             String name = upfields[0];

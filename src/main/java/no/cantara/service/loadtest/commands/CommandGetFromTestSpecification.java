@@ -42,14 +42,26 @@ public class CommandGetFromTestSpecification extends BaseHttpGetHystrixCommand<S
     }
 
 
+    private String headerName(String header) {
+        return header.substring(0, header.indexOf(":")).trim();
+    }
 
+    private String headerValue(String header) {
+        return header.substring(header.indexOf(":") + 1, header.length()).trim();
+    }
     @Override
     protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
         // request= super.dealWithRequestBeforeSend(request);
         if (this.httpAuthorizationString != null && this.httpAuthorizationString.length() > 10) {
-            request = request.authorization(this.httpAuthorizationString);
-            log.info("Added authorizarion header: {}", this.httpAuthorizationString);
-            //log.trace(request.header("Authorization"));
+            if (httpAuthorizationString.startsWith("X-AUTH")) {
+                request = request.header(headerName(httpAuthorizationString), headerValue(httpAuthorizationString));
+            } else {
+                request = request.authorization(this.httpAuthorizationString);
+                log.info("Added authorizarion header: {}", this.httpAuthorizationString);
+                //log.trace(request.header("Authorization"));
+
+            }
+
         }
 
         if (template.contains("soapenv:Envelope")) {

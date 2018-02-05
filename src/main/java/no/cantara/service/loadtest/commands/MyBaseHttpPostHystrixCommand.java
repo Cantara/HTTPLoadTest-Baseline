@@ -80,12 +80,14 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
             request.trustAllCerts();
             request.trustAllHosts();
 
+
+            request = dealWithRequestBeforeSend(request);
+
             if (getFormParameters() != null && !getFormParameters().isEmpty()) {
                 request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
                 request.form(getFormParameters());
             }
 
-            request = dealWithRequestBeforeSend(request);
 
             responseBody = request.bytes();
             byte[] responseBodyCopy = responseBody.clone();
