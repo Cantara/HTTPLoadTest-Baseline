@@ -276,12 +276,13 @@ to avoid values beeing overwritten and thus causing problems for your test-runs.
 #### Template (command_template) and URL (command_url) special operations
 
 ```properties
-#fizzle(chars:replaceMe)                          =>  tEftohTdS
-#fizzle(digits:67643)                             =>  32632
-#fizzle(U_chars:(TEST)                            =>  WRVY
-#fizzle(L_chars:(lower)                           =>  tgewt
-#fizzle(HEX:(a hexvalue)                          =>  4E7AD3B084
-#fizzle(option:yes, no, here, there)              =>  here
+#fizzle(chars:replaceMe)                             =>  tEftohTdS
+#fizzle(digits:67643)                                =>  32632
+#fizzle(U_chars:(TEST)                               =>  WRVY
+#fizzle(L_chars:(lower)                              =>  tgewt
+#fizzle(HEX:(a hexvalue)                             =>  4E7AD3B084
+#fizzle(option:yes, no, here, there)                 =>  here
+#fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
 ```
 
 
