@@ -14,4 +14,4 @@ A rule of thumb when it comes to define the steps in a read flow include the fol
     the cache.
 
 
-* With your simulation flow complete, it's time to [play with how you want to apply load to the system(s)](./doc/tutorial/05-loadtest-config.md).
+* With your simulation flow complete, it's time to [play with how you want to apply load to the system(s)](./05-loadtest-config.md).

@@ -114,4 +114,4 @@ DefaultLoadTestBenchmark.json. Only "benchmark_id" and "benchmark_req_sucessrate
 "0" or omit the json property no validation will be done for that requirement.
 
 
-* With your benchmarks complete, it's time to [look at how to use integrate HTTPLOadTest automation into your Continous Integration QA Flows](./doc/tutorial/07-running-from-CI.md).
+* With your benchmarks complete, it's time to [look at how to use integrate HTTPLOadTest automation into your Continous Integration QA Flows](./07-running-from-CI.md).

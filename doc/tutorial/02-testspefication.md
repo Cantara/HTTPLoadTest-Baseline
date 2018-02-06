@@ -38,4 +38,4 @@
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
 ```
 
-* With your fist HTTPRequest complete, it's time to [see how to chain results form one request into the next request](./doc/tutorial/03-chaining-requests.md).
+* With your fist HTTPRequest complete, it's time to [see how to chain results form one request into the next request](./03-chaining-requests.md).

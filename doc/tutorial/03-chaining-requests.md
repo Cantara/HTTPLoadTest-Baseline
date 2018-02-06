@@ -81,4 +81,4 @@ support jsonpath and xpath for parsing results into variables.
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
 ```
 
-* With your fist simulated flow complete, it's time to [learn how read and write flow differ](./doc/tutorial/04-read-write-flows.md).
+* With your fist simulated flow complete, it's time to [learn how read and write flow differ](./04-read-write-flows.md).

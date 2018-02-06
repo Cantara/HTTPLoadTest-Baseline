@@ -24,4 +24,4 @@ The LoadTestConfig also consist of the load-time, which is the longest allowed t
 define LoadTest global variables for each LoadTestConfig.
 
 
-* With your loadtest complete, it's time to [look at how to use the results to create benchmarks for the load](./doc/tutorial/06-benchmarks.md).
+* With your loadtest complete, it's time to [look at how to use the results to create benchmarks for the load](./06-benchmarks.md).

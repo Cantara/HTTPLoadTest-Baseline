@@ -17,4 +17,4 @@ cat runstatus
 
 * [See also HTTPLoadTest-QAFlow-Demo for more details.](https://github.com/Cantara/HTTPLoadTest-Baseline/blob/master/scripts/HTTPLoadTest-QAFlow-Demo/HTTPLoadTest%20-QAFlow-Demo.md)
 
-* With your automation completed, it's time to [explore advanced topics and use of HTTPLoadTest](./doc/tutorial/08-advanced-topics.md).
+* With your automation completed, it's time to [explore advanced topics and use of HTTPLoadTest](./08-advanced-topics.md).
