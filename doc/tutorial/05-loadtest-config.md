@@ -22,3 +22,6 @@ The LoadTestConfig is the configuration of the top-level parameters of a load te
 (read/write) TestSpesifications (see further down for more information and examples of how to configure TestSpecifications).
 The LoadTestConfig also consist of the load-time, which is the longest allowed time the tests are allowed to run.  You can
 define LoadTest global variables for each LoadTestConfig.
+
+
+* With your loadtest complete, it's time to [look at how to use the results to create benchmarks for the load](./doc/tutorial/06-benchmarks.md).

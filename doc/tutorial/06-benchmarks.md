@@ -112,3 +112,6 @@ read-TestSpecification and write-TestSpecification to archieve the same result.
 The HTTPLoadTest-baseline comes with a pre-configured benchmark for load-test runs, which is defined in
 DefaultLoadTestBenchmark.json. Only "benchmark_id" and "benchmark_req_sucessrate_percent" are required values. If you specify
 "0" or omit the json property no validation will be done for that requirement.
+
+
+* With your benchmarks complete, it's time to [look at how to use integrate HTTPLOadTest automation into your Continous Integration QA Flows](./doc/tutorial/07-running-from-CI.md).
