@@ -47,7 +47,19 @@ Since OAUTH2 is more or less the common protocol to protect services, here is a 
       "#refresh_expires_in": "$..refresh_expires_in",
       "#scope": "$..scope"
     }
-  }
+  }, 
+  {
+     "command_url" : "#OAUTH2Server/verify",
+     "command_contenttype" : "application/x-www-form-urlencoded;charset=UTF-8",
+     "command_http_authstring" : "Bearer #fizzle(optionvalue:#access_token)",
+     "command_http_post" : false,
+     "command_timeout_milliseconds" : 2000,
+     "command_template" : "",
+     "command_replacement_map" : {
+     },
+     "command_response_map" : {
+     }
+   }
 ]
 ```
 
