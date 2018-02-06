@@ -28,6 +28,10 @@ quality processes into your software development process.
 
 ![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-FullProcessFlow.png)
 
+
+* [Tutorial on how to use HTTPLoadTest-baseline](doc/tutorial/index.md)
+
+
 #### A quick intro/test-run
 
 ```jshelllanguage
@@ -36,6 +40,7 @@ wget http://localhost:28086/HTTPLoadTest-baseline/health
 ```
 Then open the simple UI in a web browser:  
 * To configure and start a load test: http://localhost:28086/HTTPLoadTest-baseline/config   
+
 
 ### Quick overview of the key data concepts
 ![The LoadTest data structures](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-DataStructures.png)
