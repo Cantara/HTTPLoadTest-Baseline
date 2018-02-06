@@ -80,10 +80,12 @@ public class CommandPostFromTestSpecificationTest {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
-        for (TestSpecification testSpecification : readTestSpec) {
+        int n = 1;
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
             testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
-            log.trace("Calling {}", testSpecification.getCommand_url());
+            log.trace("{} Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
                 CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification);
@@ -94,7 +96,8 @@ public class CommandPostFromTestSpecificationTest {
             }
             resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
 
-            log.debug("Returned result: " + result);
+            log.debug("{} Returned result: {}", n, result);
+            n++;
         }
 
     }
@@ -107,7 +110,10 @@ public class CommandPostFromTestSpecificationTest {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
-        for (TestSpecification testSpecification : readTestSpec) {
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
+            testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
@@ -118,6 +124,7 @@ public class CommandPostFromTestSpecificationTest {
             }
             log.debug("Returned result: " + result);
             //assertTrue(result.length() > 0);
+            resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
         }
 
     }
@@ -130,7 +137,10 @@ public class CommandPostFromTestSpecificationTest {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
-        for (TestSpecification testSpecification : readTestSpec) {
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
+            testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
@@ -143,6 +153,7 @@ public class CommandPostFromTestSpecificationTest {
             }
             log.debug("Returned result: " + result);
             //assertTrue(result.length() > 0);
+            resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
         }
     }
 
