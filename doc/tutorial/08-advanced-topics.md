@@ -75,6 +75,12 @@ add config_override /home/HTTPLoadTest-baseline/config_override
 add specifications /home/HTTPLoadTest-baseline/specifications
 ```
 
+It may be useful to organize the testspecifications in a hierarcy along the lines
+ - spesifications
+   - module/system
+     - templates (i.e. json-files refered with FILE: in the TestSpecification)
+
+HTTPLoadTest GUI provide simple regexp for files in the specification hierarcy in drop-down lists in the Read/Write TestSpecification config GUI.
 
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
