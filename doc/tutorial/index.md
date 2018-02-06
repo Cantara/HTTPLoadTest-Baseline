@@ -4,7 +4,7 @@ This tutorial will walk you through writing a HTTPLoadTest from scratch.
 
 
 1. [Planning a loadtest](01-planning.md)
-2. [Specifying HTTP requests](02-testspeficication.md)
+2. [Specifying HTTP requests](02-testspefication.md)
 3. [Chaining HTTP request flows](03-chaining-requests.md)
 4. [Read vs Write flows](04-read-write-flows.md)
 5. [Specifying the Load](05-loadtest-config.md)

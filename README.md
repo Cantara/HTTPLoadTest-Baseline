@@ -412,7 +412,7 @@ The HTTPLoadTest-baseline comes with a pre-configured benchmark for load-test ru
 DefaultLoadTestBenchmark.json. Only "benchmark_id" and "benchmark_req_sucessrate_percent" are required values. If you specify
 "0" or omit the json property no validation will be done for that requirement.
 
-* [Clustering HTTPLoadTest-baseline](CLUSTERING.md)
+* [Clustering HTTPLoadTest-baseline](doc/CLUSTERING.md)
 
 
 # Some ideas of advanced usage
