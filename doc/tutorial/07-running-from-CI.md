@@ -1,0 +1,1 @@
+# Running LoadTests from CI servers
