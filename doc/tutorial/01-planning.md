@@ -5,7 +5,7 @@ The "read" request flow simulate the typical data-access for an application or m
 flow is similary an simulation of users or applications updating data of the module or application beeing tested. With these two flows designed, you the can set the 
 ratio between read and write flows. (In many applications this is usually around 90% read).  With this in place, time comes to try out some load-levels. The number 
 of threads define how many "workers" you want to have running your read and write flows.  The last value for the load-test is the number of seconds you want the test 
-to last.  A typical number for normal load-tests is 100, but if you wish, you may use 10400 for a more endurance test.  Another use-case is to let HTTPLoadTest 
+to last.  A typical number for normal load-tests is 100s, but if you wish, you may use 10400s for a more endurance test.  Another use-case is to let HTTPLoadTest 
 generate a 50-70% "baseload" on your system while users, developers and other access it to pinpoint certain features which perform badly when the system is under 
 high load.
 
