@@ -159,9 +159,11 @@ public class LoadTestExecutorService {
         }
     }
 
+    /**
+     * @return the latest 50 result entries as an easy way to check whats happening when running the loadtest
+     */
     public static List getLatestResultListSnapshot() {
         List<LoadTestResult> resultList = LoadTestExecutorService.resultList.get();
-        // TODO this just picks the last 50 entires and returns as "lastest result list", is this correct?
         synchronized (resultList) {
             return new ArrayList<>(resultList.subList(Math.max(resultList.size() - 50, 0), resultList.size()));
         }
@@ -176,7 +178,7 @@ public class LoadTestExecutorService {
          executor.executeOnKeyOwner(new YourBigTask(), key);
          */
         unsafeList.set(new ArrayList<>());
-        resultList.set(Collections.synchronizedList(unsafeList.get())); // TODO Should this not be a hazelcast list when running in cluster?
+        resultList.set(Collections.synchronizedList(unsafeList.get())); // TODO Should this not be a hazelcast list when running in cluster?  Yes
         if (Configuration.getBoolean("loadtest.HystrixFallbackIsolationSemaphoreMaxConcurrentRequests")) {
             HystrixCommandProperties.Setter().withFallbackIsolationSemaphoreMaxConcurrentRequests(loadTestConfig.getTest_no_of_threads() * 10);
         }
