@@ -30,4 +30,4 @@ A rule of thumb when it comes to define the steps in a read flow include the fol
 ![The LoadTest data structures](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-DataStructures.png)
 
 
-* With the planning done, it's time to [start writing TestSpecifications](./doc/tutorial/02-testspecifications.md).
+* With the planning done, it's time to [start writing TestSpecification](02-testspecification.md).
