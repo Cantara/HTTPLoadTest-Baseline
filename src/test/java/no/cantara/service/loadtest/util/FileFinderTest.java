@@ -21,7 +21,7 @@ public class FileFinderTest {
 
 
         Path startingDir = Paths.get(SEARCH_FILE_PATH);
-        String pattern = "*Spec*.json*";
+        String pattern = "**Write*on.json*";
 
         FileFinder finder = new FileFinder(pattern);
         Files.walkFileTree(startingDir, finder);

@@ -2,6 +2,7 @@ package no.cantara.service.loadtest.commands;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.testsupport.TestServer;
 import no.cantara.util.Configuration;
@@ -12,7 +13,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
@@ -40,13 +43,16 @@ public class CommandGetFromTestSpecificationFromFileSpecTest {
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
         });
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+
         CommandGetFromTestSpecification myGetCommand = null;
         CommandPostFromTestSpecification myPostCommand = null;
+        int n = 1;
         for (TestSpecification testSpecificationo : readTestSpec) {
             TestSpecification testSpecification = testSpecificationo.clone();
-            testSpecification.resolveVariables(null, null, null);
+            testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
-            log.trace("Calling {}", testSpecification.getCommand_url());
+            log.debug("{}  - Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
                 myPostCommand = new CommandPostFromTestSpecification(testSpecification);
@@ -55,7 +61,10 @@ public class CommandGetFromTestSpecificationFromFileSpecTest {
                 myGetCommand = new CommandGetFromTestSpecification(testSpecification);
                 result = myGetCommand.execute();
             }
-            log.debug("Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
+            log.info("{} - Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
+            resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
+
+            n++;
         }
 
     }

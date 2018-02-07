@@ -47,12 +47,13 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
         CommandPostFromTestSpecification myPostCommand = null;
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
+        int n = 1;
         for (TestSpecification testSpecificationo : readTestSpec) {
             TestSpecification testSpecification = testSpecificationo.clone();
 
             testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
-            log.trace("Calling {}", testSpecification.getCommand_url());
+            log.trace("{} Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
                 myPostCommand = new CommandPostFromTestSpecification(testSpecification);
@@ -61,7 +62,7 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
                 myGetCommand = new CommandGetFromTestSpecification(testSpecification);
                 result = myGetCommand.execute();
             }
-            log.debug("Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
+            log.info("{} - Returned result: {}", n, result + "\n" + myGetCommand + "\n" + myPostCommand);
             resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
 
         }
