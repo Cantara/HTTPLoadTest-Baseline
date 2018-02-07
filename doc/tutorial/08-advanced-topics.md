@@ -133,10 +133,17 @@ loadtest.basicauth=true
 #
 login.admin.user=admin
 login.admin.password=adminservice
-#
-# loadtest.breakflowonfailure=true
 ```
 
+#### Hystrix properties
+If you want adjust hystrix parameters used by HTTLLoadTest, just add the following to config_override/application_override.properties
+```properties
+loadtest.breakflowonfailure=true
+loadtest.HystrixFallbackIsolationSemaphoreMaxConcurrentRequests=false
+
+```
+
+ 
 
 ### API documentation
 
