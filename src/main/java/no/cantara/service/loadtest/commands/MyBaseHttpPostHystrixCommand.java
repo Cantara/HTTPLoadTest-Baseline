@@ -29,7 +29,6 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     static {
         threadProperties = HystrixThreadPoolProperties.Setter();
         threadProperties.withCoreSize(10);
-        threadProperties.withMaxQueueSize(1000);
         threadProperties.withMaxQueueSize(10000);
         HystrixRequestContext.initializeContext();
 

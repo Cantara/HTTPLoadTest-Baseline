@@ -4,6 +4,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import no.cantara.base.command.HttpSender;
 import no.cantara.base.util.StringConv;
@@ -19,6 +20,16 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
     protected URI serviceUri;
     protected String TAG = "";
     protected HttpRequest request;
+
+    private static HystrixThreadPoolProperties.Setter threadProperties;
+
+    static {
+        threadProperties = HystrixThreadPoolProperties.Setter();
+        threadProperties.withCoreSize(10);
+        threadProperties.withMaxQueueSize(10000);
+        HystrixRequestContext.initializeContext();
+
+    }
 
     protected MyBaseHttpGetHystrixCommand(URI serviceUri, String hystrixGroupKey, int hystrixExecutionTimeOut) {
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)).
