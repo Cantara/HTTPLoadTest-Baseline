@@ -63,6 +63,28 @@ Since OAUTH2 is more or less the common protocol to protect services, here is a 
 ]
 ```
 
+### More on handling variation in the test-flows
+
+#### Example on how to use different payload-files
+
+
+In the example-snippet below, you can see how you can create variation on complete json structures for the HTTP payload for a command.
+ 
+```text
+ {
+  ...
+  "command_template" : "FILE:./specifications/mymodule/templates/my_module_testpayload_#fizzle(optionvalue:#numbers).json",
+  "command_replacement_map" : {
+  ...
+    "#numbers": "1, 2, 3, 4, 5"
+  },
+  "command_response_map" : {
+  }
+}
+```
+When rnning the tests, this will alternate between loading /my_module_testpayload_1.json to /my_module_testpayload_5.json thus enabling you
+to simulate different types of json payload. Remember that you might also have variable-substitution inside the json-payload files.
+
 
 
 ### Hazelcast setup
