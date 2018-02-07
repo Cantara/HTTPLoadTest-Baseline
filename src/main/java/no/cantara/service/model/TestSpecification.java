@@ -193,6 +193,8 @@ public class TestSpecification implements Serializable, Cloneable {
             return;
         }
         if (getCommand_template().startsWith("FILE:")) {
+            setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(command_template, getCommand_replacement_map()));
+
             String filename = getCommand_template().substring(5, getCommand_template().length());
             try {
                 String contents = loadFromDiskByName(filename);

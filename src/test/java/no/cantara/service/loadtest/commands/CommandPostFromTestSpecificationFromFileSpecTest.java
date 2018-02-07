@@ -47,7 +47,9 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
         CommandPostFromTestSpecification myPostCommand = null;
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
-        for (TestSpecification testSpecification : readTestSpec) {
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
+
             testSpecification.resolveVariables(null, null, resolvedResultVariables);
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());

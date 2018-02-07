@@ -174,7 +174,9 @@ public class TestSpecificationMappingTest {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
-        for (TestSpecification testSpecification : readTestSpec) {
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
+
             assertTrue(testSpecification.getCommand_url().length() > 0);
             //testSpecification.setCommand_template("FILE:./pom.xml");
             testSpecification.resolveVariables(null, null, null);

@@ -42,7 +42,8 @@ public class CommandGetFromTestSpecificationFromFileSpecTest {
         });
         CommandGetFromTestSpecification myGetCommand = null;
         CommandPostFromTestSpecification myPostCommand = null;
-        for (TestSpecification testSpecification : readTestSpec) {
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
             testSpecification.resolveVariables(null, null, null);
             assertTrue(testSpecification.getCommand_url().length() > 0);
             log.trace("Calling {}", testSpecification.getCommand_url());
