@@ -94,6 +94,12 @@ It may be useful to organize the testspecifications in a hierarcy along the line
 
 HTTPLoadTest GUI provide simple regexp for files in the specification hierarcy in drop-down lists in the Read/Write TestSpecification config GUI.
 
+The default values for matching provisioned TestSpecifications are defined in application.properties as shown below.
+```properties
+loadtest.testspecification.rootpath=./specifications
+loadtest.testspecification.read.filematcher=*ReadTest*.json
+loadtest.testspecification.write.filematcher=*WriteTest*.json
+```
 
 #### If you want to provision several sets of TestSpecifications, you can add something like this to ./config_override/application_override.properties
 ```properties
