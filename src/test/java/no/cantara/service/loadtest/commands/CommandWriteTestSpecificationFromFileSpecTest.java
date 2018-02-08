@@ -19,8 +19,8 @@ import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 
-public class CommandPostFromTestSpecificationFromFileSpecTest {
-    private final static Logger log = LoggerFactory.getLogger(CommandPostFromTestSpecificationFromFileSpecTest.class);
+public class CommandWriteTestSpecificationFromFileSpecTest {
+    private final static Logger log = LoggerFactory.getLogger(CommandWriteTestSpecificationFromFileSpecTest.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
     private TestServer testServer;
@@ -38,7 +38,7 @@ public class CommandPostFromTestSpecificationFromFileSpecTest {
 
     @Test
     public void testCommandGetFromTestSpecification() throws Exception {
-        String filenameIntestResourcesToCreateAndRunTestFrom = "readconfig.json";
+        String filenameIntestResourcesToCreateAndRunTestFrom = "writeconfig.json";
 
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {

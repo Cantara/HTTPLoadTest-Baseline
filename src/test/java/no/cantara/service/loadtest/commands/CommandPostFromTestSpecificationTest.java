@@ -133,7 +133,7 @@ public class CommandPostFromTestSpecificationTest {
     public void testDefaultConfigCommandPostFromStringTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("DefaultReadTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("DefaultWriteTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
