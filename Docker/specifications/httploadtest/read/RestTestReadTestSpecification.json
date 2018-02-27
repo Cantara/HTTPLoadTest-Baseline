@@ -1,0 +1,14 @@
+[ {
+  "command_url" : "http://localhost:8086/HTTPLoadTest-baseline/restTest/read/#ID",
+  "command_contenttype" : "text/html",
+  "command_http_post" : false,
+  "command_timeout_milliseconds" : 2000,
+  "command_template" : "",
+  "command_replacement_map" : {
+    "#ID" : "orange"
+  },
+  "command_response_map" : {
+    "#RESPONSE" : "$..ID"
+  }
+} ]
+

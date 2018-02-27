@@ -1,0 +1,14 @@
+[ {
+  "command_url" : "http://localhost:8086/HTTPLoadTest-baseline/restTest/write",
+  "command_contenttype" : "application/json;charset=UTF-8",
+  "command_http_authstring" : "",
+  "command_http_post" : true,
+  "command_timeout_milliseconds" : 200,
+  "command_template" : "#FRUITLIST",
+  "command_replacement_map" : {
+    "#FRUITLIST" : "apple"
+  },
+  "command_response_map" : {
+    "#rest_results" : "$..fruit"
+  }
+} ]
