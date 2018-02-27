@@ -294,15 +294,10 @@ public class Main {
         securityHandler.addConstraintMapping(pingEndpointConstraintMapping);
 
         // Allow RestTestResource to be accessed without authentication
-        ConstraintMapping restTestReadEndpointConstraintMapping = new ConstraintMapping();
-        restTestReadEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-        restTestReadEndpointConstraintMapping.setPathSpec(RestTestResource.REST_PATH_READ + "/*");
-        securityHandler.addConstraintMapping(restTestReadEndpointConstraintMapping);
-
-        ConstraintMapping restTestWriteEndpointConstraintMapping = new ConstraintMapping();
-        restTestWriteEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
-        restTestWriteEndpointConstraintMapping.setPathSpec(RestTestResource.REST_PATH_WRITE);
-        securityHandler.addConstraintMapping(restTestWriteEndpointConstraintMapping);
+        ConstraintMapping restTestEndpointConstraintMapping = new ConstraintMapping();
+        restTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        restTestEndpointConstraintMapping.setPathSpec(RestTestResource.REST_PATH + "/*");
+        securityHandler.addConstraintMapping(restTestEndpointConstraintMapping);
 
         // Allow tokenverifyerResource to be accessed without authentication
         ConstraintMapping tokenVerifyConstraintMapping = new ConstraintMapping();

@@ -16,7 +16,6 @@ public class RestTestResourceTest {
 
     private TestServer testServer;
 
-
     @BeforeClass
     public void startServer() throws Exception {
         testServer = new TestServer(getClass());
@@ -30,7 +29,8 @@ public class RestTestResourceTest {
 
     @Test
     public void testRestTestPost() throws IOException {
-        String json = "banana";
+        String path = "minapp/test/77/something";
+        String json = "apple";
         given()
                 .log().everything()
                 .contentType(ContentType.JSON)
@@ -39,18 +39,38 @@ public class RestTestResourceTest {
                 .statusCode(HttpURLConnection.HTTP_OK)
                 .log().everything()
                 .when()
-                .post(RestTestResource.REST_PATH_WRITE);
+                .post(RestTestResource.REST_PATH + "/" + path);
+
+
+        json = "banana";
+        given()
+                .log().everything()
+                .contentType(ContentType.JSON)
+                .body(json)
+                .expect()
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().everything()
+                .when()
+                .post(RestTestResource.REST_PATH + "/");
     }
 
     @Test
     public void testRestTestGet() throws IOException {
-        String fruit = "orange";
+        String path = "minapp/test/77/something";
         given()
                 .log().everything()
                 .expect()
                 .statusCode(HttpURLConnection.HTTP_OK)
                 .log().everything()
                 .when()
-                .get(RestTestResource.REST_PATH_READ + "/" + fruit);
+                .get(RestTestResource.REST_PATH + "/" + path);
+
+        given()
+                .log().everything()
+                .expect()
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().everything()
+                .when()
+                .get(RestTestResource.REST_PATH + "/");
     }
 }
