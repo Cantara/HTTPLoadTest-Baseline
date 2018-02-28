@@ -35,9 +35,9 @@ public class RestTestResource {
     public Response getRequest(@Context HttpHeaders headers, @PathParam("path") String path) {
         log.info("Invoked getRequest with path: {} and headers: {}", path, headers.getRequestHeaders());
         if (path.isEmpty()) {
-            path = "";
+            path = "emptyPath";
         }
-        String response = String.format("{ \"Path\": %s }", path);
+        String response = String.format("{ \"path\": %s }", path);
 
         return Response.ok(response).build();
     }

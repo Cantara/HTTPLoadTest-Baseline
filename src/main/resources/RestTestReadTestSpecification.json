@@ -8,7 +8,7 @@
     "#PATH" : "minapp/test/77/something"
   },
   "command_response_map" : {
-    "#RESPONSE" : "$..Path"
+    "#RESPONSE" : "$..path"
   }
 }, {
   "command_url" : "http://localhost:8086/HTTPLoadTest-baseline/resttest/",
@@ -19,7 +19,7 @@
   "command_replacement_map" : {
   },
   "command_response_map" : {
-    "#RESPONSE" : "$..Path"
+    "#RESPONSE" : "$..path"
   }
 } ]
 
