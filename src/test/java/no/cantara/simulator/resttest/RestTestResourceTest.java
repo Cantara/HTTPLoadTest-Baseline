@@ -30,7 +30,16 @@ public class RestTestResourceTest {
     @Test
     public void testRestTestPost() throws IOException {
         String path = "minapp/test/77/something";
-        String json = "apple";
+        String json = "{fruit: mango}";
+        String xml = "<note><body>small note</body></note>";
+        String html = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<body>\n" +
+                "<p>A paragraph.</p>\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>";
+        String text = "banana(){}.mango";
         given()
                 .log().everything()
                 .contentType(ContentType.JSON)
@@ -41,17 +50,35 @@ public class RestTestResourceTest {
                 .when()
                 .post(RestTestResource.REST_PATH + "/" + path);
 
-
-        json = "banana";
         given()
                 .log().everything()
-                .contentType(ContentType.JSON)
-                .body(json)
+                .contentType(ContentType.XML)
+                .body(xml)
                 .expect()
                 .statusCode(HttpURLConnection.HTTP_OK)
                 .log().everything()
                 .when()
                 .post(RestTestResource.REST_PATH + "/");
+
+        given()
+                .log().everything()
+                .contentType(ContentType.HTML)
+                .body(html)
+                .expect()
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().everything()
+                .when()
+                .post(RestTestResource.REST_PATH + "/");
+
+        given()
+                .log().everything()
+                .contentType(ContentType.TEXT)
+                .body(text)
+                .expect()
+                .statusCode(HttpURLConnection.HTTP_OK)
+                .log().everything()
+                .when()
+                .post(RestTestResource.REST_PATH + "/" + path);
     }
 
     @Test

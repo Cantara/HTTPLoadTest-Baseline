@@ -4,25 +4,38 @@
   "command_http_authstring" : "",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 200,
-  "command_template" : "#APPLE",
+  "command_template" : "#FRUIT",
   "command_replacement_map" : {
     "#PATH" : "minapp/test/77/something",
-    "#APPLE" : "apple"
+    "#FRUIT" : "{fruit: mango}"
   },
   "command_response_map" : {
-    "#rest_results" : "$..fruit"
+    "#rest_results" : "$..entity"
   }
 }, {
   "command_url" : "http://localhost:8086/HTTPLoadTest-baseline/resttest/",
-  "command_contenttype" : "application/json;charset=UTF-8",
+  "command_contenttype" : "text/plain",
   "command_http_authstring" : "",
   "command_http_post" : true,
   "command_timeout_milliseconds" : 200,
   "command_template" : "#BANANA",
   "command_replacement_map" : {
-    "#BANANA" : "banana"
+    "#BANANA" : "banana(){}.mango"
   },
   "command_response_map" : {
-    "#rest_results" : "$..fruit"
+    "#rest_results" : "$..entity"
+  }
+}, {
+  "command_url" : "http://localhost:8086/HTTPLoadTest-baseline/resttest/",
+  "command_contenttype" : "application/xml;charset=ISO-8859-1",
+  "command_http_authstring" : "",
+  "command_http_post" : true,
+  "command_timeout_milliseconds" : 200,
+  "command_template" : "#NOTE",
+  "command_replacement_map" : {
+    "#NOTE" : "<note><body>small note</body></note>"
+  },
+  "command_response_map" : {
+    "#rest_results" : "$..entity"
   }
 } ]
