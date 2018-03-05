@@ -24,14 +24,25 @@
         </encoder>
     </appender>
 
-
-
+    <appender name="DEBUG-FILE" class="no.cantara.util.debug.MinuteAppender">
+        <file>logs/debug_file.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/debug_file_%d{yyyy-MM-dd_HH:mm}.log</fileNamePattern>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level- %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <logger name="no.cantara.service" level="TRACE" />
     <logger name="no.cantara.service.loadtest" level="INFO"/>
+    <logger name="no.cantara.simulator" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
+        <appender-ref ref="DEBUG-FILE" />
     </root>
 </configuration>

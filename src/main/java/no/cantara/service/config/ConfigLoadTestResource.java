@@ -9,6 +9,7 @@ import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.TestSpecification;
 import no.cantara.service.model.TestSpecificationLoader;
+import no.cantara.simulator.RestTestResource;
 import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,7 @@ public class ConfigLoadTestResource {
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last test</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +

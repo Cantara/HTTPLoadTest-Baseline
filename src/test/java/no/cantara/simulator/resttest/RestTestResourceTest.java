@@ -7,7 +7,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -28,17 +27,11 @@ public class RestTestResourceTest {
     }
 
     @Test
-    public void testRestTestPost() throws IOException {
+    public void testRestTestPost() {
         String path = "minapp/test/77/something";
         String json = "{fruit: mango}";
         String xml = "<note><body>small note</body></note>";
-        String html = "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<body>\n" +
-                "<p>A paragraph.</p>\n" +
-                "\n" +
-                "</body>\n" +
-                "</html>";
+        String html = "<!DOCTYPE html><html><head><title>Web Page</title></head><body><p>A paragraph.</p></body></html>";
         String text = "banana(){}.mango";
         given()
                 .log().everything()
@@ -82,7 +75,7 @@ public class RestTestResourceTest {
     }
 
     @Test
-    public void testRestTestGet() throws IOException {
+    public void testRestTestGet() {
         String path = "minapp/test/77/something";
         given()
                 .log().everything()

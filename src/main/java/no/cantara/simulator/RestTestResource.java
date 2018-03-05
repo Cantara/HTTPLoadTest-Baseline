@@ -22,6 +22,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.xml.parsers.*;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Path(RestTestResource.REST_PATH)
 public class RestTestResource {
@@ -33,15 +38,51 @@ public class RestTestResource {
     public RestTestResource() {
     }
 
+    @GET
+    @Path("/debug")
+    public Response debug() {
+        log.info("Invoked debug test");
+
+        File debugFile = getLatestDebugFile();
+//        File debugFile = getDebugFileWithinAMinute();
+
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(debugFile), "UTF-8"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            log.error("Failed to read lines. {}", e);
+        }
+
+        String[] htmlTags = new String[]{"<html>", "<body>", "<a", "</body>", "</html>"};
+
+        StringBuilder builder = new StringBuilder();
+        for (String s : lines) {
+            if (Arrays.stream(htmlTags).anyMatch(s::contains)) {
+                s = s.replace("<", "&lt;").replace(">", "&gt;");
+            }
+            s = s + "<br>";
+            builder.append(s);
+        }
+        String response = String.format("<h3>Print debug:</h3> <br> %s", builder.toString());
+
+        return Response.ok(response).build();
+    }
+
     @POST
     @Path("{path : .*}")
     public Response postRequest(@Context HttpHeaders headers, @RequestBody String input) {
         log.info("Invoked postRequest with input: {} and headers: {}", input, headers.getRequestHeaders());
 
-        String parsedObject = parseInput(headers.getMediaType().getSubtype(), input);
-        String response = String.format("{ \"entity\": %s }", parsedObject);
+        if (validateInput(headers.getMediaType().getSubtype(), input)) {
+            String response = String.format("{ \"entity\": %s }", input);
+            return Response.ok(response).type(headers.getMediaType()).build();
+        }
 
-        return Response.ok(response).type(headers.getMediaType()).build();
+        log.error("Failed to validate request: {}", input);
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @GET
@@ -57,61 +98,101 @@ public class RestTestResource {
         return Response.ok(response).build();
     }
 
-    private String parseInput(String type, String input) {
-        String parsedObject = "";
-        switch (type) {
-            case "json":
-                parsedObject = parseJsonFromString(input);
-                break;
-            case "xml":
-                parsedObject = parseXMLFromString(input);
-                break;
-            case "html":
-                parsedObject = validateHtml(input);
-                break;
-            case "plain":
-                parsedObject = input;
-                break;
+    private File getLatestDebugFile() {
+        Pattern FILENAME_DATE_PATTERN = Pattern.compile(".*_.*_(.*?_.*?)\\..*");
+        File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
+
+        File folder = new File(System.getProperty("user.dir") + "/logs/");
+        FilenameFilter beginsWith = (directory, filename) -> filename.startsWith("debug_file");
+
+        File[] files = folder.listFiles(beginsWith);
+        if (files == null) {
+            throw new NotFoundException("No debug files found, that starts with: " + beginsWith);
+        }
+        List<String> fileDates = new ArrayList<>();
+        for (File f: files) {
+            Matcher matcher = FILENAME_DATE_PATTERN.matcher(f.getName());
+            if (matcher.matches()) {
+                fileDates.add(matcher.group(1));
+            }
         }
 
-        return parsedObject;
+        String lastDate = fileDates.stream().max(Comparator.naturalOrder()).orElse("");
+        for (File f : files) {
+            if (f.getName().contains(lastDate)) {
+                debugFile = f;
+            }
+        }
+
+        log.info("Debugging file: {}", debugFile);
+        return debugFile;
     }
 
-    private String parseJsonFromString(String input) {
+    private File getDebugFileWithinAMinute() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm");
+        File debugFile;
+        String prefixPath = "/logs/debug_file_";
+        if (new File(System.getProperty("user.dir") + prefixPath + LocalDateTime.now().format(formatter) + ".log").exists()) {
+            debugFile = new File(System.getProperty("user.dir") + prefixPath + LocalDateTime.now().format(formatter) + ".log");
+            log.info("Debugging file path timeNow: {}", debugFile.getPath());
+        } else if (new File(System.getProperty("user.dir") + prefixPath + LocalDateTime.now().plusMinutes(1).format(formatter) + ".log").exists()) {
+            debugFile = new File(System.getProperty("user.dir") + prefixPath + LocalDateTime.now().plusMinutes(1).format(formatter) + ".log");
+            log.info("Debugging file path timePlusOne: {}", debugFile.getPath());
+        } else if (new File(System.getProperty("user.dir") + prefixPath + LocalDateTime.now().minusMinutes(1).format(formatter) + ".log").exists()) {
+            debugFile = new File(System.getProperty("user.dir") + prefixPath + LocalDateTime.now().minusMinutes(1).format(formatter) + ".log");
+            log.info("Debugging file path timeMinusOne: {}", debugFile.getPath());
+        } else {
+            debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
+            log.info("Debugging file path default: {}", debugFile.getPath());
+        }
+
+        return debugFile;
+    }
+
+    private boolean validateInput(String type, String input) {
+        switch (type) {
+            case "json":
+                return validateJson(input);
+            case "xml":
+                return validateXML(input);
+            case "html":
+                return validateHtml(input);
+            case "plain":
+                return true;
+            default:
+                log.warn("Invalid input type {}", type);
+                return false;
+        }
+    }
+
+    private boolean validateJson(String input) {
         JSONParser parser = new JSONParser();
-        JSONObject json = new JSONObject();
         try {
             Object parsedObject = parser.parse(input);
             if (parsedObject instanceof JSONObject) {
-                json = (JSONObject)parsedObject;
+                return true;
             }
         } catch (ParseException e) {
             log.error("Failed to parse json. " + e);
         }
 
-        return json.toString();
+        return false;
     }
 
-    private String parseXMLFromString(String xml) {
+    private boolean validateXML(String xml) {
         DefaultHandler handler = new DefaultHandler();
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             InputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
             saxParser.parse(stream, handler);
-            return xml;
+            return true;
         } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error("Failed to parse xml. " + e);
-            return null;
+            return false;
         }
     }
 
-
-    /**
-     * Verifies that a HTML content is valid.
-     * @param htmlContent the HTML content
-     * @return true if it is valid, false otherwise
-     */
-    private String validateHtml( String htmlContent ) {
+    private boolean validateHtml( String htmlContent ) {
         InputStream in;
         MessageEmitterAdapter errorHandler;
         try {
@@ -130,10 +211,10 @@ public class RestTestResource {
             validator.setUpValidatorAndParsers( errorHandler, true, false );
             validator.checkHtmlInputSource( new InputSource( in ));
 
-            return in.toString();
+            return 0 == errorHandler.getErrors();
         } catch (Exception e) {
             log.error("Failed to parse html with exception {}", e);
-            return null;
+            return false;
         }
     }
 }
