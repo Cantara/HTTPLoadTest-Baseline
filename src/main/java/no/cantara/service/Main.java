@@ -5,6 +5,7 @@ import no.cantara.service.config.SetupLoadTestResource;
 import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.LoadTestResource;
 import no.cantara.service.oauth2ping.PingResource;
+import no.cantara.simulator.RestTestResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedTokenVerifyResource;
 import no.cantara.util.Configuration;
@@ -292,6 +293,11 @@ public class Main {
         pingEndpointConstraintMapping.setPathSpec(PingResource.PING_PATH);
         securityHandler.addConstraintMapping(pingEndpointConstraintMapping);
 
+        // Allow RestTestResource to be accessed without authentication
+        ConstraintMapping restTestEndpointConstraintMapping = new ConstraintMapping();
+        restTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        restTestEndpointConstraintMapping.setPathSpec(RestTestResource.REST_PATH + "/*");
+        securityHandler.addConstraintMapping(restTestEndpointConstraintMapping);
 
         // Allow tokenverifyerResource to be accessed without authentication
         ConstraintMapping tokenVerifyConstraintMapping = new ConstraintMapping();
