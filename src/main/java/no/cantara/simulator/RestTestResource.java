@@ -1,8 +1,12 @@
 package no.cantara.simulator;
 
-import net.minidev.json.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import no.cantara.service.loadtest.LoadTestExecutorService;
+import no.cantara.service.loadtest.util.TemplateUtil;
+import no.cantara.service.model.TestSpecification;
 import nu.validator.messages.MessageEmitter;
 import nu.validator.messages.MessageEmitterAdapter;
 import nu.validator.messages.TextMessageEmitter;
@@ -18,55 +22,91 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import org.json.JSONObject;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import javax.xml.parsers.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static no.cantara.util.Configuration.loadFromDiskByName;
+
 @Path(RestTestResource.REST_PATH)
 public class RestTestResource {
     public static final String REST_PATH = "/resttest";
-
     private static final Logger log = LoggerFactory.getLogger(RestTestResource.class);
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     public RestTestResource() {
     }
 
     @GET
-    @Path("/debug")
-    public Response debug() {
-        log.info("Invoked debug test");
+    @Path("/printLogs")
+    public Response printLogs() {
+        log.info("Invoked printLogs test");
 
         File debugFile = getLatestDebugFile();
 //        File debugFile = getDebugFileWithinAMinute();
 
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(debugFile), "UTF-8"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            log.error("Failed to read lines. {}", e);
+        String debugLog = buildDebugLog(debugFile);
+        String response = String.format("<h3>Print printLogs:</h3> <br> %s", debugLog);
+
+        return Response.ok(response).build();
+    }
+
+    @POST
+    @Path("/debug")
+    public Response debug(@FormParam("jsonConfig") String resource) {
+        log.info("Invoked debug test specification with testSpecifiaction file {}", resource);
+
+        if (resource.startsWith("FILE:")) {
+            resource = loadFromDiskByName(resource.substring(5, resource.length()));
         }
 
-        String[] htmlTags = new String[]{"<html>", "<body>", "<a", "</body>", "</html>"};
-
-        StringBuilder builder = new StringBuilder();
-        for (String s : lines) {
-            if (Arrays.stream(htmlTags).anyMatch(s::contains)) {
-                s = s.replace("<", "&lt;").replace(">", "&gt;");
-            }
-            s = s + "<br>";
-            builder.append(s);
+        List<TestSpecification> testSpecifications = new ArrayList<>();
+        try {
+            testSpecifications = mapper.readValue(resource, new TypeReference<List<TestSpecification>>() {});
+            LoadTestExecutorService.setReadTestSpecificationList(testSpecifications);
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {},\n {e}", resource, e);
         }
-        String response = String.format("<h3>Print debug:</h3> <br> %s", builder.toString());
+
+        File file = new File(System.getProperty("user.dir") + "/logs/debug.log");
+        writeToFile(file, "Input resource:\n " + resource + "\n", false);
+
+        for (TestSpecification testSpecification : testSpecifications) {
+            testSpecification.setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_url(), testSpecification.getCommand_replacement_map()));
+            testSpecification.setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map()));
+            testSpecification.setCommand_http_authstring(TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_http_authstring(), testSpecification.getCommand_replacement_map()));
+            writeToFile(file, "TestSpecification replaced variables: " + testSpecification.toLongString() + "\n", true);
+
+            if (testSpecification.isCommand_http_post()) {
+                String subType = testSpecification.getCommand_contenttype().split("/")[1];
+                if (validateInput(subType, testSpecification.getCommand_template())) {
+                    String response = String.format("{ \"entity\": %s }", testSpecification.getCommand_template());
+                    writeToFile(file, response + "\n", true);
+                } else {
+                    log.error("Failed to validate request: {}", testSpecification.getCommand_template());
+                }
+            } else {
+                String subPath = testSpecification.getCommand_url()
+                        .substring(testSpecification.getCommand_url().indexOf(REST_PATH) + REST_PATH.length());
+                subPath = subPath.isEmpty() ? "emptyPath" : "";
+                String response = String.format("{ \"path\": %s }", subPath);
+                writeToFile(file, response + "\n", true);
+            }
+        }
+
+        String debugLog = buildDebugLog(file);
+        String response = String.format("<h3>Debug:</h3> %s", debugLog);
 
         return Response.ok(response).build();
     }
@@ -98,6 +138,42 @@ public class RestTestResource {
         return Response.ok(response).build();
     }
 
+    private void writeToFile(File file, String s, boolean append) {
+        try {
+            if (append) {
+                Files.write(file.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+            } else {
+                Files.write(file.toPath(), s.getBytes());
+            }
+        } catch (IOException e) {
+            log.error("writeToFile error: {}", e);
+        }
+    }
+
+    private String buildDebugLog(File file) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            log.error("Failed to read lines. {}", e);
+        }
+
+        String[] htmlTags = new String[]{"<html>", "<body>", "<a", "</body>", "</html>"};
+        StringBuilder builder = new StringBuilder();
+        for (String s : lines) {
+            if (Arrays.stream(htmlTags).anyMatch(s::contains)) {
+                s = s.replace("<", "&lt;").replace(">", "&gt;");
+            }
+            s = s + "<br>";
+            builder.append(s);
+        }
+
+        return builder.toString();
+    }
+
     private File getLatestDebugFile() {
         Pattern FILENAME_DATE_PATTERN = Pattern.compile(".*_.*_(.*?_.*?)\\..*");
         File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
@@ -107,7 +183,7 @@ public class RestTestResource {
 
         File[] files = folder.listFiles(beginsWith);
         if (files == null) {
-            throw new NotFoundException("No debug files found, that starts with: " + beginsWith);
+            throw new NotFoundException("No printLogs files found, that starts with: " + beginsWith);
         }
         List<String> fileDates = new ArrayList<>();
         for (File f: files) {

@@ -73,7 +73,7 @@ public class ConfigLoadTestResource {
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last test</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/printLogs" + "\">Print latest log</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
@@ -134,8 +134,19 @@ public class ConfigLoadTestResource {
                     "        <br/><br/>" +
                     "        <input type=\"submit\" value=\"Select\">" +
                     "    </form>" +
-                    "    <br/><br/>";
+                    "    <br/>";
         }
+
+        response = response +
+                "    <form action=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\" method=\"POST\" id=\"jsonConfig\">\n" +
+                "        Debug selected TestSpecification:<br/>" +
+                "       <select name=\"jsonConfig\">" +
+                "        " + optionString +
+                "        </select>" +
+                "        <br/><br/>" +
+                "        <input type=\"submit\" value=\"Debug\">" +
+                "    </form>\n" +
+                "<br/><br/>";
 
         response = response +
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
