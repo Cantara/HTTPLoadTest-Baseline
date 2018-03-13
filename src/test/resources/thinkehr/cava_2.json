@@ -1,0 +1,60 @@
+{
+  "compositions":[
+    {
+      "action":"CREATE",
+      "templateId":"PSKY-Alerts-v1",
+      "composition":{
+        "alerts":{
+          "medication_reactions":[
+            {
+              "adverse_reaction_risk":[
+                {
+                  "medication_substance":[
+                    {
+                      "|code":"N02BE01",
+                      "|value":"Paracetamol",
+                      "|terminology":"2.16.578.1.12.4.1.1.7180"
+                    }
+                  ],
+                  "reaction_event":[
+                    {
+                      "manifestation":[
+                        {
+                          "|code":"10",
+                          "|value":"Alvorlig hudreaksjon",
+                          "|terminology":"2.16.578.1.12.4.1.1.7497"
+                        }
+                      ]
+                    }
+                  ],
+                  "category":[
+                    {
+                      "|code":"at0123"
+                    }
+                  ],
+                  "comment":[
+                    "Virkelig alvorligt!!!!"
+                  ],
+                  "information_source_allergy":[
+                    {
+                      "information_source":[
+                        {
+                          "|code":"5",
+                          "|value":"Hentet fra gammel journal",
+                          "|terminology":"2.16.578.1.12.4.1.1.7498"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "other_alerts":[
+
+          ]
+        }
+      }
+    }
+  ]
+}

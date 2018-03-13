@@ -1,0 +1,11 @@
+{
+  "partialAql":"where c/archetype_details/template_id/value=:templateId",
+  "aqlParameters":{
+    "templateId":"PSKY-Alerts-v1"
+  },
+  "orderBy":"c/context/start_time",
+  "sortOrder":"DESC",
+  "offset":0,
+  "limit":1000,
+  "composition":"openEHR-EHR-COMPOSITION.health_summary.v1"
+}

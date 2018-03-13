@@ -1,0 +1,26 @@
+{
+  "compositions":[
+    {
+      "action":"CREATE",
+      "templateId":"PSKY-Social_summary-v1",
+      "composition":{
+        "health_summary":{
+          "social_summary":[
+            {
+              "summary":[
+                ""
+              ],
+              "housing":[
+                {
+                  "description":[
+                    "Lives in poor ghetto neighborhood "
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

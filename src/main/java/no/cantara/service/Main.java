@@ -7,6 +7,7 @@ import no.cantara.service.loadtest.LoadTestResource;
 import no.cantara.service.oauth2ping.PingResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedTokenVerifyResource;
+import no.cantara.simulator.test.TestResource;
 import no.cantara.util.Configuration;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
@@ -26,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.request.RequestContextListener;
 
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -111,6 +113,7 @@ public class Main {
         server.addConnector(connector);
         server.setHandler(context);
 
+
         try {
             server.start();
         } catch (Exception e) {
@@ -152,12 +155,18 @@ public class Main {
         clientConstraintMapping.setConstraint(userRoleConstraint);
         clientConstraintMapping.setPathSpec("/client/*");
 
+        // Allow testresource to be accessed without authentication
+        ConstraintMapping testEndpointConstraintMapping = new ConstraintMapping();
+        testEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        testEndpointConstraintMapping.setPathSpec("/test/*");
+
         ConstraintMapping adminRoleConstraintMapping = new ConstraintMapping();
         adminRoleConstraintMapping.setConstraint(adminRoleConstraint);
         adminRoleConstraintMapping.setPathSpec("/*");
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
         securityHandler.addConstraintMapping(clientConstraintMapping);
+        securityHandler.addConstraintMapping(testEndpointConstraintMapping);
         securityHandler.addConstraintMapping(adminRoleConstraintMapping);
 
 
@@ -166,6 +175,7 @@ public class Main {
         healthEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
         healthEndpointConstraintMapping.setPathSpec(HealthResource.HEALTH_PATH);
         securityHandler.addConstraintMapping(healthEndpointConstraintMapping);
+
 
         Boolean loadtest_basicauth = Configuration.getBoolean("loadtest.basicauth");
         if (!loadtest_basicauth) {
@@ -310,6 +320,7 @@ public class Main {
         String adminPassword = Configuration.getString("login.admin.password");
         userStore.addUser(adminUsername, new Password(adminPassword), new String[]{ADMIN_ROLE});
         loginService.setUserStore(userStore);
+
 
         log.debug("Main instantiated with basic auth clientuser={} and adminuser={}", clientUsername, adminUsername);
         securityHandler.setLoginService(loginService);
