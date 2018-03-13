@@ -1,35 +1,11 @@
-[ {
-  "command_url" : "#EHRGW_URI/#Patient_id/composition/_search?identifier=PSKY-Social_summary-v1",
-  "command_contenttype" : "application/json;charset=UTF-8",
-  "command_http_authstring" : "Bearer #fizzle(optionvalue:#access_token)",
-  "command_http_post" : true,
-  "command_timeout_milliseconds" : 2000,
-  "command_template" : "FILE:./resources/thinkehr/read_social_query_Template.json",
-  "command_replacement_map" : {
-    "#cluster03EhrIds" : "{2b46b33e-1d1e-4604-b558-0032ec7f0e44}",
-    "#Password" : "TestPassword",
-    "#user_terminology" : "reference.platform.user.healthPlatform",
-    "#Patient_id" : "9e5681de-beda-11e7-b567-b6cb9a806452",
-    "#expires_in" : "[ 3600 ]",
-    "#UserID" : "TestUser",
-    "#REDIRECT_URI" : "http://localhost:8086/HTTPLoadTest-baseline/test",
-    "#refresh_token" : "[ \"5a78d6f5398225be5acf208596c3760b38fed2b6\" ]",
-    "#EHRGW_URI" : "http://localhost:8086/HTTPLoadTest-baseline/test",
-    "#CLIENT_ID" : "00000000-0000-4000-a006-000000000009",
-    "#user_id" : "be685c18-8974-11e7-86e1-1e34d666cca1",
-    "#code" : "[ \"adcb4c2ef27a19a72574331289ba14ffbdb38d22\" ]",
-    "#scope" : "[ null ]",
-    "#token_type" : "[ \"bearer\" ]",
-    "#accountable_terminology" : "reference.platform.user.healthPlatform",
-    "#CLIENT_SECRET" : "secret9",
-    "#OAUTH2Server" : "https://development-portal.gel.camp/auth",
-    "#tenant_id" : "4798cc24-9d0d-11e7-a800-0aef43a07d33",
-    "#tenant_terminology" : "reference.platform.tenant.serviceProvider",
-    "#access_token" : "[ \"fa582eadfa9eee1982e10fdd0350ae4f2d43d594\" ]",
-    "#refresh_expires_in" : "[ 1209600 ]",
-    "#TestMe" : "{per, ola, petter}",
-    "#accountable_id" : "be685c18-8974-11e7-86e1-1e34d666cca1",
-    "#cluster02EhrIds" : "{2583bb3e-88a2-4dc7-b6fe-be79d8d9f0f4}"
-  },
-  "command_response_map" : { }
-} ]
+[
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/health",
+    "command_contenttype": "text/html",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 2000,
+    "command_template": "",
+    "command_replacement_map": {
+    }
+  }
+]
