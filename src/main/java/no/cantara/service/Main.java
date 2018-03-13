@@ -8,7 +8,6 @@ import no.cantara.service.oauth2ping.PingResource;
 import no.cantara.simulator.RestTestResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedTokenVerifyResource;
-import no.cantara.simulator.test.TestResource;
 import no.cantara.util.Configuration;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
