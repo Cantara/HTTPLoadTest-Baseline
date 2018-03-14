@@ -1,6 +1,7 @@
 package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import no.cantara.base.command.HttpSender;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
@@ -54,15 +55,17 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
     protected Map<String, String> getFormParameters() {
         try {
 
-            String[] formParams = template.split("&");
             Map<String, String> data = new HashMap<String, String>();
-            for (String formParam : formParams) {
-                if (formParam.indexOf("=") > 1) {
+            if (contentType.equalsIgnoreCase(HttpSender.APPLICATION_FORM_URLENCODED)){
+                String[] formParams = template.split("&");
+                for (String formParam : formParams) {
+                    if (formParam.indexOf("=") > 1) {
 
-                    String key = formParam.substring(0, formParam.indexOf("="));
-                    String value = formParam.substring(formParam.indexOf("=") + 1, formParam.length());
+                        String key = formParam.substring(0, formParam.indexOf("="));
+                        String value = formParam.substring(formParam.indexOf("=") + 1, formParam.length());
 
-                    data.put(key, value);
+                        data.put(key, value);
+                    }
                 }
             }
             return data;
