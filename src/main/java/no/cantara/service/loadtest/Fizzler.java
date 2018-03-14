@@ -93,5 +93,15 @@ public class Fizzler {
         return stringValue;
 
     }
+
+    // #fizzle(substring(0,32):#testString)
+    public static String getSubString(String myString) {
+        String startIndex=myString.substring(myString.indexOf("(")+1,myString.indexOf(","));
+        String stopIndex=myString.substring(myString.indexOf(",")+1,myString.indexOf(")"));
+        String result = myString.substring((Integer.parseInt(startIndex)+myString.indexOf(":")+1),Integer.parseInt(stopIndex));
+        return result;
+
+    }
+
 }
 

@@ -36,6 +36,7 @@
 #fizzle(HEX:(a hexvalue)                             =>  4E7AD3B084
 #fizzle(option:yes, no, here, there)                 =>  here
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
+#fizzle(substring(4,6):one two three)                =>  two
 ```
 
 * With your fist HTTPRequest complete, it's time to [see how to chain results form one request into the next request](./03-chaining-requests.md).

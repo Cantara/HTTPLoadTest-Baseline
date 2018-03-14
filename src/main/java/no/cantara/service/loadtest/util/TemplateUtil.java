@@ -19,6 +19,7 @@ public class TemplateUtil {
         add("#fizzle(HEX:");
         add("#fizzle(option:");
         add("#fizzle(optionvalue:");
+        add("#fizzle(substring");
     }};
 
     public static String updateTemplateWithValuesFromMap(String template, Map<String, String> templatereplacementMap) {
@@ -69,6 +70,11 @@ public class TemplateUtil {
         }
         if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(6))) {
             return frontTemplate + Fizzler.getRandomSetValueAsString(backtemp.substring(0, backtemp.indexOf(")"))) + backTemplate;
+        }
+        if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(7))) {
+             backTemplate = backtemp.substring(backtemp.lastIndexOf(")") + 1, backtemp.length());
+
+            return frontTemplate + Fizzler.getSubString(backtemp.substring(0, backtemp.lastIndexOf(")"))) + backTemplate;
         }
         return template;
     }
