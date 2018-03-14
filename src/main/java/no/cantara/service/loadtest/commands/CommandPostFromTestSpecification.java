@@ -34,10 +34,10 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
 
             log.info("Added authorizarion header: {}", this.httpAuthorizationString);
             if (getFormParameters() == null || getFormParameters().isEmpty()) {
-                return request.authorization(this.httpAuthorizationString).contentType(contentType).accept(contentType).send(this.template);
+                return request.authorization(this.httpAuthorizationString).contentType(contentType).accept("*/*").send(this.template);
 
             } else {
-                return request.authorization(this.httpAuthorizationString).contentType(contentType).accept(contentType).acceptJson();
+                return request.authorization(this.httpAuthorizationString).contentType(contentType).accept("*/*").acceptJson();
 
             }
         }
@@ -46,7 +46,7 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
             //request.getConnection().addRequestProperty("SOAPAction", SOAP_ACTION);
         }
 
-        return request.contentType(contentType).accept(contentType).send(this.template);
+        return request.contentType(contentType).accept("*/*").send(this.template);
     }
 
 
