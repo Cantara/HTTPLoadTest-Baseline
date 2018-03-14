@@ -70,7 +70,7 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
             }
             return data;
         } catch (Exception e) {
-            log.error("Unable to resove form", e);
+            log.error("Unable to resove form: ", e);
 
         }
         return null;
