@@ -46,7 +46,7 @@ public class HealthResource {
         return Response.ok(response).build();
     }
 
-    private String getRunningSince() {
+    public static String getRunningSince() {
         long uptimeInMillis = ManagementFactory.getRuntimeMXBean().getUptime();
         return Instant.now().minus(uptimeInMillis, ChronoUnit.MILLIS).toString();
     }

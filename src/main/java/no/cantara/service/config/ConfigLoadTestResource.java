@@ -377,7 +377,7 @@ public class ConfigLoadTestResource {
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/>" +
-                        "HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
+                        "HTTPLoadTest-Baseline " + HealthResource.getVersion() + " - running since: " + HealthResource.getRunningSince() + "<br/" +
                         "  </body>" +
                         "</html>";
         return Response.ok(response).build();
