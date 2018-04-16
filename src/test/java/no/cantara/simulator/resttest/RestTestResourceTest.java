@@ -58,7 +58,7 @@ public class RestTestResourceTest {
                 .contentType(ContentType.HTML)
                 .body(html)
                 .expect()
-                .statusCode(HttpURLConnection.HTTP_OK)
+                .statusCode(HttpURLConnection.HTTP_INTERNAL_ERROR)
                 .log().everything()
                 .when()
                 .post(RestTestResource.REST_PATH + "/");
