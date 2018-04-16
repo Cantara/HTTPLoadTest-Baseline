@@ -79,10 +79,12 @@ public class ConfigLoadTestResource {
                         "  <br/><br/>" +
                         "  <ul>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
+                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Configure  LoadTestConfig</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last test</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +

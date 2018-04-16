@@ -7,6 +7,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import no.cantara.service.Main;
+import no.cantara.service.config.ConfigLoadTestResource;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.loadtest.util.UnzipStream;
 import no.cantara.service.model.*;
@@ -172,7 +174,10 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.setLoadTestConfig(loadTestConfig);
-            return Response.ok(json).build();
+            // 6. create 302-response with part2 of secret in http Location header
+            return Response.status(Response.Status.FOUND)
+                    .header("Location", Main.CONTEXT_PATH + ConfigLoadTestResource.CONFIG_PATH).build();
+//            return Response.ok(json).build();
         } catch (Exception e) {
             log.warn("/form/load Could not convert to Json {},\n {e}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
