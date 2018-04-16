@@ -19,12 +19,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.xml.parsers.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -203,7 +210,8 @@ public class RestTestResource {
             ImageCollector imageCollector = new ImageCollector(sourceCode);
             boolean showSource = false;
             MessageEmitter emitter = new TextMessageEmitter( out, false );
-            errorHandler = new MessageEmitterAdapter(sourceCode, showSource, imageCollector, 0, false, emitter );
+
+            errorHandler = new MessageEmitterAdapter(null, sourceCode, showSource, imageCollector, 0, false, emitter);
             errorHandler.setErrorsOnly( true );
 
             SimpleDocumentValidator validator = new SimpleDocumentValidator();
