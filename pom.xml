@@ -332,7 +332,7 @@
         <dependency>
             <groupId>nu.validator</groupId>
             <artifactId>validator</artifactId>
-            <version>15.3.14</version>
+            <version>18.3.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.eclipse.jetty</groupId>
