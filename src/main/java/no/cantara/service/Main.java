@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.request.RequestContextListener;
 
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -192,6 +191,12 @@ public class Main {
             securityHandler.addConstraintMapping(configEndpoint2ConstraintMapping);
 
             // Allow configresource read-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping configLoadEndpointConstraintMapping = new ConstraintMapping();
+            configLoadEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configLoadEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_LOAD);
+            securityHandler.addConstraintMapping(configLoadEndpointConstraintMapping);
+
+            // Allow configresource read-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configReadEndpointConstraintMapping = new ConstraintMapping();
             configReadEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             configReadEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_READ);
@@ -232,6 +237,12 @@ public class Main {
             loadTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             loadTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM);
             securityHandler.addConstraintMapping(loadTestFormEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadTestLoadFormEndpointConstraintMapping = new ConstraintMapping();
+            loadTestLoadFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestLoadFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_LOAD);
+            securityHandler.addConstraintMapping(loadTestLoadFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadReadTestFormEndpointConstraintMapping = new ConstraintMapping();

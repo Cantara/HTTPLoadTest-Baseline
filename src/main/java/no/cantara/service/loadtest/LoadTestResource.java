@@ -41,6 +41,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH = "/loadTest";
     public static final String APPLICATION_PATH_ZIP = "/loadTest/zip";
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
+    public static final String APPLICATION_PATH_FORM_LOAD = "/loadTest/form/load";
     public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
     public static final String APPLICATION_PATH_FORM_BENCHMARK = "/loadTest/form/benchmark";
@@ -156,6 +157,30 @@ public class LoadTestResource {
     }
 
     @POST
+    @Path("/form/load")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response updateLoadTestSpecificationForm(@FormParam("jsonConfig") String json) {
+        log.trace("Invoked updateLoadTestSpecificationForm with {}", json);
+
+        if (json.startsWith("FILE:")) {
+            json = loadFromDiskByName(json.substring(5, json.length()));
+
+        }
+
+        try {
+
+            LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
+            LoadTestExecutorService.setLoadTestConfig(loadTestConfig);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            log.warn("/form/load Could not convert to Json {},\n {e}", json, e);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+
+    @POST
     @Path("/form/read")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -174,7 +199,7 @@ public class LoadTestResource {
             LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
             return Response.ok(json).build();
         } catch (Exception e) {
-            log.warn("/form/read Could not convert to Json {},\n {e}", json.toString(), e);
+            log.warn("/form/read Could not convert to Json {},\n {e}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
@@ -198,7 +223,7 @@ public class LoadTestResource {
             LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
             return Response.ok(json).build();
         } catch (Exception e) {
-            log.warn("/form/write Could not convert to Json {} \n{}", json.toString(), e);
+            log.warn("/form/write Could not convert to Json {} \n{}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
@@ -217,7 +242,7 @@ public class LoadTestResource {
             LoadTestResultUtil.setLoadTestBenchmark(loadTestBenchmark);
             return Response.ok(json).build();
         } catch (Exception e) {
-            log.warn("/form/benchmark Could not convert to Json {} \n{}", json.toString(), e);
+            log.warn("/form/benchmark Could not convert to Json {} \n{}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }

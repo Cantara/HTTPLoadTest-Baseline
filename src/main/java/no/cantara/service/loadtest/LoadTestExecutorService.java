@@ -136,6 +136,11 @@ public class LoadTestExecutorService {
         }
     }
 
+    public static void setLoadTestConfig(LoadTestConfig loadTestSpecification) {
+        updateSpecMap();
+        activeLoadTestConfig.set(loadTestSpecification);
+    }
+
     public static void setReadTestSpecificationList(List<TestSpecification> readTestSpecificationList) {
         LoadTestExecutorService.readTestSpecificationList.set(readTestSpecificationList);
         updateSpecMap();

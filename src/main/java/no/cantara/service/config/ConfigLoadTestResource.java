@@ -34,6 +34,7 @@ import static no.cantara.service.loadtest.LoadTestResource.*;
 @Produces(MediaType.TEXT_HTML)
 public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
+    public static final String CONFIG_PATH_LOAD = "/config/load";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
     public static final String CONFIG_PATH_BENCHMARK = "/config/benchmark";
@@ -47,13 +48,21 @@ public class ConfigLoadTestResource {
     public Response presentConfigUI() {
         log.trace("presentConfigUI");
         String jsonconfig = "{}";
-        try {
-            InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
-            LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
-            jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
-            log.trace("Loaded defaultConfig: {}", jsonconfig);
-        } catch (Exception e) {
-            log.error("Unable to read default configuration for LoadTest.", e);
+        if (LoadTestExecutorService.getActiveLoadTestConfig() != null && !"zero".equalsIgnoreCase(LoadTestExecutorService.getActiveLoadTestConfig().getTest_id())) {
+            try {
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getActiveLoadTestConfig());
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+        } else {
+            try {
+                InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
+                LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
+                log.trace("Loaded defaultConfig: {}", jsonconfig);
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
         }
         String response =
                 "<html>" +
@@ -70,6 +79,7 @@ public class ConfigLoadTestResource {
                         "  <br/><br/>" +
                         "  <ul>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Configure  LoadTestConfig</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
@@ -81,6 +91,72 @@ public class ConfigLoadTestResource {
                         "</html>";
         return Response.ok(response).build();
     }  //
+
+    @Path("/load")
+    @GET
+    public Response presentTestConfigConfigUI() {
+        log.trace("presentReadConfigUI");
+        String jsonconfig = "{}";
+
+        if (jsonconfig == null || jsonconfig.length() < 20) {
+            try {
+                InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
+                LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
+                log.trace("Loaded defaultConfig: {}", jsonconfig);
+
+
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+        }
+        String optionString = "";
+        try {
+            ArrayList<String> filenames = null;
+            java.nio.file.Path startingDir = Paths.get(TEST_SPECIFICATION_ROOT_PATH);
+            String pattern = Configuration.getString("loadtest.testspecification.filematcher");
+            FileFinder finder = new FileFinder(pattern);
+            Files.walkFileTree(startingDir, finder);
+            filenames = finder.done();
+
+            for (int n = 0; n < filenames.size(); n++) {
+                optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
+            }
+        } catch (Exception e) {
+            log.error("Unable to read default configuration for LoadTest.", e);
+        }
+
+        String response =
+                "<html>" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>" +
+                        "  <body>\n" +
+                        "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>";
+        if (optionString != null && optionString.length() > 5) {
+            response = response +
+                    "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD + "\" method=\"POST\" '>" +
+                    "        Select stored loadTestSpecification:<br/>" +
+                    "        <select name=\"jsonConfig\">" +
+                    "        " + optionString +
+                    "        </select>" +
+                    "        <br/><br/>" +
+                    "        <input type=\"submit\" value=\"Select\">" +
+                    "    </form>" +
+                    "    <br/><br/>";
+        }
+
+        response = response +
+                "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                "        ReadTestSpecification:<br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                "        <input type=\"submit\">" +
+                "    </form>\n" +
+                "\n" +
+                "  </body>" +
+                "</html>";
+        return Response.ok(response).build();
+    }
 
     @Path("/read")
     @GET

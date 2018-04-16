@@ -1,0 +1,13 @@
+{
+  "test_id": "HTTPLoadTest-QA",
+  "test_name": "Example loadtest, using internal /health for read and write example",
+  "test_no_of_threads": 5,
+  "test_read_write_ratio": 90,
+  "test_sleep_in_ms": 50,
+  "test_randomize_sleeptime": true,
+  "test_duration_in_seconds": 10,
+  "test_global_variables_map": {
+    "#Password": "MyTestPassword",
+    "#UserID": "MyTestUser"
+  }
+}
