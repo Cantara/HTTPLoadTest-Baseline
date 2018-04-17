@@ -86,27 +86,7 @@ public class LoadTestResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-/*
-    @POST
-    @Path("/zip")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response uploadFile(@QueryParam("file") String uploadedInputString) {
-        try {
-            InputStream uploadedInputStream = new ByteArrayInputStream(uploadedInputString.getBytes(StandardCharsets.UTF_8.name()));
-            // check if all form parameters are provided
-            if (uploadedInputStream == null )
-                return Response.status(400).entity("Invalid form data").build();
-            // create our destination folder, if it not exists
-            UnzipStream.unzip(uploadedInputStream);
-        } catch (Exception se) {
-            log.error("Exception in receiving and handling zip-file with testspecifications",se);
-            return Response.status(500)
-                           .entity("Can not create destination folder on server")
-                           .build();
-        }
-        return Response.status(200).entity("ZipFile successfully added " ).build();
-    }*/
+
 
     @POST
     @Path("/zip")
