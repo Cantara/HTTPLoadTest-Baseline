@@ -335,6 +335,18 @@
             <version>18.3.0</version>
             <exclusions>
                 <exclusion>
+                    <groupId>org.apache.struts</groupId>
+                    <artifactId>struts-tiles</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.struts</groupId>
+                    <artifactId>struts-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.struts</groupId>
+                    <artifactId>struts-core</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-security</artifactId>
                 </exclusion>
