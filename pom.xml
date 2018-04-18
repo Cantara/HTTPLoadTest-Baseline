@@ -375,7 +375,18 @@
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpclient</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>nu.validator</groupId>
+                    <artifactId>cssvalidator</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/nu.validator/cssvalidator -->
+        <dependency>
+            <groupId>nu.validator</groupId>
+            <artifactId>cssvalidator</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
