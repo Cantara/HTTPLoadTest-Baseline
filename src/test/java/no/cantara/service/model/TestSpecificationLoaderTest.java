@@ -25,6 +25,7 @@ public class TestSpecificationLoaderTest {
     public void test_LoadspecificationsFromProperties() throws Exception {
         Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
 
+        int n = 1;
         for (String testSpecificationEntry : configuredTests.keySet()) {
             InputStream file = no.cantara.util.Configuration.loadByName(configuredTests.get(testSpecificationEntry));
             List<TestSpecification> readTestSpec = new ArrayList<>();
@@ -32,7 +33,7 @@ public class TestSpecificationLoaderTest {
             });
             assertTrue(readTestSpec.size() > 0);
             for (TestSpecification testSpecification : readTestSpec) {
-                log.trace("Loaded  testspecification: {}", configuredTests.get(testSpecificationEntry));
+                log.info("Loaded  testspecification: {}:{} - {}", n++, testSpecificationEntry, configuredTests.get(testSpecificationEntry));
                 testSpecification.resolveVariables(null, null, null);//loadTemplateReference();
                 assertTrue(testSpecification.getCommand_url().length() > 0);
             }
@@ -44,7 +45,7 @@ public class TestSpecificationLoaderTest {
     public void testCommandPostFromTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("readconfig.json").getFile());
+        File file = new File(classLoader.getResource("specifications/TestReadConfigTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();

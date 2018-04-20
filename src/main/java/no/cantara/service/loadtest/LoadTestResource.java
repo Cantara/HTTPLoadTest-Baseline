@@ -102,7 +102,7 @@ public class LoadTestResource {
             log.debug(">>>>> upload size of the file in byte: ");
 
         } catch (IOException e) {
-            log.error("Exception in receiving and handling zip-file with testspecifications", e);
+            log.error("Exception in receiving and handling zip-file with specifications", e);
             return Response.status(500)
                            .entity("Can not create destination folder on server")
                            .build();
