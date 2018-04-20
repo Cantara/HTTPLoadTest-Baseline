@@ -73,7 +73,7 @@ public class CommandReadTestSpecificationFromFileSpecTest {
     @Test
     public void testCommandPostFromTestSpecification() throws Exception {
 
-        String filenameIntestResourcesToCreateAndRunTestFrom = "specifications/OAuth2ConfigTestSpesification.json";
+        String filenameIntestResourcesToCreateAndRunTestFrom = "specifications/OAuth2ConfigTestSpecification.json";
 
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
