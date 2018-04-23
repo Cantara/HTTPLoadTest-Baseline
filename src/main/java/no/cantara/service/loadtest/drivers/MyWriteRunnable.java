@@ -129,7 +129,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         loadTestResult.setTest_success(true);
                         resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Vars(" + resolvedResultVariables + ") - ");
-                        log.info("Resolved variables: {} result: {} from command_response_map: {}", resolvedResultVariables, result, testSpecification.getCommand_response_map());
+                        log.info("{} Resolved variables: {} result: {} from command_response_map: {}", testSpecification.getCommand_url(), resolvedResultVariables, result, testSpecification.getCommand_response_map());
                     }
                 }
                 // We break the flow if one step fail
