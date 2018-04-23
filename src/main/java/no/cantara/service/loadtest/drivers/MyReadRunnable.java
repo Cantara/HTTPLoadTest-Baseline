@@ -135,7 +135,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                     } else {
                         loadTestResult.setTest_success(true);
                         resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
-                        log.info("Resolved variables: {}", resolvedResultVariables);
+                        log.info("{} Resolved variables: {}", testSpecification.getCommand_url(), resolvedResultVariables);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first150(result) + ") -:vars(" + resolvedResultVariables + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                     }
 
