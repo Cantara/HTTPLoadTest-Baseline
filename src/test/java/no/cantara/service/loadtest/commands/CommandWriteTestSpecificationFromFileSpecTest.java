@@ -38,7 +38,7 @@ public class CommandWriteTestSpecificationFromFileSpecTest {
 
     @Test
     public void testCommandGetFromTestSpecification() throws Exception {
-        String filenameIntestResourcesToCreateAndRunTestFrom = "specifications/write/TestWriteConfigWriteTestSpecification.json";
+        String filenameIntestResourcesToCreateAndRunTestFrom = "loadtest_setup/specifications/write/TestWriteConfigWriteTestSpecification.json";
 
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
@@ -73,7 +73,7 @@ public class CommandWriteTestSpecificationFromFileSpecTest {
     @Test
     public void testCommandPostFromTestSpecification() throws Exception {
 
-        String filenameIntestResourcesToCreateAndRunTestFrom = "specifications/read/OAuth2ConfigReadTestSpecification.json";
+        String filenameIntestResourcesToCreateAndRunTestFrom = "loadtest_setup/specifications/read/OAuth2ConfigReadTestSpecification.json";
 
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {

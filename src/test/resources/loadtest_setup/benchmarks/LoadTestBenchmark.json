@@ -1,0 +1,8 @@
+{
+  "benchmark_id": "BenchmarkID",
+  "benchmark_req_sucessrate_percent": 99,
+  "benchmark_req_mean_read_duration_ms": 1010,
+  "benchmark_req_mean_write_duration_ms": 1020,
+  "benchmark_req_90percentile_read_duration_ms": 910,
+  "benchmark_req_90percentile_write_duration_ms": 920
+}

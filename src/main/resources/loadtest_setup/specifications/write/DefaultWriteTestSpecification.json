@@ -1,0 +1,71 @@
+[
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=client_credentials&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#CLIENT_ID": "myClientIdValue",
+      "#CLIENT_SECRET": "MySecretValue"
+    },
+    "command_response_map": {
+      "#access_token": "$..access_token"
+    }
+  },
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/token?grant_type=authorization_code&code=#code&redirect_uri=#redirectURI&client_id=#CLIENT_ID&client_secret=#CLIENT_SECRET",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+      "#code": "myDummyCode",
+      "#redirectURI": "https://www.vg.no"
+    },
+    "command_response_map": {
+      "#access_token2": "$..access_token",
+      "#token_type": "$..token_type",
+      "#expires_in": "$..expires_in",
+      "#refresh_token": "$..refresh_token",
+      "#scope": "$..scope",
+      "#uid": "$..uid",
+      "#info": "$..info"
+    }
+  },
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/verify",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "Bearer #fizzle(option:#access_token)",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+    },
+    "command_response_map": {
+      "#client_id": "$..client_id",
+      "#auth_user_id": "$..auth_user_id",
+      "#user_id": "$..user_id",
+      "#user_type": "$..user_type",
+      "#expires": "$..expires",
+      "#scope": "$..scope",
+      "#name": "$..name"
+    }
+  },
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/ping",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "Bearer #fizzle(option:#access_token)",
+    "command_http_post": false,
+    "command_timeout_milliseconds": 200,
+    "command_template": "",
+    "command_replacement_map": {
+    },
+    "command_response_map": {
+      "#ping_response": "$..response",
+      "#ping_now": "$..now"
+    }
+  }
+]

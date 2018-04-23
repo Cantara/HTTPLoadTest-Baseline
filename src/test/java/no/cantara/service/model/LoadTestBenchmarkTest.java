@@ -30,7 +30,7 @@ public class LoadTestBenchmarkTest {
     @Test
     public void readTestConfigFromFile() throws Exception {
 
-        InputStream file = no.cantara.util.Configuration.loadByName("benchmarks/LoadTestBenchmark.json");
+        InputStream file = no.cantara.util.Configuration.loadByName("loadtest_setup/benchmarks/LoadTestBenchmark.json");
         LoadTestBenchmark fileLoadtest = mapper.readValue(file, LoadTestBenchmark.class);
         assertTrue(fileLoadtest.getBenchmark_id().equalsIgnoreCase("BenchmarkID"));
     }

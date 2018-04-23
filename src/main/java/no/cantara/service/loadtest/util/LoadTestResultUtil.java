@@ -70,10 +70,12 @@ public class LoadTestResultUtil {
         return mapper;
     }
 
+    public static final String DEFAULT_LOAD_TEST_BENCHMARK = "loadtest_setup/benchmarks/DefaultLoadTestBenchmark.json";
+
     static {
         try {
 
-            InputStream is = Configuration.loadByName("benchmarks/DefaultLoadTestBenchmark.json");
+            InputStream is = Configuration.loadByName(DEFAULT_LOAD_TEST_BENCHMARK);
 
             loadTestBenchmark = mapper.readValue(is, LoadTestBenchmark.class);
             String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestBenchmark);

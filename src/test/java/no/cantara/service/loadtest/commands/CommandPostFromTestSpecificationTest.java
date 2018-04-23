@@ -75,7 +75,7 @@ public class CommandPostFromTestSpecificationTest {
     public void testCommandPostFromTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("specifications/read/TestReadConfigReadTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("loadtest_setup/specifications/read/TestReadConfigReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();
@@ -106,7 +106,7 @@ public class CommandPostFromTestSpecificationTest {
     public void testDefaultConfigCommandPostFromTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("specifications/read/DefaultReadTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("loadtest_setup/specifications/read/DefaultReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
@@ -133,7 +133,7 @@ public class CommandPostFromTestSpecificationTest {
     public void testDefaultConfigCommandPostFromStringTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("specifications/write/DefaultWriteTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("loadtest_setup/specifications/write/DefaultWriteTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });

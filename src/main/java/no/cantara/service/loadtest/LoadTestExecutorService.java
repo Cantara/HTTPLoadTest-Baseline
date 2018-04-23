@@ -24,8 +24,8 @@ public class LoadTestExecutorService {
     private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorService.class);
 
     public static final String RESULT_FILE_PATH = "./results";
-    public static final String DEFAULT_READ_TEST_SPECIFICATION = "specifications/read/DefaultReadTestSpecification.json";
-    public static final String DEFAULT_WRITE_TEST_SPECIFICATION = "specifications/write/DefaultWriteTestSpecification.json";
+    public static final String DEFAULT_READ_TEST_SPECIFICATION = "loadtest_setup/specifications/read/DefaultReadTestSpecification.json";
+    public static final String DEFAULT_WRITE_TEST_SPECIFICATION = "loadtest_setup/specifications/write/DefaultWriteTestSpecification.json";
 
     private static final AtomicReference<List<LoadTestResult>> unsafeList = new AtomicReference<>(new ArrayList<>());
     private static final AtomicReference<List<LoadTestResult>> resultList = new AtomicReference<>();
