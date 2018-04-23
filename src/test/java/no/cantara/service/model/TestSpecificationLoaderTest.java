@@ -45,7 +45,7 @@ public class TestSpecificationLoaderTest {
     public void testCommandPostFromTestSpecification() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("specifications/TestReadConfigTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("specifications/read/TestReadConfigReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();

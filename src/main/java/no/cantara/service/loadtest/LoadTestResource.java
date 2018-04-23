@@ -32,6 +32,7 @@ import java.util.SortedMap;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
+import static no.cantara.simulator.RestTestResource.REST_PATH_DEBUG;
 import static no.cantara.util.Configuration.loadByName;
 import static no.cantara.util.Configuration.loadFromDiskByName;
 
@@ -43,6 +44,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH = "/loadTest";
     public static final String APPLICATION_PATH_ZIP = "/loadTest/zip";
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
+    public static final String APPLICATION_PATH_FORM_TRACE = "/loadTest/form/trace";
     public static final String APPLICATION_PATH_FORM_LOAD = "/loadTest/form/load";
     public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
@@ -87,6 +89,30 @@ public class LoadTestResource {
         }
     }
 
+    @POST
+    @Path("/trace")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response startLoadTestTrace(@RequestBody String json) {
+        log.trace("Invoked startLoadTest with {}", json);
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+        String testId = JsonPath.read(document, "$.test_id");
+        if (testId == null) {
+            Response.Status status = Response.Status.BAD_REQUEST;
+            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
+            return Response.status(status).build();
+        }
+
+        try {
+
+            LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
+            LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
+            return Response.ok(json).build();
+        } catch (Exception e) {
+            log.warn("Could not convert to Json {}", json.toString());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @POST
     @Path("/zip")
@@ -131,6 +157,32 @@ public class LoadTestResource {
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
             return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
+//            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
+        } catch (Exception e) {
+            log.warn("/form Could not convert to Json {}, e", json.toString(), e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("/form/trace")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response startLoadTestFormTrace(@FormParam("jsonConfig") String json) {
+        log.trace("Invoked startLoadTestForm with {}", json);
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+        String testId = JsonPath.read(document, "$.test_id");
+        if (testId == null) {
+            Response.Status status = Response.Status.BAD_REQUEST;
+            log.warn("Invalid json. Returning {} {}, json={}", status.getStatusCode(), status.getReasonPhrase(), json);
+            return Response.status(status).build();
+        }
+
+        try {
+
+            LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
+            LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
+            return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + REST_PATH_DEBUG)).build();
 //            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("/form Could not convert to Json {}, e", json.toString(), e);

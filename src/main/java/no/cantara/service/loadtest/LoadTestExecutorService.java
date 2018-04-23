@@ -24,6 +24,8 @@ public class LoadTestExecutorService {
     private static final Logger log = LoggerFactory.getLogger(LoadTestExecutorService.class);
 
     public static final String RESULT_FILE_PATH = "./results";
+    public static final String DEFAULT_READ_TEST_SPECIFICATION = "specifications/read/DefaultReadTestSpecification.json";
+    public static final String DEFAULT_WRITE_TEST_SPECIFICATION = "specifications/write/DefaultWriteTestSpecification.json";
 
     private static final AtomicReference<List<LoadTestResult>> unsafeList = new AtomicReference<>(new ArrayList<>());
     private static final AtomicReference<List<LoadTestResult>> resultList = new AtomicReference<>();
@@ -66,12 +68,12 @@ public class LoadTestExecutorService {
     private static void resetConfiguration() {
         try {
 
-            InputStream is = Configuration.loadByName("DefaultReadTestSpecification.json");
+            InputStream is = Configuration.loadByName(DEFAULT_READ_TEST_SPECIFICATION);
             readTestSpecificationList.set(mapper.readValue(is, new TypeReference<List<TestSpecification>>() {
             }));
             String jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpecificationList.get());
             log.info("Loaded DefaultReadTestSpecification: {}", jsonreadconfig);
-            InputStream wis = Configuration.loadByName("DefaultWriteTestSpecification.json");
+            InputStream wis = Configuration.loadByName(DEFAULT_WRITE_TEST_SPECIFICATION);
 
             writeTestSpecificationList.set(mapper.readValue(wis, new TypeReference<List<TestSpecification>>() {
             }));

@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 @Path(RestTestResource.REST_PATH)
 public class RestTestResource {
     public static final String REST_PATH = "/resttest";
+    public static final String REST_PATH_DEBUG = "/resttest/debug";
 
     private static final Logger log = LoggerFactory.getLogger(RestTestResource.class);
 

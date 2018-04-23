@@ -78,7 +78,7 @@ public class TestSpecificationMappingTest {
     public void readTestSpecificationMappingFromFile() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("specifications/TestReadConfigTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("specifications/read/TestReadConfigReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
@@ -170,7 +170,7 @@ public class TestSpecificationMappingTest {
     public void readTestSpecificationWithExternalTemplateMappingFromFile() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("specifications/TestReadConfigTestSpecification.json").getFile());
+        File file = new File(classLoader.getResource("specifications/read/TestReadConfigReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });

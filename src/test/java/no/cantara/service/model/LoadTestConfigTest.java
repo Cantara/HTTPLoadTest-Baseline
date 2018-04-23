@@ -31,7 +31,7 @@ public class LoadTestConfigTest {
     @Test
     public void readTestConfigFromFile() throws Exception {
 
-        InputStream file = no.cantara.util.Configuration.loadByName("LoadTestConfig.json");
+        InputStream file = no.cantara.util.Configuration.loadByName("configurations/LoadTestConfig.json");
         LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
         assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }

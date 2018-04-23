@@ -28,12 +28,15 @@ import java.util.Map;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
 import static no.cantara.service.config.ConfigLoadTestResource.CONFIG_PATH;
+import static no.cantara.service.loadtest.LoadTestExecutorService.DEFAULT_READ_TEST_SPECIFICATION;
+import static no.cantara.service.loadtest.LoadTestExecutorService.DEFAULT_WRITE_TEST_SPECIFICATION;
 import static no.cantara.service.loadtest.LoadTestResource.*;
 
 @Path(CONFIG_PATH)
 @Produces(MediaType.TEXT_HTML)
 public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
+    public static final String CONFIG_PATH_TRACE = "/config/trace";
     public static final String CONFIG_PATH_LOAD = "/config/load";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
@@ -70,7 +73,7 @@ public class ConfigLoadTestResource {
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
                         "<body>\n" +
-                        "  <h3>HTTPLoadTest - LoadTestRun Configuration</h3><br/><br/>" +
+                        "  <h3>HTTPLoadTest - LoadTestRun Configuration - LOADTEST MODE</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
@@ -78,6 +81,8 @@ public class ConfigLoadTestResource {
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <ul>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_TRACE + "\">Switch to debug mode</a></li>" +
+                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Configure  LoadTestConfig</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
@@ -93,6 +98,60 @@ public class ConfigLoadTestResource {
                         "</html>";
         return Response.ok(response).build();
     }  //
+
+    @Path("/trace")
+    @GET
+    public Response presentConfigUITrace() {
+        log.trace("presentConfigUI-trace");
+        String jsonconfig = "{}";
+        if (LoadTestExecutorService.getActiveLoadTestConfig() != null && !"zero".equalsIgnoreCase(LoadTestExecutorService.getActiveLoadTestConfig().getTest_id())) {
+            try {
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getActiveLoadTestConfig());
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+        } else {
+            try {
+                InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
+                LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
+                log.trace("Loaded defaultConfig: {}", jsonconfig);
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTest.", e);
+            }
+        }
+        String response =
+                "<html>" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>  " +
+                        "<body>\n" +
+                        "  <h3>HTTPLoadTest - LoadTestRun Configuration - DEBUG MODE</h3><br/><br/>" +
+                        "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
+                        "        LoadTestConfig:<br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                        "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
+                        "    </form>" +
+                        "  <br/><br/>" +
+                        "  <ul>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">Switch to loadtest mode</a></li>" +
+                        "  <br/><br/>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Configure  LoadTestConfig</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "  <br/><br/>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
+                        "  <br/><br/>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
+                        "  </ul><br/><br/>" +
+                        "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
+                        "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
+                        "  </body>" +
+                        "</html>";
+        return Response.ok(response).build();
+    }  //
+
 
     @Path("/load")
     @GET
@@ -168,7 +227,7 @@ public class ConfigLoadTestResource {
         if (jsonreadconfig == null || jsonreadconfig.length() < 20) {
             try {
 
-                InputStream file = Configuration.loadByName("DefaultReadTestSpecification.json");
+                InputStream file = Configuration.loadByName(DEFAULT_READ_TEST_SPECIFICATION);
                 List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonreadconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(readTestSpec);
@@ -236,7 +295,7 @@ public class ConfigLoadTestResource {
 
         if (jsonwriteconfig == null || jsonwriteconfig.length() < 20) {
             try {
-                InputStream wfile = Configuration.loadByName("DefaultWriteTestSpecification.json");
+                InputStream wfile = Configuration.loadByName(DEFAULT_WRITE_TEST_SPECIFICATION);
                 List<TestSpecification> writeTestSpec = mapper.readValue(wfile, new TypeReference<List<TestSpecification>>() {
                 });
                 jsonwriteconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(writeTestSpec);

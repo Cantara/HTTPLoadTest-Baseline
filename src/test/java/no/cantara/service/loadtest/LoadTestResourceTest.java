@@ -36,7 +36,7 @@ public class LoadTestResourceTest {
     @Test
     public void testStartLoadTest() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("LoadTestConfig.json").getFile());
+        File file = new File(classLoader.getResource("configurations/LoadTestConfig.json").getFile());
         LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
         String loadTestJson = mapper.writeValueAsString(fileLoadtest);
 
@@ -56,7 +56,7 @@ public class LoadTestResourceTest {
     @Test(priority = 98, enabled = false)
     public void testStartLoadTestForm() throws Exception {
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("LoadTestConfig.json").getFile());
+        File file = new File(classLoader.getResource("configurations/LoadTestConfig.json").getFile());
         LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
         String loadTestJson = mapper.writeValueAsString(fileLoadtest);
 

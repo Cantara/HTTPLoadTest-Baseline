@@ -44,7 +44,7 @@ public class LoadTestExecutorServiceTest {
     public void executeAsyncTestConfigFromFile() throws Exception {
 
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("LoadTestConfig.json").getFile());
+        File file = new File(classLoader.getResource("configurations/LoadTestConfig.json").getFile());
         LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
         assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
         long startTime = System.currentTimeMillis();

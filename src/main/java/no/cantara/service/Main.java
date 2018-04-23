@@ -185,6 +185,12 @@ public class Main {
             securityHandler.addConstraintMapping(configEndpointConstraintMapping);
 
             // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping configTraceEndpointConstraintMapping = new ConstraintMapping();
+            configTraceEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configTraceEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_TRACE);
+            securityHandler.addConstraintMapping(configTraceEndpointConstraintMapping);
+
+            // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configEndpoint2ConstraintMapping = new ConstraintMapping();
             configEndpoint2ConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             configEndpoint2ConstraintMapping.setPathSpec(SetupLoadTestResource.SETUP_PATH);
@@ -225,6 +231,12 @@ public class Main {
             loadTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
             loadTestEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH);
             securityHandler.addConstraintMapping(loadTestEndpointConstraintMapping);
+
+            // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
+            ConstraintMapping loadTestTraceEndpointConstraintMapping = new ConstraintMapping();
+            loadTestTraceEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestTraceEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_TRACE);
+            securityHandler.addConstraintMapping(loadTestTraceEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestZipEndpointConstraintMapping = new ConstraintMapping();
