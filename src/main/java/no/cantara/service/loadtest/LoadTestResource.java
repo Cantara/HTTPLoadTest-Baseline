@@ -46,6 +46,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM = "/loadTest/form";
     public static final String APPLICATION_PATH_FORM_TRACE = "/loadTest/form/trace";
     public static final String APPLICATION_PATH_FORM_LOAD = "/loadTest/form/load";
+    public static final String APPLICATION_PATH_FORM_LOAD_TRACE = "/loadTest/form/load/trace";
     public static final String APPLICATION_PATH_FORM_READ = "/loadTest/form/read";
     public static final String APPLICATION_PATH_FORM_WRITE = "/loadTest/form/write";
     public static final String APPLICATION_PATH_FORM_BENCHMARK = "/loadTest/form/benchmark";
@@ -216,6 +217,31 @@ public class LoadTestResource {
         }
     }
 
+    @POST
+    @Path("/form/load/trace")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public Response updateLoadTestSpecificationFormTrace(@FormParam("jsonConfig") String json) {
+        log.trace("Invoked updateLoadTestSpecificationForm with {}", json);
+
+        if (json.startsWith("FILE:")) {
+            json = loadFromDiskByName(json.substring(5, json.length()));
+
+        }
+
+        try {
+
+            LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
+            LoadTestExecutorService.setLoadTestConfig(loadTestConfig);
+            // 6. create 302-response with part2 of secret in http Location header
+            return Response.status(Response.Status.FOUND)
+                    .header("Location", Main.CONTEXT_PATH + ConfigLoadTestResource.CONFIG_PATH_TRACE).build();
+//            return Response.ok(json).build();
+        } catch (Exception e) {
+            log.warn("/form/load Could not convert to Json {},\n {e}", json, e);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+    }
 
     @POST
     @Path("/form/read")
