@@ -48,10 +48,14 @@ public class ConfigLoadTestResource {
     public static final String TEST_SPECIFICATION_ROOT_PATH = Configuration.getString("loadtest.testspecification.rootpath");  //./src";
     public static final String DEFAULT_LOAD_TEST_CONFIG = "loadtest_setup/configurations/DefaultLoadTestConfig.json";
 
+    private static String backgroundImageURL = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg";
+    private static String backgroundImageURLLoadTest = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg";
+    private static String backgroundImageURLDEBUG = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg";
 
     @GET
     public Response presentConfigUI() {
         log.trace("presentConfigUI");
+        backgroundImageURL = backgroundImageURLLoadTest;
         String jsonconfig = "{}";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && !"zero".equalsIgnoreCase(LoadTestExecutorService.getActiveLoadTestConfig().getTest_id())) {
             try {
@@ -74,7 +78,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
-                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg\">\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration - LOADTEST MODE</h3><br/>" +
                         "  &nbsp;&nbsp;<b><a href=\"" + CONTEXT_PATH + CONFIG_PATH_TRACE + "\">Switch to DEBUG mode</a></b><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
@@ -89,7 +93,7 @@ public class ConfigLoadTestResource {
                         "  <li>4. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Select LoadTestConfig</a></li>" +
                         "  <br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select or upload configured TestSpecification set</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
@@ -102,6 +106,7 @@ public class ConfigLoadTestResource {
     @GET
     public Response presentConfigUITrace() {
         log.trace("presentConfigUI-trace");
+        backgroundImageURL = backgroundImageURLDEBUG;
         String jsonconfig = "{}";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && !"zero".equalsIgnoreCase(LoadTestExecutorService.getActiveLoadTestConfig().getTest_id())) {
             try {
@@ -131,7 +136,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
-                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg\">\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration - DEBUG MODE</h3><br/>" +
                         "  &nbsp;&nbsp;<b><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">Switch to LoadTest mode</a></b><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
@@ -139,14 +144,15 @@ public class ConfigLoadTestResource {
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and DEBUG this LoadTest\">" +
                         "    </form>" +
+                        "&nbsp;If DEBUG display a short log, just re-run the test in DEBUG mode." +
                         "  <ul>" +
                         "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
-                        "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD_TRACE + "\">Select LoadTestConfig</a></li>" +
+                        "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD_TRACE + "\">Select LoadTestConfig </a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
                         "  <br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
+                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select or upload configured TestSpecification set</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
@@ -195,7 +201,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>" +
-                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg\">\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestConfig Configuration</h3><br/>";
         if (optionString != null && optionString.length() > 5) {
             response = response +
@@ -261,7 +267,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>" +
-                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg\">\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestConfig Configuration</h3><br/>";
         if (optionString != null && optionString.length() > 5) {
             response = response +
@@ -328,7 +334,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>" +
-                        "  <body>\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>";
         if (optionString != null && optionString.length() > 5) {
             response = response +
@@ -396,7 +402,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
-                        "<body>\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - Write TestSpecification Configuration</h3><br/>";
         if (optionString != null && optionString.length() > 5) {
             response = response +
@@ -452,7 +458,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
-                        "<body>\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestBenchmark Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_BENCHMARK + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        LoadTestBenchmark:<br/>" +
@@ -488,7 +494,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">" +
                         "</head>" +
-                        "  <body>\n" +
+                        "<body background=\"" + backgroundImageURL + "\">\n" +
                         "  <h3>HTTPLoadTest - Select pre-configured TestSpecification Configuration</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_SELECT + "\" method=\"POST\" '>" +
                         "        <select name=\"jsonConfig\">" +
