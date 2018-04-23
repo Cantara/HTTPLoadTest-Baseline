@@ -57,7 +57,7 @@ public class ConfigLoadTestResource {
             try {
                 jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getActiveLoadTestConfig());
             } catch (Exception e) {
-                log.error("Unable to read default configuration for LoadTest.", e);
+                log.error("Unable to read configuration for LoadTest.", e);
             }
         } else {
             try {
@@ -75,23 +75,20 @@ public class ConfigLoadTestResource {
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
                         "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg\">\n" +
-                        "  <h3>HTTPLoadTest - LoadTestRun Configuration - LOADTEST MODE</h3><br/><br/>" +
+                        "  <h3>HTTPLoadTest - LoadTestRun Configuration - LOADTEST MODE</h3><br/>" +
+                        "  &nbsp;&nbsp;<b><a href=\"" + CONTEXT_PATH + CONFIG_PATH_TRACE + "\">Switch to DEBUG mode</a></b><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
                         "    </form>" +
-                        "  <br/><br/>" +
                         "  <ul>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_TRACE + "\">Switch to debug mode</a></li>" +
-                        "  <br/><br/>" +
                         "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
                         "  <li>4. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Select LoadTestConfig</a></li>" +
-                        "  <br/><br/>" +
+                        "  <br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
-                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
@@ -108,9 +105,13 @@ public class ConfigLoadTestResource {
         String jsonconfig = "{}";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && !"zero".equalsIgnoreCase(LoadTestExecutorService.getActiveLoadTestConfig().getTest_id())) {
             try {
-                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getActiveLoadTestConfig());
+                LoadTestConfig loadTestConfig = LoadTestExecutorService.getActiveLoadTestConfig();
+                loadTestConfig.setTest_no_of_threads(1);
+                loadTestConfig.setTest_read_write_ratio(50);
+                loadTestConfig.setTest_duration_in_seconds(3);
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadTestConfig);
             } catch (Exception e) {
-                log.error("Unable to read default configuration for LoadTest.", e);
+                log.error("Unable to read configuration for LoadTest.", e);
             }
         } else {
             try {
@@ -131,24 +132,20 @@ public class ConfigLoadTestResource {
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
                         "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg\">\n" +
-                        "  <h3>HTTPLoadTest - LoadTestRun Configuration - DEBUG MODE</h3><br/><br/>" +
+                        "  <h3>HTTPLoadTest - LoadTestRun Configuration - DEBUG MODE</h3><br/>" +
+                        "  &nbsp;&nbsp;<b><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">Switch to LoadTest mode</a></b><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and DEBUG this LoadTest\">" +
                         "    </form>" +
-                        "  <br/><br/>" +
                         "  <ul>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">Switch to loadtest mode</a></li>" +
-                        "  <br/><br/>" +
                         "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
                         "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
                         "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD_TRACE + "\">Select LoadTestConfig</a></li>" +
-                        "  <br/><br/>" +
+                        "  <br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
-                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
-                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select configured TestSpecification set</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
@@ -216,7 +213,7 @@ public class ConfigLoadTestResource {
         response = response +
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                 "        LoadTestConfig:<br/>" +
-                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"30\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
                 "\n" +
@@ -282,7 +279,7 @@ public class ConfigLoadTestResource {
         response = response +
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                 "        LoadTestConfig:<br/>" +
-                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"30\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
                 "\n" +
