@@ -45,6 +45,7 @@ public class ConfigLoadTestResource {
     private static final Logger log = LoggerFactory.getLogger(ConfigLoadTestResource.class);
     private static final ObjectMapper mapper = new ObjectMapper();
     public static final String TEST_SPECIFICATION_ROOT_PATH = Configuration.getString("loadtest.testspecification.rootpath");  //./src";
+    public static final String DEFAULT_LOAD_TEST_CONFIG = "loadtest_setup/configurations/DefaultLoadTestConfig.json";
 
 
     @GET
@@ -59,7 +60,7 @@ public class ConfigLoadTestResource {
             }
         } else {
             try {
-                InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
+                InputStream file = Configuration.loadByName(DEFAULT_LOAD_TEST_CONFIG);
                 LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
                 jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
                 log.trace("Loaded defaultConfig: {}", jsonconfig);
@@ -112,7 +113,7 @@ public class ConfigLoadTestResource {
             }
         } else {
             try {
-                InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
+                InputStream file = Configuration.loadByName(DEFAULT_LOAD_TEST_CONFIG);
                 LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
                 jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
                 log.trace("Loaded defaultConfig: {}", jsonconfig);
@@ -130,7 +131,7 @@ public class ConfigLoadTestResource {
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
-                        "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
+                        "        <input type=\"submit\" value=\"Submit and DEBUG this LoadTest\">" +
                         "    </form>" +
                         "  <br/><br/>" +
                         "  <ul>" +
@@ -161,7 +162,7 @@ public class ConfigLoadTestResource {
 
         if (jsonconfig == null || jsonconfig.length() < 20) {
             try {
-                InputStream file = Configuration.loadByName("DefaultLoadTestConfig.json");
+                InputStream file = Configuration.loadByName(DEFAULT_LOAD_TEST_CONFIG);
                 LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
                 jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
                 log.trace("Loaded defaultConfig: {}", jsonconfig);

@@ -99,6 +99,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                     if (testSpecification.isCommand_http_post()) {
                         CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
                         result = command.execute();
+                        log.info("Response: {}", result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -110,6 +111,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                     } else {
                         CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
                         result = command.execute();
+                        log.info("Response: {}", result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
