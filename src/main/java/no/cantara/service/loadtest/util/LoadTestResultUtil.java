@@ -64,7 +64,7 @@ public class LoadTestResultUtil {
     public static final String TIMESTAMP = "timestamp";
     public static final String IS_BENCHMARK_PASSED = "isBenchmarkPassed";
 
-    private static LoadTestBenchmark loadTestBenchmark;
+    private static LoadTestBenchmark loadTestBenchmark = new LoadTestBenchmark();
 
     public static ObjectMapper mapper() {
         return mapper;
@@ -95,7 +95,6 @@ public class LoadTestResultUtil {
     }
 
     public static SortedMap hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
-//        Map<String, String> statisticsMap = new HashMap<>();
         SortedMap<String, String> statisticsMap = new TreeMap<String, String>();
         long nowTimestamp = System.currentTimeMillis();
         statisticsMap.put(TIMESTAMP, Long.toString(nowTimestamp));
