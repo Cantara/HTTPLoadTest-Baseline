@@ -135,8 +135,8 @@ public class HTTPResultUtil {
         if (s == null) {
             return s;
         }
-        if (s.length() > 50) {
-            return s.substring(0, 50);
+        if (s.length() > 150) {
+            return s.substring(0, 150);
         }
         return s;
     }
