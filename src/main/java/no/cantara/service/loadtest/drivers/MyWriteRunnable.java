@@ -18,8 +18,8 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.firstX;
 
 public class MyWriteRunnable implements Callable<LoadTestResult> {
     private final List<TestSpecification> testSpecificationList;
@@ -102,7 +102,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
-                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                         }
                         if (command.isResponseRejected()) {
                             loadTestResult.setTest_deviation_flag(true);
@@ -114,7 +114,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
-                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                            loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                         }
                         if (command.isResponseRejected()) {
                             loadTestResult.setTest_deviation_flag(true);
@@ -124,7 +124,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
 //            log.trace("Returned result: " + result);
                     if (result == null || result.startsWith("StatusCode:")) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                     } else {
                         loadTestResult.setTest_success(true);
                         resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());

@@ -18,8 +18,7 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
-import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.*;
 
 
 public class MyReadRunnable implements Callable<LoadTestResult> {
@@ -105,7 +104,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!command.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
-                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                             }
                             if (command.isResponseRejected()) {
                                 loadTestResult.setTest_deviation_flag(true);
@@ -117,7 +116,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!command.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
-                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                             }
                             if (command.isResponseRejected()) {
                                 loadTestResult.setTest_deviation_flag(true);

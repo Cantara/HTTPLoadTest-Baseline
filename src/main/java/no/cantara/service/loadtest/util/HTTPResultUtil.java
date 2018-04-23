@@ -140,4 +140,14 @@ public class HTTPResultUtil {
         }
         return s;
     }
+
+    public static String firstX(String s, int x) {
+        if (s == null) {
+            return s;
+        }
+        if (s.length() > x) {
+            return s.substring(0, x);
+        }
+        return s;
+    }
 }
