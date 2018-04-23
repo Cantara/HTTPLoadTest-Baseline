@@ -43,8 +43,11 @@ public class Configuration {
         try {
             java.io.File f = new java.io.File(name);
             if (f.isFile()) {
+                log.info("Loading {} from Filesystem", name);
                 return new FileInputStream(f);
             } else {
+
+                log.info("Loading {} from Classpath", name);
                 return Configuration.class.getClassLoader().getResourceAsStream(name);
             }
         } catch (Exception e) {

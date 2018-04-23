@@ -1,0 +1,21 @@
+[
+  {
+    "command_url": "#EHRGW_URI/#Patient_id/composition/contribution",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "Bearer f207e5bb779e7e9a1a81737e4f5d57ba2fdc5d40",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 2000,
+    "command_template": "FILE:./src/test/resources/loadtest_setup/specifications/write/template/PSKY-Alert-WriteEntry.json",
+    "command_replacement_map": {
+      "#EHRGW_URI": "https://development-portal-fe.gel.camp/internal-api/",
+      "#Patient_id": "f1353720-3f0d-11e8-969e-3a02d34a1a37"
+    },
+    "command_response_map": {
+      "#href": "$..href",
+      "#id": "$..id",
+      "#action": "$..action"
+    }
+  }
+]
+
+

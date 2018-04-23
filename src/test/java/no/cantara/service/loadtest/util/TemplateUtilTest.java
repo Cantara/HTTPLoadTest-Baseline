@@ -1,5 +1,6 @@
 package no.cantara.service.loadtest.util;
 
+import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -103,6 +104,12 @@ public class TemplateUtilTest {
         assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
 
 
+    }
+
+    @Test
+    public void loadTemplateFile() {
+        String jsonContent = Configuration.convertStreamToString(Configuration.loadByName("loadtest_setup/specifications/write/template/PSKY-Alert-WriteEntry.json"));
+        System.out.println(jsonContent);
     }
 
 }

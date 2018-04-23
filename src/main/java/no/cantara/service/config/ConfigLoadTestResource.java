@@ -73,7 +73,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
-                        "<body>\n" +
+                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration - LOADTEST MODE</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
@@ -126,7 +126,7 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>  " +
-                        "<body>\n" +
+                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg\">\n" +
                         "  <h3>HTTPLoadTest - LoadTestRun Configuration - DEBUG MODE</h3><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
