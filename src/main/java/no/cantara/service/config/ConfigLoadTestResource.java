@@ -38,6 +38,7 @@ public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
     public static final String CONFIG_PATH_TRACE = "/config/trace";
     public static final String CONFIG_PATH_LOAD = "/config/load";
+    public static final String CONFIG_PATH_LOAD_TRACE = "/config/load";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
     public static final String CONFIG_PATH_BENCHMARK = "/config/benchmark";
@@ -84,10 +85,10 @@ public class ConfigLoadTestResource {
                         "  <ul>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_TRACE + "\">Switch to debug mode</a></li>" +
                         "  <br/><br/>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Configure  LoadTestConfig</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
+                        "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "  <li>4. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Select LoadTestConfig</a></li>" +
                         "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
                         "  <br/><br/>" +
@@ -140,9 +141,10 @@ public class ConfigLoadTestResource {
                         "  <ul>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">Switch to loadtest mode</a></li>" +
                         "  <br/><br/>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Configure  LoadTestConfig</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
+                        "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD_TRACE + "\">Select LoadTestConfig</a></li>" +
+                        "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
                         "  <br/><br/>" +
                         "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
