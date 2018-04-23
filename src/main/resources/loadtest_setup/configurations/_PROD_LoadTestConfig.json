@@ -1,5 +1,5 @@
 {
-  "test_id": "HTTPLoadTest-QA",
+  "test_id": "HTTPLoadTest-PROD",
   "test_name": "Example loadtest, using internal /health for read and write example",
   "test_no_of_threads": 5,
   "test_read_write_ratio": 90,

@@ -38,7 +38,7 @@ public class ConfigLoadTestResource {
     public static final String CONFIG_PATH = "/config";
     public static final String CONFIG_PATH_TRACE = "/config/trace";
     public static final String CONFIG_PATH_LOAD = "/config/load";
-    public static final String CONFIG_PATH_LOAD_TRACE = "/config/load";
+    public static final String CONFIG_PATH_LOAD_TRACE = "/config/load/trace";
     public static final String CONFIG_PATH_READ = "/config/read";
     public static final String CONFIG_PATH_WRITE = "/config/write";
     public static final String CONFIG_PATH_BENCHMARK = "/config/benchmark";
@@ -190,7 +190,7 @@ public class ConfigLoadTestResource {
                 optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
             }
         } catch (Exception e) {
-            log.error("Unable to read default configuration for LoadTest.", e);
+            log.error("Unable to read default configuration for LoadTestConfig.", e);
         }
 
         String response =
@@ -198,12 +198,12 @@ public class ConfigLoadTestResource {
                         "<head>\n" +
                         "  <meta charset=\"UTF-8\">\n" +
                         "</head>" +
-                        "  <body>\n" +
-                        "  <h3>HTTPLoadTest - Read TestSpecification Configuration</h3><br/>";
+                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg\">\n" +
+                        "  <h3>HTTPLoadTest - LoadTestConfig Configuration</h3><br/>";
         if (optionString != null && optionString.length() > 5) {
             response = response +
                     "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD + "\" method=\"POST\" '>" +
-                    "        Select stored loadTestSpecification:<br/>" +
+                    "        Select stored LoadTestConfig:<br/>" +
                     "        <select name=\"jsonConfig\">" +
                     "        " + optionString +
                     "        </select>" +
@@ -214,8 +214,74 @@ public class ConfigLoadTestResource {
         }
 
         response = response +
-                "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
-                "        ReadTestSpecification:<br/>" +
+                "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                "        LoadTestConfig:<br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                "        <input type=\"submit\">" +
+                "    </form>\n" +
+                "\n" +
+                "  </body>" +
+                "</html>";
+        return Response.ok(response).build();
+    }
+
+    @Path("/load/trace")
+    @GET
+    public Response presentTestConfigConfigUITrace() {
+        log.trace("presentReadConfigUI-trace");
+        String jsonconfig = "{}";
+
+        if (jsonconfig == null || jsonconfig.length() < 20) {
+            try {
+                InputStream file = Configuration.loadByName(DEFAULT_LOAD_TEST_CONFIG);
+                LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+                jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
+                log.trace("Loaded defaultConfig: {}", jsonconfig);
+
+
+            } catch (Exception e) {
+                log.error("Unable to read default configuration for LoadTestConfig.", e);
+            }
+        }
+        String optionString = "";
+        try {
+            ArrayList<String> filenames = null;
+            java.nio.file.Path startingDir = Paths.get(TEST_SPECIFICATION_ROOT_PATH);
+            String pattern = Configuration.getString("loadtest.testspecification.filematcher");
+            FileFinder finder = new FileFinder(pattern);
+            Files.walkFileTree(startingDir, finder);
+            filenames = finder.done();
+
+            for (int n = 0; n < filenames.size(); n++) {
+                optionString = optionString + "        <option value=\"" + "FILE:" + filenames.get(n) + "\">" + filenames.get(n) + "</option>";
+            }
+        } catch (Exception e) {
+            log.error("Unable to read default configuration for LoadTestConfig.", e);
+        }
+
+        String response =
+                "<html>" +
+                        "<head>\n" +
+                        "  <meta charset=\"UTF-8\">\n" +
+                        "</head>" +
+                        "<body background=\"https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg\">\n" +
+                        "  <h3>HTTPLoadTest - LoadTestConfig Configuration</h3><br/>";
+        if (optionString != null && optionString.length() > 5) {
+            response = response +
+                    "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD_TRACE + "\" method=\"POST\" '>" +
+                    "        Select stored LoadTestConfig:<br/>" +
+                    "        <select name=\"jsonConfig\">" +
+                    "        " + optionString +
+                    "        </select>" +
+                    "        <br/><br/>" +
+                    "        <input type=\"submit\" value=\"Select\">" +
+                    "    </form>" +
+                    "    <br/><br/>";
+        }
+
+        response = response +
+                "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
+                "        LoadTestConfig:<br/>" +
                 "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
