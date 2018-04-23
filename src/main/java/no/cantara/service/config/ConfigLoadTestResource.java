@@ -115,6 +115,9 @@ public class ConfigLoadTestResource {
             try {
                 InputStream file = Configuration.loadByName(DEFAULT_LOAD_TEST_CONFIG);
                 LoadTestConfig fileLoadtest = mapper.readValue(file, LoadTestConfig.class);
+                fileLoadtest.setTest_no_of_threads(1);
+                fileLoadtest.setTest_read_write_ratio(50);
+                fileLoadtest.setTest_duration_in_seconds(3);
                 jsonconfig = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(fileLoadtest);
                 log.trace("Loaded defaultConfig: {}", jsonconfig);
             } catch (Exception e) {
