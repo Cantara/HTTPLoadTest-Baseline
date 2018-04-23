@@ -19,7 +19,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -57,7 +56,6 @@ public class ConfigLoadTestResource {
     public Response presentConfigUI() {
         log.trace("presentConfigUI");
         backgroundImageURL = backgroundImageURLLoadTest;
-        File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
 
         String jsonconfig = "{}";
         if (LoadTestExecutorService.getActiveLoadTestConfig() != null && !"zero".equalsIgnoreCase(LoadTestExecutorService.getActiveLoadTestConfig().getTest_id())) {

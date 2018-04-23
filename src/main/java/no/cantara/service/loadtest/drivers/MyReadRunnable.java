@@ -127,7 +127,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                         log.error("Unable to instansiate TestSpecification", e);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":Unable to instansiate TestSpecification(" + first50(e.getMessage()) + ") -");
                     }
-                    log.info("Returned result: " + result);
+                    log.info("Returned result: R-{}.{} - {} ", loadTestResult.getTest_run_no(), readCommandNo, result);
                     if (result == null || result.startsWith("StatusCode:")) {
                         loadTestResult.setTest_success(false);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");

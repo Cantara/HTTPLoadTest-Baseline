@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.web.context.ContextLoaderListener;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -357,6 +358,11 @@ public class Main {
 
 
         log.debug("Main instantiated with basic auth clientuser={} and adminuser={}", clientUsername, adminUsername);
+
+        // Bootstrapping
+        File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
+        debugFile = null;
+
         securityHandler.setLoginService(loginService);
         return securityHandler;
     }

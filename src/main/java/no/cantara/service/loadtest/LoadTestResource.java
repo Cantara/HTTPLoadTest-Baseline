@@ -170,7 +170,19 @@ public class LoadTestResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response startLoadTestFormTrace(@FormParam("jsonConfig") String json) {
-        log.trace("Invoked startLoadTestForm with {}", json);
+//        // Bootstrapping
+//        File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
+//        if (debugFile.exists()){
+//            debugFile.delete();
+//            try {
+//                debugFile.createNewFile();
+//            } catch (Exception e){
+//                log.error("Unable to create empty debuglogfile",e);
+//            }
+//        }
+//        debugFile=null;
+
+        log.info("Invoked startLoadTestFormTrace with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String testId = JsonPath.read(document, "$.test_id");
         if (testId == null) {

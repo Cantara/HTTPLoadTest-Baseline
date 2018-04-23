@@ -121,7 +121,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
                         }
                     }
-//            log.trace("Returned result: " + result);
+                    log.info("Returned result: W-{}.{} - {} ", loadTestResult.getTest_run_no(), writeCommandNo, result);
                     if (result == null || result.startsWith("StatusCode:")) {
                         loadTestResult.setTest_success(false);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
