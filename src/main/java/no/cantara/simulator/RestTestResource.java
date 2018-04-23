@@ -108,7 +108,8 @@ public class RestTestResource {
 
     private File getLatestDebugFile() {
         Pattern FILENAME_DATE_PATTERN = Pattern.compile(".*_.*_(.*?_.*?)\\..*");
-        File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
+        File debugFile = null;
+//        File debugFile = new File(System.getProperty("user.dir") + "/logs/debug_file.log");
 
         File folder = new File(System.getProperty("user.dir") + "/logs/");
         FilenameFilter beginsWith = (directory, filename) -> filename.startsWith("debug_file");
