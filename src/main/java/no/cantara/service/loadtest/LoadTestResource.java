@@ -9,6 +9,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import no.cantara.service.Main;
 import no.cantara.service.config.ConfigLoadTestResource;
+import no.cantara.service.health.HealthResource;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.loadtest.util.UnzipStream;
 import no.cantara.service.model.*;
@@ -31,6 +32,9 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import static no.cantara.service.Main.CONTEXT_PATH;
+import static no.cantara.service.config.ConfigLoadTestResource.CONFIG_PATH;
+import static no.cantara.service.config.ConfigLoadTestResource.backgroundImageURL;
+import static no.cantara.service.health.HealthResource.HEALTH_PATH;
 import static no.cantara.service.loadtest.LoadTestExecutorService.RESULT_FILE_PATH;
 import static no.cantara.simulator.RestTestResource.REST_PATH_DEBUG;
 import static no.cantara.util.Configuration.loadByName;
@@ -95,7 +99,7 @@ public class LoadTestResource {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response startLoadTestTrace(@RequestBody String json) {
-        log.trace("Invoked startLoadTest with {}", json);
+        log.trace("Invoked startLoadTestTrace with {}", json);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         String testId = JsonPath.read(document, "$.test_id");
         if (testId == null) {
@@ -258,9 +262,13 @@ public class LoadTestResource {
     @POST
     @Path("/form/read")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json) {
-        log.trace("Invoked updateReadTestSpecificationForm with {}", json);
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON + ";charset=utf-8"})
+    public Response updateReadTestSpecificationForm(@FormParam("jsonConfig") String json, @FormParam("htmlview") String htmlParam) {
+        log.trace("Invoked updateReadTestSpecificationForm with {}m html=", json, htmlParam);
+        boolean returnHTML = false;
+        if ("true".equalsIgnoreCase(htmlParam)) {
+            returnHTML = true;
+        }
 
         if (json.startsWith("FILE:")) {
             json = loadFromDiskByName(json.substring(5, json.length()));
@@ -272,7 +280,10 @@ public class LoadTestResource {
             List<TestSpecification> readTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
             });
             LoadTestExecutorService.setReadTestSpecificationList(readTestSpec);
-            return Response.ok(json).build();
+            if (returnHTML) {
+                return Response.ok(getHTMLStart() + json + getHTMLEnd()).build();
+            }
+            return Response.ok(json, MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             log.warn("/form/read Could not convert to Json {},\n {e}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -282,9 +293,13 @@ public class LoadTestResource {
     @POST
     @Path("/form/write")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json) {
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON + ";charset=utf-8"})
+    public Response updateWriteTestSpecificationForm(@FormParam("jsonConfig") String json, @FormParam("htmlview") String htmlParam) {
         log.trace("Invoked updateWriteTestSpecificationForm with {}", json);
+        boolean returnHTML = false;
+        if ("true".equalsIgnoreCase(htmlParam)) {
+            returnHTML = true;
+        }
 
         if (json.startsWith("FILE:")) {
             json = loadFromDiskByName(json.substring(5, json.length()));
@@ -296,7 +311,10 @@ public class LoadTestResource {
             List<TestSpecification> writeTestSpec = mapper.readValue(json, new TypeReference<List<TestSpecification>>() {
             });
             LoadTestExecutorService.setWriteTestSpecificationList(writeTestSpec);
-            return Response.ok(json).build();
+            if (returnHTML) {
+                return Response.ok(getHTMLStart() + json + getHTMLEnd()).build();
+            }
+            return Response.ok(json, MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             log.warn("/form/write Could not convert to Json {} \n{}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -306,16 +324,20 @@ public class LoadTestResource {
     @POST
     @Path("/form/benchmark")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response updateBenchmarkSpecificationForm(@FormParam("jsonConfig") String json) {
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON + ";charset=utf-8"})
+    public Response updateBenchmarkSpecificationForm(@FormParam("jsonConfig") String json, @FormParam("htmlview") String htmlParam) {
         log.trace("Invoked updateBenchmarkSpecificationForm with {}", json);
-
+        boolean returnHTML = false;
+        if ("true".equalsIgnoreCase(htmlParam)) {
+            returnHTML = true;
+        }
         try {
-
             LoadTestBenchmark loadTestBenchmark = mapper.readValue(json, LoadTestBenchmark.class);
-
             LoadTestResultUtil.setLoadTestBenchmark(loadTestBenchmark);
-            return Response.ok(json).build();
+            if (returnHTML) {
+                return Response.ok(getHTMLStart() + json + getHTMLEnd()).build();
+            }
+            return Response.ok(json, MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             log.warn("/form/benchmark Could not convert to Json {} \n{}", json, e);
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -328,11 +350,9 @@ public class LoadTestResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response updateSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
         log.trace("Invoked updateSelectedTestSpecificationForm with {}", testSpecificationNumber);
-
         String jsonResponse = "";
         Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
         try {
-
             for (String testSpecificationEntry : configuredTests.keySet()) {
                 if (testSpecificationEntry.contains(testSpecificationNumber + ".readfilename")) {
                     log.info("Trying Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
@@ -495,5 +515,28 @@ public class LoadTestResource {
         }
 
         return jsonResult;
+    }
+
+    private String getHTMLStart() {
+        return "<html>" +
+                "<head>\n" +
+                "  <meta charset=\"UTF-8\">\n" +
+                "</head>  " +
+                "<body background=\"" + backgroundImageURL + "\">\n" +
+                "  <h3>HTTPLoadTest - Setup Accepted</h3><br/>" +
+                "  <textarea readonly rows=\"40\" cols=\"100\">";
+    }
+
+    private String getHTMLEnd() {
+        return "  </textarea><br/>" +
+                "  <ul>" +
+                "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">LoadTestConfig</a></li>" +
+                "  <li><a href=\"" + CONTEXT_PATH + HEALTH_PATH + "\">Health</a></li>" +
+                "  </ul><br/><br/>" +
+
+                "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
+                "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
+                "  </body>" +
+                "</html>";
     }
 }

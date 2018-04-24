@@ -48,7 +48,7 @@ public class ConfigLoadTestResource {
     public static final String TEST_SPECIFICATION_ROOT_PATH = Configuration.getString("loadtest.testspecification.rootpath");  //./src";
     public static final String DEFAULT_LOAD_TEST_CONFIG = "loadtest_setup/configurations/DefaultLoadTestConfig.json";
 
-    private static String backgroundImageURL = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg";
+    public static String backgroundImageURL = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg";
     private static String backgroundImageURLLoadTest = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-HD-Wallpaper1.jpg";
     private static String backgroundImageURLDEBUG = "https://amazingpict.com/wp-content/uploads/2014/03/Light-Abstract-Background-Pictures.jpg";
 
@@ -167,7 +167,7 @@ public class ConfigLoadTestResource {
     @Path("/load")
     @GET
     public Response presentTestConfigConfigUI() {
-        log.trace("presentReadConfigUI");
+        log.trace("presentTestConfigConfigUI");
         String jsonconfig = "{}";
 
         if (jsonconfig == null || jsonconfig.length() < 20) {
@@ -345,6 +345,7 @@ public class ConfigLoadTestResource {
                     "        <select name=\"jsonConfig\">" +
                     "        " + optionString +
                     "        </select>" +
+                    "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                     "        <br/><br/>" +
                     "        <input type=\"submit\" value=\"Select\">" +
                     "    </form>" +
@@ -355,6 +356,7 @@ public class ConfigLoadTestResource {
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                 "        ReadTestSpecification:<br/>" +
                 "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonreadconfig + "</textarea><br/><br/>" +
+                "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
                 "\n" +
@@ -413,6 +415,7 @@ public class ConfigLoadTestResource {
                     "        <select name=\"jsonConfig\">" +
                     "        " + optionString +
                     "        </select>" +
+                    "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                     "        <br/><br/>" +
                     "        <input type=\"submit\" value=\"Select\">" +
                     "    </form>" +
@@ -424,6 +427,7 @@ public class ConfigLoadTestResource {
                         "        WriteTestSpecification:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\"><br/>" +
+                "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                         "    </form>\n" +
                         "\n" +
                         "  </body>" +
@@ -465,6 +469,7 @@ public class ConfigLoadTestResource {
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_BENCHMARK + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        LoadTestBenchmark:<br/>" +
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"20\" cols=\"80\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
+                        "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                         "        <input type=\"submit\"><br/>" +
                         "    </form>\n" +
                         "\n" +
@@ -503,12 +508,14 @@ public class ConfigLoadTestResource {
                         "        " + optionString +
                         "        </select>" +
                         "        <br/><br/>" +
+                        "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                         "        <input type=\"submit\">" +
                         "    </form>" +
                         "    <br/<<br/>" +
                         "    Choose file to upload<br>\n" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_ZIP + "\" method=\"post\" enctype=\"multipart/form-data\">" +
                         "        <input name=\"file\" id=\"filename\" type=\"file\" /><br><br>\n" +
+                        "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                         "        <button name=\"submit\" type=\"submit\">Upload</button>\n" +
                         "    </form>" +
                         "  <br/><br/>" +
