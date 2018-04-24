@@ -104,7 +104,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!command.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
-                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                             }
                             if (command.isResponseRejected()) {
                                 loadTestResult.setTest_deviation_flag(true);
@@ -116,7 +116,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!command.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
-                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 200) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                                loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                             }
                             if (command.isResponseRejected()) {
                                 loadTestResult.setTest_deviation_flag(true);
@@ -130,7 +130,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                     log.info("Returned result: R-{}.{} - {} ", loadTestResult.getTest_run_no(), readCommandNo, result);
                     if (result == null || result.startsWith("StatusCode:")) {
                         loadTestResult.setTest_success(false);
-                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + first150(result) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
+                        loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                     } else {
                         loadTestResult.setTest_success(true);
                         resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());

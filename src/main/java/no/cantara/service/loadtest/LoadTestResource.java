@@ -524,16 +524,15 @@ public class LoadTestResource {
                 "</head>  " +
                 "<body background=\"" + backgroundImageURL + "\">\n" +
                 "  <h3>HTTPLoadTest - Setup Accepted</h3><br/>" +
+                "  <ul>" +
+                "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">LoadTestConfig</a></li>" +
+                "  <li><a href=\"" + CONTEXT_PATH + HEALTH_PATH + "\">Health</a></li>" +
+                "  </ul><br/>" +
                 "  <textarea readonly rows=\"40\" cols=\"100\">";
     }
 
     private String getHTMLEnd() {
-        return "  </textarea><br/>" +
-                "  <ul>" +
-                "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">LoadTestConfig</a></li>" +
-                "  <li><a href=\"" + CONTEXT_PATH + HEALTH_PATH + "\">Health</a></li>" +
-                "  </ul><br/><br/>" +
-
+        return "  </textarea><br/><br/>" +
                 "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                 "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
                 "  </body>" +
