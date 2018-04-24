@@ -130,7 +130,7 @@ public class LoadTestResource {
 
         try {
             UnzipStream.unzip(inputStream);
-            log.debug(">>>>> upload size of the file in byte: ");
+            log.info(">>>>> {} - uploaded, size of the file in byte: {}", fileDetail.getName(), fileDetail.getSize());
 
         } catch (IOException e) {
             log.error("Exception in receiving and handling zip-file with specifications", e);
@@ -138,7 +138,7 @@ public class LoadTestResource {
                            .entity("Can not create destination folder on server")
                            .build();
         }
-        return Response.status(200).entity("ZipFile successfully added ").build();
+        return Response.status(200).entity("ZipFile successfully added\n").build();
 
     }
 
