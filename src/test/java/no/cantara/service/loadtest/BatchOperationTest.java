@@ -43,7 +43,7 @@ public class BatchOperationTest {
         try {
             String command = "curl -u " +
                     Configuration.getString("login.admin.user") + ":" + Configuration.getString("login.admin.password") +
-                    " -F \"file=@/src/cantara/HTTPLoadTest-Baseline/src/test/resources/loadtest_setup.zip;filename=loadtest_setup.zip\" "
+                    " -F \"file=@./src/test/resources/loadtest_setup.zip;filename=loadtest_setup.zip\" "
                     + testURL + "/loadTest/zip";
             log.info("Calling: \n  \"{}\"", command);
             p = Runtime.getRuntime().exec(command);
