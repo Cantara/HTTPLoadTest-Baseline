@@ -9,7 +9,7 @@ public class UnzipStreamTest {
 
     @Test
     public void testUnzipFilename() throws Exception {
-        String filename = "./src/test/resources/specifications.zip";
+        String filename = "./src/test/resources/loadtest_setup.zip";
         FileInputStream fileInputStream = new FileInputStream(filename);
 
         UnzipStream.unzip(fileInputStream);

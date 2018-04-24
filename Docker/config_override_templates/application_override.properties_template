@@ -6,7 +6,7 @@ login.admin.user=admin
 login.admin.password=adminservice
 
 # let HTTPLoadTest locate read/write TestSpecifications on the filesystem
-loadtest.testspecification.rootpath=./specifications
+loadtest.testspecification.rootpath=./loadtest_setup
 loadtest.testspecification.filematcher=*TestConfig*.json
 loadtest.testspecification.read.filematcher=*ReadTest*.json
 loadtest.testspecification.write.filematcher=*WriteTest*.json

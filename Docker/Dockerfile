@@ -35,7 +35,8 @@ RUN chmod 755 $HOME/*.sh
 RUN mkdir $HOME/logs
 RUN mkdir $HOME/db
 COPY config_override_templates/* $HOME/config_override/
-COPY specifications/* $HOME/specifications/
+COPY loadtest_setup/* $HOME/loadtest_setup/
+COPY scripts/* $HOME/
 
 
 ##Configure crontab

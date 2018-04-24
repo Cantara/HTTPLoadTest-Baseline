@@ -1,1 +1,1 @@
-* *  *   *   *     /home/HTTPLoadTest-baseline/update-service.sh >> /var/log/cron.log 2>&1 && /home/HTTPLoadTest-baseline/stop-service.sh >> /var/log/cron.log 2>&1
+2 2  *   *   *     /home/HTTPLoadTest-baseline/update-service.sh >> /var/log/cron.log 2>&1 && /home/HTTPLoadTest-baseline/stop-service.sh >> /var/log/cron.log 2>&1
