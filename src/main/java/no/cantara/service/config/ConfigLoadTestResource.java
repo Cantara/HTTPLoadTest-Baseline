@@ -84,7 +84,7 @@ public class ConfigLoadTestResource {
                         "  &nbsp;&nbsp;<b><a href=\"" + CONTEXT_PATH + CONFIG_PATH_TRACE + "\">Switch to DEBUG mode</a></b><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"120\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
                         "    </form>" +
                         "  <ul>" +
@@ -143,7 +143,7 @@ public class ConfigLoadTestResource {
                         "  &nbsp;&nbsp;<b><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">Switch to LoadTest mode</a></b><br/><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>" +
                         "        LoadTestConfig:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"120\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and DEBUG this LoadTest\">" +
                         "    </form>" +
                         "&nbsp;If DEBUG display a short log, just re-run the test in DEBUG mode." +
@@ -221,7 +221,7 @@ public class ConfigLoadTestResource {
         response = response +
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                 "        LoadTestConfig:<br/>" +
-                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"30\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"30\" cols=\"120\">" + jsonconfig + "</textarea><br/><br/>" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
                 "\n" +
@@ -287,7 +287,7 @@ public class ConfigLoadTestResource {
         response = response +
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_LOAD_TRACE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                 "        LoadTestConfig:<br/>" +
-                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"30\" cols=\"80\">" + jsonconfig + "</textarea><br/><br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"30\" cols=\"120\">" + jsonconfig + "</textarea><br/><br/>" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
                 "\n" +
@@ -355,7 +355,7 @@ public class ConfigLoadTestResource {
         response = response +
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_READ + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                 "        ReadTestSpecification:<br/>" +
-                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonreadconfig + "</textarea><br/><br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"120\">" + jsonreadconfig + "</textarea><br/><br/>" +
                 "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                 "        <input type=\"submit\">" +
                 "    </form>\n" +
@@ -425,7 +425,7 @@ public class ConfigLoadTestResource {
 
                 "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_WRITE + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        WriteTestSpecification:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"80\">" + jsonwriteconfig + "</textarea><br/><br/>" +
+                "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"60\" cols=\"120\">" + jsonwriteconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\"><br/>" +
                 "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                         "    </form>\n" +
@@ -468,7 +468,7 @@ public class ConfigLoadTestResource {
                         "  <h3>HTTPLoadTest - LoadTestBenchmark Configuration</h3><br/>" +
                         "    <form action=\"" + CONTEXT_PATH + APPLICATION_PATH_FORM_BENCHMARK + "\" method=\"POST\" id=\"jsonConfig\"'>\n" +
                         "        LoadTestBenchmark:<br/>" +
-                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"20\" cols=\"80\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
+                        "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"20\" cols=\"120\">" + jsonbenchmarkconfig + "</textarea><br/><br/>" +
                         "        <input type=\"hidden\" name=\"htmlview\" value=\"true\">" +
                         "        <input type=\"submit\"><br/>" +
                         "    </form>\n" +
