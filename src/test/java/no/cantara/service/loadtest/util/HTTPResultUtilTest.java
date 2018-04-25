@@ -98,4 +98,15 @@ public class HTTPResultUtilTest {
         log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
 
     }
+
+    @Test
+    public void testJsonParseOfRealWorldJson() throws Exception {
+        String json = "{\"commitData\":[{\"href\":\"http://thinkehr-app.thinkehr-cluster04.svc.cluster.local:8081/rest/v1/composition/924dd513-e98e-4042-bcbb-0fd5255eca9f::default::1\",\"id\":\"924dd513-e98e-4042-bcbb-0fd5255eca9f::default::1\",\"action\":\"CREATE\"}]}";
+
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#id", "$..id");
+        Map parseResults = HTTPResultUtil.parse(json, regexpSelectorMap);
+
+        log.trace("Resulting values {}", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parseResults));
+    }
 }

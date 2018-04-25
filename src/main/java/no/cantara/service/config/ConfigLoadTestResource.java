@@ -87,14 +87,15 @@ public class ConfigLoadTestResource {
                         "               <textarea name=\"jsonConfig\" form=\"jsonConfig\" rows=\"18\" cols=\"120\">" + jsonconfig + "</textarea><br/><br/>" +
                         "        <input type=\"submit\" value=\"Submit and start this LoadTest\">" +
                         "    </form>" +
+                        "  <ol>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Select LoadTestConfig</a></li>" +
+                        "  </ol>" +
                         "  <ul>" +
-                        "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
-                        "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
-                        "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
-                        "  <li>4. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD + "\">Select LoadTestConfig</a></li>" +
-                        "  <br/>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select or upload configured TestSpecification set</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select or upload configured TestSpecification set</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
@@ -147,14 +148,15 @@ public class ConfigLoadTestResource {
                         "        <input type=\"submit\" value=\"Submit and DEBUG this LoadTest\">" +
                         "    </form>" +
                         "&nbsp;If DEBUG display a short log, just re-run the test in DEBUG mode." +
+                        "  <ol>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD_TRACE + "\">Select LoadTestConfig </a></li>" +
+                        "  </ol>" +
                         "  <ul>" +
-                        "  <li>1. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_READ + "\">Configure Read TestSpecification</a></li>" +
-                        "  <li>2. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_WRITE + "\">Configure Write TestSpecification</a></li>" +
-                        "  <li>3. <a href=\"" + CONTEXT_PATH + CONFIG_PATH_LOAD_TRACE + "\">Select LoadTestConfig </a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
-                        "  <br/>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
-                        "  <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select or upload configured TestSpecification set</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + RestTestResource.REST_PATH + "/debug" + "\">Debug last LoadTest</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_BENCHMARK + "\">Configure LoadTestBenchmark</a></li>" +
+                        "    <li><a href=\"" + CONTEXT_PATH + CONFIG_PATH_SELECT_TESTSPECIFICATIONSET + "\">Select or upload configured TestSpecification set</a></li>" +
                         "  </ul><br/><br/>" +
                         "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
                         "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +

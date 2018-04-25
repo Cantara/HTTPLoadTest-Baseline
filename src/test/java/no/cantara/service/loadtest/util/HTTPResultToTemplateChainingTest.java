@@ -115,4 +115,18 @@ public class HTTPResultToTemplateChainingTest {
 
         assertTrue("d1a11d8b-06b5-4723-936f-17aa070ff16f".equalsIgnoreCase(result));
     }
+
+
+    @Test
+    public void testFizzleRealSubstring() throws Exception {
+        String json = "{\"commitData\":[{\"href\":\"http://thinkehr-app.thinkehr-cluster04.svc.cluster.local:8081/rest/v1/composition/924dd513-e98e-4042-bcbb-0fd5255eca9f::default::1\",\"id\":\"924dd513-e98e-4042-bcbb-0fd5255eca9f::default::1\",\"action\":\"CREATE\"}]}";
+
+        Map<String, String> regexpSelectorMap = new HashMap<>();
+        regexpSelectorMap.put("#processId", "$..id");
+        Map parseResults = HTTPResultUtil.parse(json, regexpSelectorMap);
+
+        String result = TemplateUtil.updateTemplateWithValuesFromMap("#fizzle(substring(3,46):#processId)", parseResults);
+
+        assertTrue("d1a11d8b-06b5-4723-936f-17aa070ff16f".equalsIgnoreCase(result));
+    }
 }
