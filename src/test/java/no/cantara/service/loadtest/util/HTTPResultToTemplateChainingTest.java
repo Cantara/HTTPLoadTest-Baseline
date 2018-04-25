@@ -127,6 +127,6 @@ public class HTTPResultToTemplateChainingTest {
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap("#fizzle(substring(3,46):#processId)", parseResults);
 
-        assertTrue("d1a11d8b-06b5-4723-936f-17aa070ff16f".equalsIgnoreCase(result));
+        assertTrue("924dd513-e98e-4042-bcbb-0fd5255eca9f".equalsIgnoreCase(result));
     }
 }
