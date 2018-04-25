@@ -347,9 +347,14 @@ public class LoadTestResource {
     @POST
     @Path("/form/select")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED + ";charset=utf-8")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response updateSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber) {
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON + ";charset=utf-8"})
+    public Response updateSelectedTestSpecificationForm(@FormParam("jsonConfig") String testSpecificationNumber, @FormParam("htmlview") String htmlParam) {
         log.trace("Invoked updateSelectedTestSpecificationForm with {}", testSpecificationNumber);
+        boolean returnHTML = false;
+        if ("true".equalsIgnoreCase(htmlParam)) {
+            returnHTML = true;
+        }
+
         String jsonResponse = "";
         Map<String, String> configuredTests = TestSpecificationLoader.getPersistedTestSpecificationFilenameMap();
         try {
@@ -381,7 +386,10 @@ public class LoadTestResource {
                     log.info("Loaded Configured TestSpecification: {}, filename:{}", configuredTests.get(testSpecificationEntry), configuredTests.get(testSpecificationEntry));
                 }
             }
-            return Response.ok(jsonResponse).build();
+            if (returnHTML) {
+                return Response.ok(getHTMLStart() + jsonResponse + getHTMLEnd()).build();
+            }
+            return Response.ok(jsonResponse, MediaType.APPLICATION_JSON_TYPE).build();
         } catch (Exception e) {
             log.warn("Could not convert to Json, selected preconfigured set number {} \n{}", testSpecificationNumber.toString(), e);
             return Response.status(Response.Status.BAD_REQUEST).build();
