@@ -161,8 +161,7 @@ public class LoadTestResource {
 
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
-            return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
-//            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
+            return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + APPLICATION_PATH_STATUS + "?htmlview=true")).build();
         } catch (Exception e) {
             log.warn("/form Could not convert to Json {}, e", json.toString(), e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -200,7 +199,6 @@ public class LoadTestResource {
             LoadTestConfig loadTestConfig = mapper.readValue(json, LoadTestConfig.class);
             LoadTestExecutorService.executeLoadTest(loadTestConfig, true);
             return Response.status(Response.Status.FOUND).header("Location", (CONTEXT_PATH + REST_PATH_DEBUG)).build();
-//            return Response.temporaryRedirect(new java.net.URI(CONTEXT_PATH + APPLICATION_PATH_STATUS)).build();
         } catch (Exception e) {
             log.warn("/form Could not convert to Json {}, e", json.toString(), e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -398,9 +396,27 @@ public class LoadTestResource {
 
     @GET
     @Path("/status")
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response getAllLoadTestsStatusJson() {
-        return getAllLoadTests();
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON + ";charset=utf-8"})
+    public Response getAllLoadTestsStatusJson(@QueryParam("htmlview") String htmlParam) {
+        boolean returnHTML = false;
+        if ("true".equalsIgnoreCase(htmlParam)) {
+            returnHTML = true;
+        }
+        String jsonResponse = ""; //LoadTestExecutorService.printStats(LoadTestExecutorService.getResultListSnapshot());
+        try {
+            jsonResponse = jsonResponse + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(LoadTestExecutorService.getLatestResultListSnapshot());
+        } catch (JsonProcessingException e) {
+            log.warn("Could not convert to Json {}", loadTests);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        String response = String.format("{ \"HTTPLoadTest-status\": \n\"%s\", \n\n\"test-run-results\": %s}",
+                LoadTestResultUtil.printStats(LoadTestExecutorService.getResultListSnapshot(), true), jsonResponse);  // force statistics
+
+        if (returnHTML) {
+
+            return Response.ok(getHTMLStartPre() + response + getHTMLEndPre()).header("Refresh", "5").build();
+        }
+        return Response.ok(response, MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     @GET
@@ -539,6 +555,20 @@ public class LoadTestResource {
                 "  <textarea readonly rows=\"40\" cols=\"100\">";
     }
 
+    private String getHTMLStartPre() {
+        return "<html>" +
+                "<head>\n" +
+                "  <meta charset=\"UTF-8\">\n" +
+                "</head>  " +
+                "<body background=\"" + backgroundImageURL + "\">\n" +
+                "  <h3>HTTPLoadTest - Status</h3><br/>" +
+                "  <ul>" +
+                "  <li><b><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">LoadTestConfig</a></b></li>" +
+                "  <li><a href=\"" + CONTEXT_PATH + HEALTH_PATH + "\">Health</a></li>" +
+                "  </ul><br/>" +
+                "  <pre>";
+    }
+
     private String getHTMLEnd() {
         return "  </textarea><br/><br/>" +
                 "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
@@ -546,4 +576,13 @@ public class LoadTestResource {
                 "  </body>" +
                 "</html>";
     }
+
+    private String getHTMLEndPre() {
+        return "  </pre><br/><br/>" +
+                "  <a href=\"https://github.com/Cantara/HTTPLoadTest-Baseline\">Documentation and SourceCode</a><br/><br/>" +
+                "  HTTPLoadTest-Baseline " + HealthResource.getVersion() + "<br/" +
+                "  </body>" +
+                "</html>";
+    }
+
 }
