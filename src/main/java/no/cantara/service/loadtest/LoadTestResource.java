@@ -413,8 +413,11 @@ public class LoadTestResource {
                 LoadTestResultUtil.printStats(LoadTestExecutorService.getResultListSnapshot(), true), jsonResponse);  // force statistics
 
         if (returnHTML) {
+            if (LoadTestExecutorService.isRunning()) {
+                return Response.ok(getHTMLStartPre() + response + getHTMLEndPre()).header("Refresh", "5").build();
 
-            return Response.ok(getHTMLStartPre() + response + getHTMLEndPre()).header("Refresh", "5").build();
+            }
+            return Response.ok(getHTMLStartPre() + response + getHTMLEndPre()).build();
         }
         return Response.ok(response, MediaType.APPLICATION_JSON_TYPE).build();
     }
