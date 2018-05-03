@@ -7,7 +7,8 @@
     "command_timeout_milliseconds": 200,
     "command_template": "FILE:./loadtest_setup/specifications/write/templates/write_resttestwrite_payload_#fizzle(optionvalue:#numbers).json",
     "command_replacement_map": {
-      "#numbers": "1, 2, 3, 4, 4"
+      "#numbers": "1, 2, 3, 4, 4",
+      "#PATH": "minapp/test/#fizzle(optionvalue:#numbers)/something"
     },
     "command_response_map": {
       "#rest_results": "$..entity"
