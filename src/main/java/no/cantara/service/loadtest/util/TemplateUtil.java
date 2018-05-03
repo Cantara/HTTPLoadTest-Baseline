@@ -29,9 +29,23 @@ public class TemplateUtil {
         // We do variable replacements first
         if (templatereplacementMap != null) {
             for (String key : templatereplacementMap.keySet()) {
+                String resolvedValue = null;
+                for (String fizzlekey : fizzleKeyList) {
+                    String expression = templatereplacementMap.get(key);
+                    if (expression.contains(fizzlekey)) {
+                        resolvedValue = fizzleTemplate(expression, fizzlekey);
+                    }
+                }
                 if (template.contains(key)) {
-                    template = template.replaceAll(key, templatereplacementMap.get(key));
-                    log.trace("Replaced {} with {}", key, templatereplacementMap.get(key));
+                    if (resolvedValue != null) {
+                        template = template.replaceAll(key, resolvedValue);
+                        log.trace("Replaced {} with {}", key, resolvedValue);
+
+                    } else {
+                        template = template.replaceAll(key, templatereplacementMap.get(key));
+                        log.trace("Replaced {} with {}", key, templatereplacementMap.get(key));
+
+                    }
                 }
             }
         }
