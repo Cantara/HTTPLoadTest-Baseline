@@ -1,0 +1,17 @@
+[
+  {
+    "command_url": "http://localhost:8086/HTTPLoadTest-baseline/resttest/#PATH",
+    "command_contenttype": "application/json;charset=UTF-8",
+    "command_http_authstring": "",
+    "command_http_post": true,
+    "command_timeout_milliseconds": 200,
+    "command_template": "FILE:./loadtest_setup/specifications/write/templates/write_resttestwrite_payload_#fizzle(optionvalue:#numbers).json",
+    "command_replacement_map": {
+      "#numbers": "1, 2, 3, 4, 4"
+    },
+    "command_response_map": {
+      "#rest_results": "$..entity"
+    }
+  }
+]
+
