@@ -22,7 +22,7 @@ public class TemplateUtil {
         add("#fizzle(substring");
     }};
 
-    public static String updateTemplateWithValuesFromMap(String template, Map<String, String> templatereplacementMap) {
+    public static synchronized String updateTemplateWithValuesFromMap(String template, Map<String, String> templatereplacementMap) {
         if (template == null) {
             return "";
         }
