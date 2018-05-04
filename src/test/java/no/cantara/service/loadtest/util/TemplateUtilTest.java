@@ -119,10 +119,23 @@ public class TemplateUtilTest {
 
     }
 
+    @Test
+    public void testVariableUtilWithSetFizzling2() {
+        replacements.put("#BrukerID", "Petter");
+        replacements.put("#Passord", "#BrukerID");
+        String template = "Text to be replaced #fizzle(option:#Passord) before this";
+
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
+        log.trace("Fizzled result: {}", result);
+        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
+
+
+    }
+
 
     @Test
     public void loadTemplateFile() {
-        String jsonContent = Configuration.convertStreamToString(Configuration.loadByName("loadtest_setup/specifications/write/template/PSKY-Alert-WriteEntry.json"));
+        String jsonContent = Configuration.convertStreamToString(Configuration.loadByName("loadtest_setup/specifications/write/templates/write_resttestwrite_payload_1.json"));
         System.out.println(jsonContent);
     }
 

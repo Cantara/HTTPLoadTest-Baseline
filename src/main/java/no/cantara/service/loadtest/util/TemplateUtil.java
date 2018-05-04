@@ -34,6 +34,8 @@ public class TemplateUtil {
                     String expression = templatereplacementMap.get(key);
                     if (expression.contains(fizzlekey)) {
                         resolvedValue = fizzleTemplate(expression, fizzlekey);
+                    } else {
+                        resolvedValue = expression.replaceAll(key, expression);
                     }
                 }
                 if (template.contains(key)) {
@@ -80,7 +82,7 @@ public class TemplateUtil {
             return frontTemplate + Fizzler.getRandomHEXCharacter(fizzSize) + backTemplate;
         }
         if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(5))) {
-            return frontTemplate + Fizzler.getRandomSetValue(backtemp.substring(0, backtemp.indexOf(")") - 1)) + backTemplate;
+            return frontTemplate + Fizzler.getRandomSetValue(backtemp.substring(0, backtemp.indexOf(")"))) + backTemplate;
         }
         if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(6))) {
             return frontTemplate + Fizzler.getRandomSetValueAsString(backtemp.substring(0, backtemp.indexOf(")"))) + backTemplate;
