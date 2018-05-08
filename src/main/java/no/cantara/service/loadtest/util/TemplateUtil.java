@@ -34,6 +34,7 @@ public class TemplateUtil {
                     String expression = templatereplacementMap.get(key);
                     if (expression.contains(fizzlekey)) {
                         resolvedValue = fizzleTemplate(expression, fizzlekey);
+                        break;
                     } else {
                         resolvedValue = expression.replaceAll(key, expression);
                     }

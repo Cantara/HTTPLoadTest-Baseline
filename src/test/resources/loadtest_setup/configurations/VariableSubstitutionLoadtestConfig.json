@@ -1,0 +1,12 @@
+{
+  "test_id": "HTTPLoadTest-VariableSubstitutionExample",
+  "test_name": "Example loadtest, using internal /health for read and write example",
+  "test_no_of_threads": 1,
+  "test_read_write_ratio": 20,
+  "test_sleep_in_ms": 50,
+  "test_randomize_sleeptime": true,
+  "test_duration_in_seconds": 10,
+  "test_global_variables_map": {
+    "#selectedNumber": "#fizzle(option:#1, 2, 3, 4, 5)"
+  }
+}

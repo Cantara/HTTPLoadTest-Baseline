@@ -110,11 +110,13 @@ public class TemplateUtilTest {
     public void testVariableUtilWithSetFizzling() {
         replacements.put("#BrukerID", "#fizzle(option:yes, no, here, there)");
         replacements.put("#Passord", "TestPassord");
-        String template = "Text to be replaced #fizzle(option:#BrukerID) before this";
+        String template = "Text to be replaced #BrukerID before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
+        assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
+        assertTrue(!result.contains("#BrukerID"));
+        assertTrue(!result.contains("#fizzle"));
 
 
     }
@@ -128,7 +130,9 @@ public class TemplateUtilTest {
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
         log.trace("Fizzled result: {}", result);
         assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-
+        assertTrue(result.contains("Petter"));
+        assertTrue(!result.contains("#BrukerID"));
+        assertTrue(!result.contains("#fizzle"));
 
     }
 

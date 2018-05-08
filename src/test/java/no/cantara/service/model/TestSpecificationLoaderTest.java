@@ -43,9 +43,9 @@ public class TestSpecificationLoaderTest {
 
     @Test
     public void testCommandPostFromTestSpecification() throws Exception {
-
         ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("loadtest_setup/specifications/read/TestReadConfigReadTestSpecification.json").getFile());
+
+        File file = new File(classLoader.getResource("loadtest_setup/specifications/read/ResolveVariableReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();
@@ -62,10 +62,31 @@ public class TestSpecificationLoaderTest {
         Map<String, String> globalVariableMap = TestSpecificationLoader.getGlobal_command_replacement_map();
 
         for (String globalVariable : globalVariableMap.keySet()) {
-                log.trace("Loaded  global variable: {} - value:{}",globalVariable, globalVariableMap.get(globalVariable));
-            }
-
+            log.trace("Loaded  global variable: {} - value:{}", globalVariable, globalVariableMap.get(globalVariable));
         }
 
+    }
+
+    @Test
+    public void test_testSpecificationWithLotOfReplacements() throws Exception {
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream file = no.cantara.util.Configuration.loadByName("loadtest_setup/configurations/VariableSubstitutionLoadtestConfig.json");
+        LoadTestConfig loadTestConfig = mapper.readValue(file, LoadTestConfig.class);
+        File file2 = new File(classLoader.getResource("loadtest_setup/specifications/read/ResolveVariableReadTestSpecification.json").getFile());
+        List<TestSpecification> readTestSpec = mapper.readValue(file2, new TypeReference<List<TestSpecification>>() {
+        });
+        Map<String, String> resolvedResultVariables = new HashMap<>();
+        Map<String, String> inheritedVariables = new HashMap<>();
+
+        for (TestSpecification testSpecificationo : readTestSpec) {
+            TestSpecification testSpecification = testSpecificationo.clone();
+            inheritedVariables = testSpecification.getCommand_replacement_map();
+            testSpecification.resolveVariables(loadTestConfig.getTest_global_variables_map(), inheritedVariables, resolvedResultVariables);
+            inheritedVariables = testSpecification.getCommand_replacement_map();
+            assertTrue(testSpecificationo.getCommand_url().length() > 0);
+
+
+        }
+    }
 
 }
