@@ -80,7 +80,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
 
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
         Map<String, String> resolvedResultVariables = new HashMap<>();
-        Map<String, String> inheritedVariables = new HashMap<>();
+        Map<String, String> inheritedVariables = loadTestConfig.getTest_global_variables_map();
 
         int writeCommandNo = 1;
         for (TestSpecification testSpecificationo : testSpecificationList) {
@@ -88,7 +88,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                 TestSpecification testSpecification = testSpecificationo.clone();
 
                 testSpecification.resolveVariables(loadTestConfig.getTest_global_variables_map(), inheritedVariables, resolvedResultVariables);
-                inheritedVariables = testSpecification.getCommand_replacement_map();
+                inheritedVariables.putAll(testSpecification.getCommand_replacement_map());
 
                 if (testSpecification.getCommand_url().length() > 0) {
                     log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());

@@ -76,11 +76,11 @@ public class TestSpecificationLoaderTest {
         List<TestSpecification> readTestSpec = mapper.readValue(file2, new TypeReference<List<TestSpecification>>() {
         });
         Map<String, String> resolvedResultVariables = new HashMap<>();
-        Map<String, String> inheritedVariables = new HashMap<>();
+        Map<String, String> inheritedVariables = loadTestConfig.getTest_global_variables_map();
 
         for (TestSpecification testSpecificationo : readTestSpec) {
             TestSpecification testSpecification = testSpecificationo.clone();
-            inheritedVariables = testSpecification.getCommand_replacement_map();
+            inheritedVariables.putAll(testSpecification.getCommand_replacement_map());
             testSpecification.resolveVariables(loadTestConfig.getTest_global_variables_map(), inheritedVariables, resolvedResultVariables);
             inheritedVariables = testSpecification.getCommand_replacement_map();
             assertTrue(testSpecificationo.getCommand_url().length() > 0);
