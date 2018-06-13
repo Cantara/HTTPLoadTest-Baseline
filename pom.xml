@@ -52,7 +52,7 @@
         <jackson.version>2.9.5</jackson.version>
         <jersey.version>2.26</jersey.version>
         <jetty.version>9.4.9.v20180320</jetty.version>
-        <spring.version>5.0.6.RELEASE</spring.version>
+        <spring.version>5.0.7.RELEASE</spring.version>
         <slf4j.version>1.7.25</slf4j.version>
         <hystrix.version>1.5.12</hystrix.version>
         <maven.javadoc.skip>true</maven.javadoc.skip>
