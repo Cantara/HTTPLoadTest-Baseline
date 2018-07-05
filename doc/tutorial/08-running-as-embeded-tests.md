@@ -1,7 +1,7 @@
 
-### HTTPLoadTest, embeding loadtests
+### HTTPLoadTest, embedding loadtests
 
-Belov is an example from someone embedding HTTPLoadtest in their Java (testng) tests.
+Belov is an example from someone embedding HTTPLoadtest in their Java tests (using TestNG) .
 
 ```java
 @Listeners(TestServerListener.class)
