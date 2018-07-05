@@ -38,7 +38,8 @@ public class InMemoryLoadtest {
          */
         System.out.println(testResult);
     }
-}```
+}
+```
 
 
 * With your automation completed, it's time to [explore advanced topics and use of HTTPLoadTest](./09-advanced-topics.md).
