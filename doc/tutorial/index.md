@@ -16,6 +16,7 @@ codebase and extensibility features.
 5. [Specifying the Load](05-loadtest-config.md)
 6. [Running and establishing LoadTest benchmarks](06-benchmarks.md)
 7. [Running LoadTests from CI servers](07-running-from-CI.md)
-8. [Advanced Topics](08-advanced-topics.md)
+8. [Embedding loadtests](08-running-as-embedded-tests.md)
+9. [Advanced Topics](09-advanced-topics.md)
 
 ![The flow of LoadTest investments](https://github.com/Cantara/HTTPLoadTest-Baseline/raw/master/images/HTTPLoadTest-FullProcessFlow.png)

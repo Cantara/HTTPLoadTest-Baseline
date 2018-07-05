@@ -16,5 +16,6 @@ cat runstatus
 ```
 
 
-* With your automation completed, it's time to [explore advanced topics and use of HTTPLoadTest](./0-advanced-topics.md).
-# Example of embedding Httploadtest in your unit-tests
+* If you want to embed the Loadtests in your normal maven test, let us take a look at how that might be done [example of embedding Loadtest in maven test](./08-running-as-embedded-tests.md).
+* With your automation completed, it's time to [explore advanced topics and use of HTTPLoadTest](./09-advanced-topics.md).
+
