@@ -81,6 +81,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
         Map<String, String> resolvedResultVariables = new HashMap<>();
         Map<String, String> inheritedVariables = loadTestConfig.getTest_global_variables_map();
 
+        long commandDuration = -2;
         int readCommandNo = 1;
         for (TestSpecification testSpecificationo : testSpecificationList) {
             try {
@@ -101,6 +102,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                         if (testSpecification.isCommand_http_post()) {
                             CommandPostFromTestSpecification postcommand = new CommandPostFromTestSpecification(testSpecification);
                             result = postcommand.execute();
+                            commandDuration = postcommand.getRequestDurationMs();
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!postcommand.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
@@ -113,6 +115,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                         } else {
                             CommandGetFromTestSpecification getcommand = new CommandGetFromTestSpecification(testSpecification);
                             result = getcommand.execute();
+                            commandDuration = getcommand.getRequestDurationMs();
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!getcommand.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
@@ -149,7 +152,13 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
             }
         }
 
-        loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
+        if (commandDuration < 0) {
+            log.warn("commandDuration: {}, using fallback", commandDuration);
+            // fallback to include test-bench processing overhead as part of measured duration
+            commandDuration = Long.valueOf(System.currentTimeMillis() - startTime);
+        }
+
+        loadTestResult.setTest_duration(commandDuration);
         logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
         return loadTestResult;

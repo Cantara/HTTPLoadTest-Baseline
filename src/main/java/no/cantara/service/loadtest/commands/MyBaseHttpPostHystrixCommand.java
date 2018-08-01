@@ -23,6 +23,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     protected URI serviceUri;
     protected String TAG = "";
     protected HttpRequest request;
+    protected long requestDurationMs = -1;
 
     private static HystrixThreadPoolProperties.Setter threadProperties;
 
@@ -38,7 +39,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     protected MyBaseHttpPostHystrixCommand(URI serviceUri, String hystrixGroupKey, int hystrixExecutionTimeOut) {
         super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)).
                 andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-                                                                     .withExecutionTimeoutInMilliseconds(hystrixExecutionTimeOut)));
+                        .withExecutionTimeoutInMilliseconds(hystrixExecutionTimeOut)));
         init(serviceUri, hystrixGroupKey);
     }
 
@@ -83,15 +84,22 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
             request = dealWithRequestBeforeSend(request);
 
-            if (getFormParameters() != null && !getFormParameters().isEmpty()) {
-                request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
-                request.form(getFormParameters());
+            int statusCode;
+            long startTime = System.nanoTime();
+            try {
+                if (getFormParameters() != null && !getFormParameters().isEmpty()) {
+                    request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
+                    startTime = System.nanoTime(); // improve duration accuracy
+                    request.form(getFormParameters());
+                }
+
+                responseBody = request.bytes();
+                statusCode = request.code();
+            } finally {
+                requestDurationMs = Math.round((System.nanoTime() - startTime) / 1000000.0);
             }
 
-
-            responseBody = request.bytes();
             byte[] responseBodyCopy = responseBody.clone();
-            int statusCode = request.code();
             String responseAsText = StringConv.UTF8(responseBodyCopy);
             if (responseBodyCopy.length > 0) {
                 log.trace("StringConv: {}", responseAsText);
@@ -166,6 +174,10 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
     public byte[] getResponseBodyAsByteArray() {
         return responseBody.clone();
+    }
+
+    public long getRequestDurationMs() {
+        return requestDurationMs;
     }
 }
 

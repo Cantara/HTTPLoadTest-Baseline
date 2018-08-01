@@ -20,6 +20,7 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
     protected URI serviceUri;
     protected String TAG = "";
     protected HttpRequest request;
+    protected long requestDurationMs = -1;
 
     private static HystrixThreadPoolProperties.Setter threadProperties;
 
@@ -78,18 +79,24 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
 //            request.trustAllHosts();
             request.followRedirects(false);
 
-
-            if (getFormParameters() != null && !getFormParameters().isEmpty()) {
-                request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
-                request.form(getFormParameters());
-            }
-
             request = dealWithRequestBeforeSend(request);
 
+            int statusCode;
+            long startTime = System.nanoTime();
+            try {
+                if (getFormParameters() != null && !getFormParameters().isEmpty()) {
+                    request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
+                    startTime = System.nanoTime(); // improve duration accuracy
+                    request.form(getFormParameters());
+                }
 
-            responseBody = request.bytes();
+                responseBody = request.bytes();
+                statusCode = request.code();
+            } finally {
+                requestDurationMs = Math.round((System.nanoTime() - startTime) / 1000000.0);
+            }
+
             String location = "";
-            int statusCode = request.code();
             String responseAsText = StringConv.UTF8(responseBody);
             if (statusCode == 302) {
                 location = request.getConnection().getHeaderField("Location");
@@ -165,5 +172,9 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
 
     public byte[] getResponseBodyAsByteArray() {
         return responseBody;
+    }
+
+    public long getRequestDurationMs() {
+        return requestDurationMs;
     }
 }
