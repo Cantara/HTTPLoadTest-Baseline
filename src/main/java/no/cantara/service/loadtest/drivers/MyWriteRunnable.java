@@ -99,8 +99,11 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                     String result;
                     if (testSpecification.isCommand_http_post()) {
                         CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+                        long start = System.nanoTime();
                         result = command.execute();
+                        long duration = System.nanoTime() - start;
                         commandDuration = command.getRequestDurationMs();
+                        loadTestResult.setCommand_overhead(Math.round(duration / 1000000.0 - commandDuration));
                         log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
@@ -112,8 +115,11 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         }
                     } else {
                         CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
+                        long start = System.nanoTime();
                         result = command.execute();
+                        long duration = System.nanoTime() - start;
                         commandDuration = command.getRequestDurationMs();
+                        loadTestResult.setCommand_overhead(Math.round(duration / 1000000.0 - commandDuration));
                         log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);

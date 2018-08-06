@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"test_id", "test_name", "test_run_no", "test_duration", "test_success", "test_deviation_flag", "test_tags"})
+@JsonPropertyOrder({"test_id", "test_name", "test_run_no", "test_duration", "command_overhead", "test_success", "test_deviation_flag", "test_tags"})
 public class LoadTestResult implements Serializable {
     private String test_id;
     private String test_name;
@@ -20,6 +20,8 @@ public class LoadTestResult implements Serializable {
     private long test_duration;
     private boolean test_success = false;
     private boolean test_deviation_flag = false;
+    private long command_overhead;
+
     private static final Logger log = LoggerFactory.getLogger(LoadTestResult.class);
 
 
@@ -29,7 +31,8 @@ public class LoadTestResult implements Serializable {
                           @JsonProperty("test_run_no") String test_run_no,
                           @JsonProperty("test_duration") String test_duration,
                           @JsonProperty("test_success") String test_success,
-                          @JsonProperty("test_deviation_flag") String test_deviation_flag) {
+                          @JsonProperty("test_deviation_flag") String test_deviation_flag,
+                          @JsonProperty("command_overhead") String command_overhead) {
         this.test_id = id;
         this.test_name = test_name;
         this.test_tags = test_tags;
@@ -37,6 +40,7 @@ public class LoadTestResult implements Serializable {
         this.test_duration = Integer.valueOf(test_duration);
         this.test_success = Boolean.parseBoolean(test_success);
         this.test_deviation_flag = Boolean.parseBoolean(test_deviation_flag);
+        this.command_overhead = Long.parseLong(command_overhead);
 
     }
 
@@ -106,6 +110,14 @@ public class LoadTestResult implements Serializable {
 
     public void setTest_deviation_flag(boolean test_deviation_flag) {
         this.test_deviation_flag = test_deviation_flag;
+    }
+
+    public long getCommand_overhead() {
+        return command_overhead;
+    }
+
+    public void setCommand_overhead(long command_overhead) {
+        this.command_overhead = command_overhead;
     }
 }
 

@@ -18,7 +18,9 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static no.cantara.service.loadtest.util.HTTPResultUtil.*;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.firstX;
 
 
 public class MyReadRunnable implements Callable<LoadTestResult> {
@@ -101,8 +103,11 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                     try {
                         if (testSpecification.isCommand_http_post()) {
                             CommandPostFromTestSpecification postcommand = new CommandPostFromTestSpecification(testSpecification);
+                            long start = System.nanoTime();
                             result = postcommand.execute();
+                            long duration = System.nanoTime() - start;
                             commandDuration = postcommand.getRequestDurationMs();
+                            loadTestResult.setCommand_overhead(Math.round(duration / 1000000.0 - commandDuration));
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!postcommand.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
@@ -114,8 +119,11 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             }
                         } else {
                             CommandGetFromTestSpecification getcommand = new CommandGetFromTestSpecification(testSpecification);
+                            long start = System.nanoTime();
                             result = getcommand.execute();
+                            long duration = System.nanoTime() - start;
                             commandDuration = getcommand.getRequestDurationMs();
+                            loadTestResult.setCommand_overhead(Math.round(duration / 1000000.0 - commandDuration));
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!getcommand.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
