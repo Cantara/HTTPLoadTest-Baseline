@@ -43,7 +43,6 @@
         <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
         <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
         <url>https://wiki.cantara.no/display/HLT/Home</url>
-      <tag>HTTPLoadTest-baseline-0.30.2</tag>
   </scm>
 
 
@@ -51,7 +50,7 @@
         <service.name>HTTPLoadTest-baseline</service.name>
         <jackson.version>2.9.5</jackson.version>
         <jersey.version>2.26</jersey.version>
-        <jetty.version>9.4.11.v20180605</jetty.version>
+        <jetty.version>9.4.12.RC1</jetty.version>
         <spring.version>5.0.8.RELEASE</spring.version>
         <slf4j.version>1.7.25</slf4j.version>
         <hystrix.version>1.5.12</hystrix.version>
