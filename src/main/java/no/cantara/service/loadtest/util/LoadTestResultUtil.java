@@ -322,14 +322,12 @@ public class LoadTestResultUtil {
             }
         }
         if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() > 0) {
-            if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() >= total_successrate) {
+            if (loadTestBenchmark.getBenchmark_req_sucessrate_percent() > total_successrate) {
                 log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
                 statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(false));
                 isBenchmarkPassed = false;
             } else {
-                log.info("getBenchmark_req_sucessrate_percent failed, req:{}, measured: {}", loadTestBenchmark.getBenchmark_req_sucessrate_percent(), total_successrate);
                 statisticsMap.put(BENCHMARK_REQ_SUCESSRATE_PERCENT, Boolean.toString(true));
-                //    isBenchmarkPassed = true;
             }
         }
         statisticsMap.put(IS_BENCHMARK_PASSED, Boolean.toString(isBenchmarkPassed));
