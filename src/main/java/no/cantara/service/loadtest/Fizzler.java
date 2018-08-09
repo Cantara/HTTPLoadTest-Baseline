@@ -1,5 +1,8 @@
 package no.cantara.service.loadtest;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Fizzler {
@@ -103,5 +106,13 @@ public class Fizzler {
 
     }
 
+    private static final ZoneId z = ZoneId.of("Z");
+
+    private static final DateTimeFormatter iso_timestamp_formattter
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+
+    public static String getIsoTimestampZ() {
+        return ZonedDateTime.now(z).format(iso_timestamp_formattter);
+    }
 }
 

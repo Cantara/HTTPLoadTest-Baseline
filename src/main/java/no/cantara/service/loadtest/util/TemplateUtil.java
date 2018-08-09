@@ -20,6 +20,7 @@ public class TemplateUtil {
         add("#fizzle(option:");
         add("#fizzle(optionvalue:");
         add("#fizzle(substring");
+        add("#fizzle(isotime");
     }};
 
     public static synchronized String updateTemplateWithValuesFromMap(String template, Map<String, String> templatereplacementMap) {
@@ -92,6 +93,9 @@ public class TemplateUtil {
              backTemplate = backtemp.substring(backtemp.lastIndexOf(")") + 1, backtemp.length());
 
             return frontTemplate + Fizzler.getSubString(backtemp.substring(0, backtemp.lastIndexOf(")"))) + backTemplate;
+        }
+        if (fizzleKey.equalsIgnoreCase(fizzleKeyList.get(8))) {
+            return frontTemplate + Fizzler.getIsoTimestampZ() + backTemplate;
         }
         return template;
     }
