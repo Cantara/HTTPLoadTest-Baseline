@@ -23,7 +23,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     protected URI serviceUri;
     protected String TAG = "";
     protected HttpRequest request;
-    protected long requestDurationMs = -1;
+    protected long requestDurationMicroSeconds = 0;
 
     private static HystrixThreadPoolProperties.Setter threadProperties;
 
@@ -96,7 +96,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
                 responseBody = request.bytes();
                 statusCode = request.code();
             } finally {
-                requestDurationMs = Math.round((System.nanoTime() - startTime) / 1000000.0);
+                requestDurationMicroSeconds = Math.round((System.nanoTime() - startTime) / 1000.0);
             }
 
             byte[] responseBodyCopy = responseBody.clone();
@@ -176,8 +176,8 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
         return responseBody.clone();
     }
 
-    public long getRequestDurationMs() {
-        return requestDurationMs;
+    public long getRequestDurationMicroSeconds() {
+        return requestDurationMicroSeconds;
     }
 }
 
