@@ -94,7 +94,7 @@ public class LoadTestResultUtil {
 
     }
 
-    public static SortedMap hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
+    public static SortedMap<String, String> hasPassedBenchmark(List<LoadTestResult> loadTestResults, boolean whileRunning) {
         SortedMap<String, String> statisticsMap = new TreeMap<String, String>();
         long nowTimestamp = System.currentTimeMillis();
         statisticsMap.put(TIMESTAMP, Long.toString(nowTimestamp));
