@@ -1,19 +1,17 @@
 package no.cantara.service.loadtest.util;
 
 import no.cantara.util.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static org.testng.Assert.assertTrue;
 
 public class TemplateUtilTest {
 
     Map<String, String> replacements = new HashMap<>();
-    private final static Logger log = LoggerFactory.getLogger(TemplateUtilTest.class);
 
     @Test
     public void testTemplateUtilSimple() {
@@ -22,10 +20,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #BrukerID before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced TestBruker before this").matcher(result).matches());
     }
 
     @Test
@@ -35,10 +30,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #BrukerID before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced [A-F0-9]{4} before this").matcher(result).matches());
     }
 
 
@@ -49,10 +41,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #fizzle(chars:text) before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced [A-Za-z]{4} before this").matcher(result).matches());
     }
 
     @Test
@@ -62,10 +51,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #fizzle(digits:3234) before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced [0-9]{4} before this").matcher(result).matches());
     }
 
     @Test
@@ -75,10 +61,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #fizzle(HEX:3234) before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced [A-F0-9]{4} before this").matcher(result).matches());
     }
 
     @Test
@@ -88,10 +71,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #fizzle(option:yes, no, here, there) before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced (yes|no|here|there) before this").matcher(result).matches());
     }
 
     @Test
@@ -100,10 +80,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #fizzle(optionvalue:#code) before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-
-
+        assertTrue(Pattern.compile("Text to be replaced b9210739319b13582b42fa89a16432c55345f847 before this").matcher(result).matches());
     }
 
     @Test
@@ -113,12 +90,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #BrukerID before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#BrukerID"))));
-        assertTrue(!result.contains("#BrukerID"));
-        assertTrue(!result.contains("#fizzle"));
-
-
+        assertTrue(Pattern.compile("Text to be replaced (yes|no|here|there) before this").matcher(result).matches());
     }
 
     @Test
@@ -128,12 +100,7 @@ public class TemplateUtilTest {
         String template = "Text to be replaced #fizzle(option:#Passord) before this";
 
         String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
-        log.trace("Fizzled result: {}", result);
-        assertTrue(result.contains(template.substring(0, template.indexOf("#fizzle"))));
-        assertTrue(result.contains("Petter"));
-        assertTrue(!result.contains("#BrukerID"));
-        assertTrue(!result.contains("#fizzle"));
-
+        assertTrue(Pattern.compile("Text to be replaced Petter before this").matcher(result).matches());
     }
 
 
