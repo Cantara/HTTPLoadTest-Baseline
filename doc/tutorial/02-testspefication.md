@@ -31,9 +31,9 @@
 ```properties
 #fizzle(chars:replaceMe)                             =>  tEftohTdS
 #fizzle(digits:67643)                                =>  32632
-#fizzle(U_chars:(TEST)                               =>  WRVY
-#fizzle(L_chars:(lower)                              =>  tgewt
-#fizzle(HEX:(a hexvalue)                             =>  4E7AD3B084
+#fizzle(U_chars:TEST)                               =>  WRVY
+#fizzle(L_chars:lower)                              =>  tgewt
+#fizzle(HEX:a hexvalue)                             =>  4E7AD3B084
 #fizzle(option:yes, no, here, there)                 =>  here
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
 #fizzle(substring(4,7):one two three)                =>  two
