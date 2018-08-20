@@ -1,6 +1,11 @@
 package no.cantara.service.loadtest;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Fizzler {
 
@@ -104,5 +109,17 @@ public class Fizzler {
 
     }
 
+    private static final ZoneId z = ZoneId.of("Z");
+    private static final DateTimeFormatter iso_timestamp_formattter
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    private static final Map<String, DateTimeFormatter> formatterByPattern = new ConcurrentHashMap<>();
+
+    public static String getTimestamp(String formatPattern) {
+        if (formatPattern == null || formatPattern.isEmpty()) {
+            return ZonedDateTime.now(z).format(iso_timestamp_formattter); // default
+        }
+        DateTimeFormatter formatter = formatterByPattern.computeIfAbsent(formatPattern, p -> DateTimeFormatter.ofPattern(p));
+        return ZonedDateTime.now(z).format(formatter);
+    }
 }
 

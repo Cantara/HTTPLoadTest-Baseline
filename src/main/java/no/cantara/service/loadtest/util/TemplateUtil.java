@@ -29,6 +29,7 @@ public class TemplateUtil {
         fizzleFunctionByKey.put("option", (parameters, input) -> Fizzler.getRandomSetValue(input));
         fizzleFunctionByKey.put("optionvalue", (parameters, input) -> Fizzler.getRandomSetValueAsString(input));
         fizzleFunctionByKey.put("substring", (parameters, input) -> Fizzler.getSubString(parameters, input));
+        fizzleFunctionByKey.put("timestamp", (parameters, input) -> Fizzler.getTimestamp(input));
     }
 
     static final Pattern variablePattern = Pattern.compile("#\\(?(\\p{Alnum}+)\\)?");

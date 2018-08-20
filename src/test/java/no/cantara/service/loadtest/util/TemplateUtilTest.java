@@ -103,6 +103,14 @@ public class TemplateUtilTest {
         assertTrue(Pattern.compile("Text to be replaced Petter before this").matcher(result).matches());
     }
 
+    @Test
+    public void testTimestampFizzleFunctionWorks() {
+        replacements.put("#now", "#Fizzle(timestamp:yyyy-MM-dd HH:mm:ss.SSSX)");
+        String template = "Text to be replaced #(now) before this";
+
+        String result = TemplateUtil.updateTemplateWithValuesFromMap(template, replacements);
+        assertTrue(Pattern.compile("Text to be replaced [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z before this").matcher(result).matches());
+    }
 
     @Test
     public void loadTemplateFile() {

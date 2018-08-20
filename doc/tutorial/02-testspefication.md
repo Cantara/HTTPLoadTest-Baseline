@@ -31,12 +31,13 @@
 ```properties
 #fizzle(chars:replaceMe)                             =>  tEftohTdS
 #fizzle(digits:67643)                                =>  32632
-#fizzle(U_chars:TEST)                               =>  WRVY
-#fizzle(L_chars:lower)                              =>  tgewt
-#fizzle(HEX:a hexvalue)                             =>  4E7AD3B084
+#fizzle(U_chars:TEST)                                =>  WRVY
+#fizzle(L_chars:lower)                               =>  tgewt
+#fizzle(HEX:a hexvalue)                              =>  4E7AD3B084
 #fizzle(option:yes, no, here, there)                 =>  here
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
 #fizzle(substring(4,7):one two three)                =>  two
+#fizzle(timestamp:yyyy-MM-dd HH:mm:ss)               =>  2018-08-20 11:39:05
 ```
 
 * With your fist HTTPRequest complete, it's time to [see how to chain results form one request into the next request](./03-chaining-requests.md).
