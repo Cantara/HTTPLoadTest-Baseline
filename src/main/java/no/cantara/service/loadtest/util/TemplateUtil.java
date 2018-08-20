@@ -14,21 +14,21 @@ public class TemplateUtil {
     private static final Logger log = LoggerFactory.getLogger(TemplateUtil.class);
 
     interface FizzleFunction {
-        String apply(String parameters);
+        String apply(String parameters, String input);
     }
 
     private static final Map<String, FizzleFunction> fizzleFunctionByKey = new LinkedHashMap<>();
 
     static {
         // Use only lowercase keys in order to support case-insensitive matching
-        fizzleFunctionByKey.put("chars", parameters -> Fizzler.getRandomCharacters(parameters.length()));
-        fizzleFunctionByKey.put("digits", parameters -> Fizzler.getRandomDigits(parameters.length()));
-        fizzleFunctionByKey.put("u_chars", parameters -> Fizzler.getRandomUppercaseCharacter(parameters.length()));
-        fizzleFunctionByKey.put("l_chars", parameters -> Fizzler.getRandomLowercaseCharacter(parameters.length()));
-        fizzleFunctionByKey.put("hex", parameters -> Fizzler.getRandomHEXCharacter(parameters.length()));
-        fizzleFunctionByKey.put("option", Fizzler::getRandomSetValue);
-        fizzleFunctionByKey.put("optionvalue", Fizzler::getRandomSetValueAsString);
-        fizzleFunctionByKey.put("substring", Fizzler::getSubString);
+        fizzleFunctionByKey.put("chars", (parameters, input) -> Fizzler.getRandomCharacters(input.length()));
+        fizzleFunctionByKey.put("digits", (parameters, input) -> Fizzler.getRandomDigits(input.length()));
+        fizzleFunctionByKey.put("u_chars", (parameters, input) -> Fizzler.getRandomUppercaseCharacter(input.length()));
+        fizzleFunctionByKey.put("l_chars", (parameters, input) -> Fizzler.getRandomLowercaseCharacter(input.length()));
+        fizzleFunctionByKey.put("hex", (parameters, input) -> Fizzler.getRandomHEXCharacter(input.length()));
+        fizzleFunctionByKey.put("option", (parameters, input) -> Fizzler.getRandomSetValue(input));
+        fizzleFunctionByKey.put("optionvalue", (parameters, input) -> Fizzler.getRandomSetValueAsString(input));
+        fizzleFunctionByKey.put("substring", (parameters, input) -> Fizzler.getSubString(parameters, input));
     }
 
     static final Pattern variablePattern = Pattern.compile("#\\(?(\\p{Alnum}+)\\)?");
@@ -61,7 +61,7 @@ public class TemplateUtil {
     static class Expression {
 
         static final Pattern fizzleFunctionPattern =
-                Pattern.compile("#[Ff][Ii][Zz][Zz][Ll][Ee]\\((?:([^:]*):)?([^)]*)\\)");
+                Pattern.compile("#[Ff][Ii][Zz][Zz][Ll][Ee]\\(([^():]+)(?:\\(([^)]*)\\))?:?([^)]*)\\)");
         static final Pattern replaceablePattern = Pattern.compile("(?:" + fizzleFunctionPattern.pattern() + ")|(?:" + variablePattern.pattern() + ")");
 
         final String template;
@@ -85,13 +85,14 @@ public class TemplateUtil {
                 result.append(template, previousEnd, replaceableExpressionsInTemplateMatcher.start());
                 if (replaceableExpressionsInTemplateMatcher.group(1) != null) {
                     String fizzleFunctionKey = replaceableExpressionsInTemplateMatcher.group(1).toLowerCase();
-                    String fizzleParameters = replaceableExpressionsInTemplateMatcher.group(2);
+                    String fizzleFunctionArguments = replaceableExpressionsInTemplateMatcher.group(2);
+                    String fizzleInput = replaceableExpressionsInTemplateMatcher.group(3);
                     FizzleFunction function = fizzleFunctionByKey.get(fizzleFunctionKey);
-                    String resolvedFizzleParameters = new Expression(fizzleParameters).resolve(expressionByKey);
-                    String fizzleOutput = function.apply(resolvedFizzleParameters);
+                    String resolvedFizzleInput = new Expression(fizzleInput).resolve(expressionByKey);
+                    String fizzleOutput = function.apply(fizzleFunctionArguments, resolvedFizzleInput);
                     result.append(fizzleOutput);
-                } else if (replaceableExpressionsInTemplateMatcher.group(3) != null) {
-                    String variableIdentifier = replaceableExpressionsInTemplateMatcher.group(3).toLowerCase();
+                } else if (replaceableExpressionsInTemplateMatcher.group(4) != null) {
+                    String variableIdentifier = replaceableExpressionsInTemplateMatcher.group(4).toLowerCase();
                     Expression expression = expressionByKey.get(variableIdentifier);
                     if (expression == null) {
                         log.warn("Unable to resolve template variable #" + variableIdentifier);

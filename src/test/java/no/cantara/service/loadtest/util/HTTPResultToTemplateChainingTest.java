@@ -111,7 +111,7 @@ public class HTTPResultToTemplateChainingTest {
         Map<String, String> replacements = new HashMap<>();
 
         replacements.put("#testString", testString);
-        String result = TemplateUtil.updateTemplateWithValuesFromMap("#fizzle(substring(0,43):#testString)", replacements);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap("#fizzle(substring(0,36):#testString)", replacements);
 
         assertTrue("d1a11d8b-06b5-4723-936f-17aa070ff16f".equalsIgnoreCase(result));
     }
@@ -125,7 +125,7 @@ public class HTTPResultToTemplateChainingTest {
         regexpSelectorMap.put("#processId", "$..id");
         Map parseResults = HTTPResultUtil.parse(json, regexpSelectorMap);
 
-        String result = TemplateUtil.updateTemplateWithValuesFromMap("#fizzle(substring(3,46):#processId)", parseResults);
+        String result = TemplateUtil.updateTemplateWithValuesFromMap("#fizzle(substring(3,39):#processId)", parseResults);
 
         assertTrue("924dd513-e98e-4042-bcbb-0fd5255eca9f".equalsIgnoreCase(result));
     }

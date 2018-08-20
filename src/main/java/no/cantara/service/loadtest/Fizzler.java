@@ -95,10 +95,11 @@ public class Fizzler {
     }
 
     // #fizzle(substring(0,32):#testString)
-    public static String getSubString(String myString) {
-        String startIndex=myString.substring(myString.indexOf("(")+1,myString.indexOf(","));
-        String stopIndex=myString.substring(myString.indexOf(",")+1,myString.indexOf(")"));
-        String result = myString.substring((Integer.parseInt(startIndex)+myString.indexOf(":")+1),Integer.parseInt(stopIndex));
+    public static String getSubString(String indices, String myString) {
+        String[] startAndStopIndex = indices.split("[, ]");
+        int startIndex=Integer.parseInt(startAndStopIndex[0]);
+        int stopIndex=Integer.parseInt(startAndStopIndex[1]);
+        String result = myString.substring(startIndex, stopIndex);
         return result;
 
     }
