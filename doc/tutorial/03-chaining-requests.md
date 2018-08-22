@@ -79,6 +79,8 @@ support jsonpath and xpath for parsing results into variables.
 #fizzle(HEX:(a hexvalue)                             =>  4E7AD3B084
 #fizzle(option:yes, no, here, there)                 =>  here
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
+#fizzle(substring(4,7):one two three)                =>  two
+#fizzle(timestamp:yyyy-MM-dd HH:mm:ss)               =>  2018-08-20 11:39:05
 ```
 
 * With your fist simulated flow complete, it's time to [learn how read and write flow differ](./04-read-write-flows.md).

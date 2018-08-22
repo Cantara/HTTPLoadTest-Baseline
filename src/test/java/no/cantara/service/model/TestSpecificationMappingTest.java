@@ -128,8 +128,7 @@ public class TestSpecificationMappingTest {
                 "    }\n" +
                 "  }\n" +
                 "]";
-        List<TestSpecification> testSpecList = new ArrayList<>();
-        testSpecList = mapper.readValue(test, new TypeReference<List<TestSpecification>>() {
+        List<TestSpecification> testSpecList = mapper.readValue(test, new TypeReference<List<TestSpecification>>() {
         });
         String loadTestJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(testSpecList);
 
@@ -199,7 +198,7 @@ public class TestSpecificationMappingTest {
 
         replacements.put("#compositionIds", UUID.randomUUID().toString());
 
-        String result = TemplateUtil.updateTemplateWithValuesFromMap(url, replacements);
+        String result = new TemplateUtil(replacements).updateTemplateWithValuesFromMap(url);
 
         URI uri = URI.create(result);
         assertTrue(uri != null);

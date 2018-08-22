@@ -180,6 +180,8 @@ to avoid values beeing overwritten and thus causing problems for your test-runs.
 #fizzle(HEX:(a hexvalue)                             =>  4E7AD3B084
 #fizzle(option:yes, no, here, there)                 =>  here
 #fizzle(optionvalue:{"yes", "no", "here", "there"})  =>  here
+#fizzle(substring(4,7):one two three)                =>  two
+#fizzle(timestamp:yyyy-MM-dd HH:mm:ss)               =>  2018-08-20 11:39:05
 ```
 
 

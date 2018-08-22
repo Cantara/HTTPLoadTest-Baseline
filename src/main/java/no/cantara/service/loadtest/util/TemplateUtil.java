@@ -34,13 +34,14 @@ public class TemplateUtil {
 
     static final Pattern variablePattern = Pattern.compile("#\\(?(\\p{Alnum}+)\\)?");
 
-    public static String updateTemplateWithValuesFromMap(String template, Map<String, String> templatereplacementMap) {
-        if (template == null) {
-            return "";
-        }
+    final Map<String, String> templatereplacementMap;
+    final Map<String, Expression> expressionByKey;
+
+    public TemplateUtil(Map<String, String> templatereplacementMap) {
+        this.templatereplacementMap = templatereplacementMap;
 
         // prepare build expression-map, no resolution or evaluation done here
-        Map<String, Expression> expressionByKey = new LinkedHashMap<>();
+        this.expressionByKey = new LinkedHashMap<>();
         if (templatereplacementMap != null) {
             for (Map.Entry<String, String> e : templatereplacementMap.entrySet()) {
                 Matcher m = variablePattern.matcher(e.getKey());
@@ -52,18 +53,24 @@ public class TemplateUtil {
                 }
             }
         }
+    }
+
+    public String updateTemplateWithValuesFromMap(String template) {
+        if (template == null) {
+            return "";
+        }
 
         // resolve expressions in template recursively and lazily
-        String result = new Expression(template).resolve(expressionByKey);
+        String result = new Expression(template).resolve();
 
         return result;
     }
 
-    static class Expression {
+    static final Pattern fizzleFunctionPattern =
+            Pattern.compile("#[Ff][Ii][Zz][Zz][Ll][Ee]\\(([^():]+)(?:\\(([^)]*)\\))?:?([^)]*)\\)");
+    static final Pattern replaceablePattern = Pattern.compile("(?:" + fizzleFunctionPattern.pattern() + ")|(?:" + variablePattern.pattern() + ")");
 
-        static final Pattern fizzleFunctionPattern =
-                Pattern.compile("#[Ff][Ii][Zz][Zz][Ll][Ee]\\(([^():]+)(?:\\(([^)]*)\\))?:?([^)]*)\\)");
-        static final Pattern replaceablePattern = Pattern.compile("(?:" + fizzleFunctionPattern.pattern() + ")|(?:" + variablePattern.pattern() + ")");
+    class Expression {
 
         final String template;
         String resolvedExpression;
@@ -72,7 +79,7 @@ public class TemplateUtil {
             this.template = template;
         }
 
-        String resolve(Map<String, Expression> expressionByKey) {
+        String resolve() {
             if (resolvedExpression != null) {
                 return resolvedExpression;
             }
@@ -88,10 +95,15 @@ public class TemplateUtil {
                     String fizzleFunctionKey = replaceableExpressionsInTemplateMatcher.group(1).toLowerCase();
                     String fizzleFunctionArguments = replaceableExpressionsInTemplateMatcher.group(2);
                     String fizzleInput = replaceableExpressionsInTemplateMatcher.group(3);
+                    String resolvedFizzleInput = new Expression(fizzleInput).resolve();
                     FizzleFunction function = fizzleFunctionByKey.get(fizzleFunctionKey);
-                    String resolvedFizzleInput = new Expression(fizzleInput).resolve(expressionByKey);
-                    String fizzleOutput = function.apply(fizzleFunctionArguments, resolvedFizzleInput);
-                    result.append(fizzleOutput);
+                    if (function == null) {
+                        log.warn("#Fizzle function does not exist: {}", fizzleFunctionKey);
+                        result.append(resolvedFizzleInput);
+                    } else {
+                        String fizzleOutput = function.apply(fizzleFunctionArguments, resolvedFizzleInput);
+                        result.append(fizzleOutput);
+                    }
                 } else if (replaceableExpressionsInTemplateMatcher.group(4) != null) {
                     String variableIdentifier = replaceableExpressionsInTemplateMatcher.group(4).toLowerCase();
                     Expression expression = expressionByKey.get(variableIdentifier);
@@ -99,7 +111,7 @@ public class TemplateUtil {
                         log.warn("Unable to resolve template variable #" + variableIdentifier);
                         result.append(expression);
                     } else {
-                        String resolvedExpression = expression.resolve(expressionByKey);
+                        String resolvedExpression = expression.resolve();
                         result.append(resolvedExpression);
                         log.trace("Replaced #{} with: {}", variableIdentifier, resolvedExpression);
                     }

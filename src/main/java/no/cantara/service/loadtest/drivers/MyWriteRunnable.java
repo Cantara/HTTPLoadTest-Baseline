@@ -64,11 +64,11 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
             return null;
         }
 
-        long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();
+        long sleeptime = (long) loadTestConfig.getTest_sleep_in_ms();
         // Check if we should randomize sleeptime
         if (loadTestConfig.isTest_randomize_sleeptime()) {
             int chance = r.nextInt(100);
-            sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms() * chance / 100;
+            sleeptime = (long) loadTestConfig.getTest_sleep_in_ms() * chance / 100;
         }
         try {
             //log.trace("Sleeping {} ms before test as configured in the loadTestConfig", sleeptime);
@@ -140,7 +140,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                     break;
                 }
             } catch (Exception e) {
-                log.error("Unable to clone TestSpecification");
+                log.error("Unable to clone TestSpecification", e);
             }
 
 
@@ -149,7 +149,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
         if (commandDurationMicroSeconds <= 0) {
             log.warn("commandDuration: {}, using fallback", commandDurationMicroSeconds);
             // fallback to include test-bench processing overhead as part of measured duration
-            commandDurationMicroSeconds = 1000 * Long.valueOf(System.currentTimeMillis() - startTime);
+            commandDurationMicroSeconds = 1000 * (System.currentTimeMillis() - startTime);
         }
 
         loadTestResult.setTest_duration(Math.round(commandDurationMicroSeconds / 1000.0));

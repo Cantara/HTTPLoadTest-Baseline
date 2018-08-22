@@ -1,5 +1,6 @@
 package no.cantara.service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static no.cantara.util.Configuration.loadFromDiskByName;
@@ -24,7 +26,8 @@ public class TestSpecification implements Serializable, Cloneable {
     private int command_timeout_milliseconds = 2000;
     private String command_template = "";
     private Map<String, String> command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
-    private Map<String, String> command_response_map = new HashMap<>();
+    private Map<String, String> command_response_map = new LinkedHashMap<>();
+    @JsonIgnore private transient TemplateUtil templateUtil;
 
     private boolean isTemplate = true;
 
@@ -62,7 +65,7 @@ public class TestSpecification implements Serializable, Cloneable {
 
     public String getCommand_url() {
         if (!isTemplate && command_url != null && command_url.contains("#")) {
-            setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(command_url, getCommand_replacement_map()));
+            setCommand_url(getTemplateUtil().updateTemplateWithValuesFromMap(command_url));
         }
         return command_url;
     }
@@ -132,7 +135,7 @@ public class TestSpecification implements Serializable, Cloneable {
         if (command_http_authstring == null || command_http_authstring.length() < 1) {
             return null;
         }
-        setCommand_http_authstring(TemplateUtil.updateTemplateWithValuesFromMap(command_http_authstring, getCommand_replacement_map()));
+        setCommand_http_authstring(getTemplateUtil().updateTemplateWithValuesFromMap(command_http_authstring));
 
         if (command_http_authstring.startsWith("X-AUTH")) {
             return command_http_authstring;
@@ -193,9 +196,9 @@ public class TestSpecification implements Serializable, Cloneable {
             return;
         }
         if (getCommand_template().startsWith("FILE:")) {
-            setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(command_template, getCommand_replacement_map()));
+            setCommand_template(getTemplateUtil().updateTemplateWithValuesFromMap(command_template));
 
-            String filename = getCommand_template().substring(5, getCommand_template().length());
+            String filename = getCommand_template().substring(5);
             try {
                 String contents = loadFromDiskByName(filename);
                 setCommand_template(contents);
@@ -212,7 +215,6 @@ public class TestSpecification implements Serializable, Cloneable {
         if (isTemplate) {
             return;
         }
-        loadTemplateReference();
         if (globalMap != null) {
             addMapToCommand_replacement_map(globalMap);
         }
@@ -222,14 +224,15 @@ public class TestSpecification implements Serializable, Cloneable {
         if (resolvedResultVariables != null) {
             addMapToCommand_replacement_map(resolvedResultVariables);
         }
-        log.info("resolveVariables - Active variables: {}", getCommand_replacement_map());
-        setCommand_url(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_url(), getCommand_replacement_map()));
+        Map<String, String> command_replacement_map = getCommand_replacement_map();
+        loadTemplateReference();
+        log.info("resolveVariables - Active variables: {}", command_replacement_map);
+        setCommand_url(getTemplateUtil().updateTemplateWithValuesFromMap(getCommand_url()));
         log.info("resolveVariables -Updated commandURL: {}", getCommand_url());
-        setCommand_http_authstring(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_http_authstring(), getCommand_replacement_map()));
+        setCommand_http_authstring(getTemplateUtil().updateTemplateWithValuesFromMap(getCommand_http_authstring()));
         log.info("resolveVariables - Updated command_http_authstring: {}", getCommand_http_authstring());
-        setCommand_template(TemplateUtil.updateTemplateWithValuesFromMap(getCommand_template(), getCommand_replacement_map()));
+        setCommand_template(getTemplateUtil().updateTemplateWithValuesFromMap(getCommand_template()));
         log.info("resolveVariables - Updated command_template: {}", getCommand_template());
-
 
     }
 
@@ -254,5 +257,10 @@ public class TestSpecification implements Serializable, Cloneable {
                 '}';
     }
 
-
+    public TemplateUtil getTemplateUtil() {
+        if (templateUtil == null) {
+            templateUtil = new TemplateUtil(command_replacement_map);
+        }
+        return templateUtil;
+    }
 }

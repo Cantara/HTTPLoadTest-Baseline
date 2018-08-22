@@ -10,9 +10,12 @@ import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class TestSetupHelper {
 
@@ -62,14 +65,13 @@ class TestSetupHelper {
         generateSpecifications(domains, testTargetServicePort);
     }
 
-    void generateSpecifications(Iterable<String> managedDomains, int testTargetServicePort) {
+    void generateSpecifications(Collection<String> domains, int testTargetServicePort) {
         ArrayNode readSpecificationNode = new ArrayNode(JsonNodeFactory.instance);
         ArrayNode writeSpecificationNode = new ArrayNode(JsonNodeFactory.instance);
 
-        for (String managedDomain : managedDomains) {
-            addReadSpecification(readSpecificationNode, managedDomain, testTargetServicePort);
-            addWriteSpecification(writeSpecificationNode, managedDomain, testTargetServicePort);
-        }
+        generateWriteTemplateFiles(domains);
+        addReadSpecification(readSpecificationNode, domains, testTargetServicePort);
+        addWriteSpecification(writeSpecificationNode, domains, testTargetServicePort);
         try {
             String readSpecification = mapper.writeValueAsString(readSpecificationNode);
             this.readSpecification = mapper.readValue(readSpecification, new TypeReference<List<TestSpecification>>() {
@@ -84,66 +86,68 @@ class TestSetupHelper {
         }
     }
 
-    void addWriteSpecification(ArrayNode writeSpecification, String domain, int testTargetServicePort) {
+    void addWriteSpecification(ArrayNode writeSpecification, Collection<String> domains, int testTargetServicePort) {
         ObjectNode managedDomainCommand = new ObjectNode(JsonNodeFactory.instance);
         managedDomainCommand.put("command_url",
-                String.format("http://localhost:%d/data/%s/#mrid?sync=true",
-                        testTargetServicePort,
-                        domain)
+                String.format("http://localhost:%d/data/#domain/#mrid?sync=true",
+                        testTargetServicePort)
         );
         managedDomainCommand.put("command_contenttype", "application/json");
         managedDomainCommand.put("command_http_post", true);
         managedDomainCommand.put("command_timeout_milliseconds", 500);
-        managedDomainCommand.put("command_template", generateWriteTemplate(domain));
+        managedDomainCommand.put("command_template", "FILE:target/#domain.json");
         ObjectNode commandReplacementMap = new ObjectNode(JsonNodeFactory.instance);
+        commandReplacementMap.put("#domain", "#fizzle(option:" + domains.stream().collect(Collectors.joining(", ")) + ")");
         commandReplacementMap.put("#mrid", "#fizzle(HEX:12)C8D2B7-0EB3-4A6D-91BB-A7451649F2F6");
-        commandReplacementMap.put("#now", "#fizzle(isotime)");
+        commandReplacementMap.put("#now", "#fizzle(timestamp)");
         managedDomainCommand.set("command_replacement_map", commandReplacementMap);
         ObjectNode commandResponseMap = new ObjectNode(JsonNodeFactory.instance);
         managedDomainCommand.set("command_response_map", commandResponseMap);
         writeSpecification.add(managedDomainCommand);
     }
 
-    String generateWriteTemplate(String domain) {
-        ObjectNode template = new ObjectNode(JsonNodeFactory.instance);
-        template.put("domain", domain);
-        template.put("id", "#mrid");
-        template.put("version", "1.0");
-        template.put("name", "My Name Is Myself");
-        template.put("description", "Some description");
-        template.put("createdBy", "me");
-        template.put("created", "#now");
-        template.put("modified", "#now");
-        template.put("accessed", "#now");
-        ArrayNode composite = new ArrayNode(JsonNodeFactory.instance);
-        ObjectNode compositeValue1 = new ObjectNode(JsonNodeFactory.instance);
-        compositeValue1.put("lang", "en");
-        compositeValue1.put("code", "123");
-        ObjectNode compositeValue2 = new ObjectNode(JsonNodeFactory.instance);
-        compositeValue2.put("first", "1");
-        compositeValue2.put("second", "2");
-        composite.add(compositeValue1);
-        composite.add(compositeValue2);
-        template.set("composite", composite);
-        try {
-            return mapper.writeValueAsString(template);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+    void generateWriteTemplateFiles(Collection<String> domains) {
+        for (String domain : domains) {
+            ObjectNode template = new ObjectNode(JsonNodeFactory.instance);
+            template.put("domain", domain);
+            template.put("id", "#mrid");
+            template.put("version", "1.0");
+            template.put("name", "My Name Is Myself");
+            template.put("description", "Some description");
+            template.put("createdBy", "me");
+            template.put("created", "#now");
+            template.put("modified", "#now");
+            template.put("accessed", "#now");
+            ArrayNode composite = new ArrayNode(JsonNodeFactory.instance);
+            ObjectNode compositeValue1 = new ObjectNode(JsonNodeFactory.instance);
+            compositeValue1.put("lang", "en");
+            compositeValue1.put("code", "123");
+            ObjectNode compositeValue2 = new ObjectNode(JsonNodeFactory.instance);
+            compositeValue2.put("first", "1");
+            compositeValue2.put("second", "2");
+            composite.add(compositeValue1);
+            composite.add(compositeValue2);
+            template.set("composite", composite);
+            try {
+                mapper.writeValue(new File("target", domain + ".json"), template);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    void addReadSpecification(ArrayNode readSpecification, String domain, int testTargetServicePort) {
+    void addReadSpecification(ArrayNode readSpecification, Collection<String> domains, int testTargetServicePort) {
         ObjectNode managedDomainCommand = new ObjectNode(JsonNodeFactory.instance);
         managedDomainCommand.put("command_url",
-                String.format("http://localhost:%d/ns/%s/some/path/to/#mrid",
-                        testTargetServicePort,
-                        domain)
+                String.format("http://localhost:%d/ns/#domain/some/path/to/#mrid",
+                        testTargetServicePort)
         );
         managedDomainCommand.put("command_contenttype", "application/json");
         managedDomainCommand.put("command_http_post", false);
         managedDomainCommand.put("command_timeout_milliseconds", 250);
         managedDomainCommand.put("command_template", getLoadTestConfigJson());
         ObjectNode commandReplacementMap = new ObjectNode(JsonNodeFactory.instance);
+        commandReplacementMap.put("#domain", "#fizzle(option:" + domains.stream().collect(Collectors.joining(", ")) + ")");
         managedDomainCommand.set("command_replacement_map", commandReplacementMap);
         ObjectNode commandResponseMap = new ObjectNode(JsonNodeFactory.instance);
         managedDomainCommand.set("command_response_map", commandResponseMap);

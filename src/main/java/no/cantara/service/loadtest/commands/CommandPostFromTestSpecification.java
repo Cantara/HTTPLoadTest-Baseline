@@ -2,7 +2,6 @@ package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import no.cantara.base.command.HttpSender;
-import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
@@ -22,7 +21,7 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
     public CommandPostFromTestSpecification(TestSpecification testSpecification) {
         super(URI.create(testSpecification.getCommand_url()),
                 "hystrixCommandPostFromTestSpecification_" + r.nextInt(100));
-        this.template = TemplateUtil.updateTemplateWithValuesFromMap(testSpecification.getCommand_template(), testSpecification.getCommand_replacement_map());
+        this.template = testSpecification.getCommand_template();
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();
     }

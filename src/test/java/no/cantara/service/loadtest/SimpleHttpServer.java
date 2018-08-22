@@ -8,6 +8,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 public class SimpleHttpServer {
@@ -18,11 +19,17 @@ public class SimpleHttpServer {
         server = new Server(0);
         server.setHandler(new AbstractHandler() {
             @Override
-            public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException, ServletException {
-                httpServletResponse.setContentType("application/json;charset=utf-8");
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                request.setHandled(true);
-                httpServletResponse.getWriter().println("[]");
+            public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+                String method = request.getMethod();
+                if ("PUT".equals(method) || "POST".equals(method)) {
+                    try (BufferedReader br = request.getReader()) {
+                        while (br.readLine() != null) ;
+                    }
+                }
+                response.setContentType("application/json;charset=utf-8");
+                response.setStatus(HttpServletResponse.SC_OK);
+                baseRequest.setHandled(true);
+                response.getWriter().println("[]");
             }
         });
         try {

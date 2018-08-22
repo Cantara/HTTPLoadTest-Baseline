@@ -47,14 +47,14 @@ public class ThroughputTest {
         throughputTest(10, 10);
     }
 
-    void throughputTest(int testSpecifications, int throughputLowerLimitMsgsPerSecond) throws IOException {
+    void throughputTest(int domainCount, int throughputLowerLimitMsgsPerSecond) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         /*
          * Prepare read-specification, write-specification, and test-configuration.
          */
         TestSetupHelper helper = new TestSetupHelper(mapper);
-        helper.generateSpecifications(testSpecifications, httpServer.getPort());
+        helper.generateSpecifications(domainCount, httpServer.getPort());
         LoadTestExecutorService.setWriteTestSpecificationList(helper.getWriteSpecification());
         LoadTestExecutorService.setReadTestSpecificationList(helper.getReadSpecification());
         LoadTestConfig loadTestConfig = mapper.readValue(helper.getLoadTestConfigJson(), LoadTestConfig.class);
