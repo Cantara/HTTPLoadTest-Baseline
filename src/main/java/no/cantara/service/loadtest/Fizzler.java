@@ -111,7 +111,7 @@ public class Fizzler {
 
     private static final ZoneId z = ZoneId.of("Z");
     private static final DateTimeFormatter iso_timestamp_formattter
-            = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX");
     private static final Map<String, DateTimeFormatter> formatterByPattern = new ConcurrentHashMap<>();
 
     public static String getTimestamp(String formatPattern) {
