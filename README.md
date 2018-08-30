@@ -158,6 +158,9 @@ Since the main use meant for HTTPLoadTest is in automated QA pipelines, we have 
 nice WebUI and result visualization. We hope to address this shortcoming some time in the future and will be glad 
 for any helping hands.
 
+![Example Visualization](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/doc/HTTPLoadTest-Output-Visualization.png)
+
+
 ![Ugly UI whiteboard mockup](https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/images/whiteboard-UI-config-mockup.jpg)
 
 
