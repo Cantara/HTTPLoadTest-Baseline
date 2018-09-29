@@ -26,7 +26,7 @@ public class RestTestResourceTest {
         testServer.stop();
     }
 
-    @Test
+    @Test(enabled = false)
     public void testRestTestPost() {
         String path = "minapp/test/77/something";
         String json = "{fruit: mango}";
@@ -74,7 +74,7 @@ public class RestTestResourceTest {
                 .post(RestTestResource.REST_PATH + "/" + path);
     }
 
-    @Test
+    @Test(enabled = false)
     public void testRestTestGet() {
         String path = "minapp/test/77/something";
         given()
