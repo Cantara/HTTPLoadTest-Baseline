@@ -382,7 +382,7 @@
         <dependency>
             <groupId>nu.validator</groupId>
             <artifactId>cssvalidator</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.struts</groupId>
@@ -412,7 +412,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-http</artifactId>
-            <version>9.4.10.RC0</version>
+            <version>${jetty.version}</version>
         </dependency>
 
     </dependencies>
