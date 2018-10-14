@@ -49,7 +49,7 @@
 
     <properties>
         <service.name>HTTPLoadTest-baseline</service.name>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.9.7</jackson.version>
         <jersey.version>2.26</jersey.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
         <spring.version>5.0.9.RELEASE</spring.version>
