@@ -44,7 +44,7 @@ public class ThroughputTest {
 
     @Test
     public void thatTestBenchThroughputIsAcceptableWithManyTestSpecificationsPerReadWrite() throws IOException {
-        throughputTest(10, 10);
+        throughputTest(10, 100);
     }
 
     void throughputTest(int domainCount, int throughputLowerLimitMsgsPerSecond) throws IOException {
