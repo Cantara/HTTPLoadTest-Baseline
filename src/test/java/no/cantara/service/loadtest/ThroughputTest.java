@@ -85,10 +85,10 @@ public class ThroughputTest {
         double singleThreadThroughputMsgsPerSecond = 1000.0 * (nRead + nWrite) / actualTestDuration;
         double averageTimePerMessageMilliseconds = (double) actualTestDuration / (nRead + nWrite);
 
-        long meanRead = Long.parseLong(resultMap.get(LoadTestResultUtil.STATS_R_MEAN_SUCCESS_MS));
-        long meanWrite = Long.parseLong(resultMap.get(LoadTestResultUtil.STATS_W_MEAN_SUCCESS_MS));
+        double meanRead = Double.parseDouble(resultMap.get(LoadTestResultUtil.STATS_R_MEAN_SUCCESS_MS));
+        double meanWrite = Double.parseDouble(resultMap.get(LoadTestResultUtil.STATS_W_MEAN_SUCCESS_MS));
 
-        double weightedMean = (double) (Math.max(1, meanRead) * nRead + Math.max(1, meanWrite) * nWrite) / nRead + nWrite;
+        double weightedMean = (Math.max(1, meanRead) * nRead + Math.max(1, meanWrite) * nWrite) / nRead + nWrite;
 
         double timeSpentInTestBenchPerMessage = averageTimePerMessageMilliseconds - weightedMean;
         log.info("Single-thread throughput: {} msgs/sec", Math.round(singleThreadThroughputMsgsPerSecond));

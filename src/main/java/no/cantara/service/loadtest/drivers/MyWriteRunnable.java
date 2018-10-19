@@ -45,7 +45,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
             return null;
         }
 
-        long startTime = System.currentTimeMillis();
+        long startNanoTime = System.nanoTime();
         try {
             return TimedProcessingUtil.runWithTimeout(new Callable<LoadTestResult>() {
                 @Override
@@ -54,7 +54,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                 }
             }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
         } catch (Exception e) {
-            logTimedCode(startTime, loadTestConfig.getTest_id() + " - MyWriteRunnable was interrupted!");
+            logTimedCode(startNanoTime, loadTestConfig.getTest_id() + " - MyWriteRunnable was interrupted!");
             return null;
         }
     }
@@ -76,9 +76,9 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
         } catch (Exception e) {
             log.warn("Thread interrupted in wait sleep", e);
         }
-        long startTime = System.currentTimeMillis();
+        long startNanoTime = System.nanoTime();
 
-        logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
+        logTimedCode(startNanoTime, loadTestResult.getTest_run_no() + " - starting processing!");
         Map<String, String> resolvedResultVariables = new HashMap<>();
         Map<String, String> inheritedVariables = loadTestConfig.getTest_global_variables_map();
 
@@ -149,19 +149,19 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
         if (commandDurationMicroSeconds <= 0) {
             log.warn("commandDuration: {}, using fallback", commandDurationMicroSeconds);
             // fallback to include test-bench processing overhead as part of measured duration
-            commandDurationMicroSeconds = 1000 * (System.currentTimeMillis() - startTime);
+            commandDurationMicroSeconds = TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startNanoTime);
         }
 
-        loadTestResult.setTest_duration(Math.round(commandDurationMicroSeconds / 1000.0));
-        logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
+        loadTestResult.setTest_duration(commandDurationMicroSeconds / 1000.0);
+        logTimedCode(startNanoTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
         return loadTestResult;
 
     }
 
-    private static void logTimedCode(long startTime, String msg) {
-        // long elapsedSeconds = (System.currentTimeMillis() - startTime);
-        // log.trace("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
+    private static void logTimedCode(long startNanoTime, String msg) {
+        // long elapsedMilliseconds = Math.round((System.nanoTime() - startNanoTime) / 1000000.0);
+        // log.trace("{}ms [{}] {}\n", elapsedMilliseconds, Thread.currentThread().getName(), msg);
     }
 
 }

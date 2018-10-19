@@ -17,7 +17,7 @@ public class LoadTestResult implements Serializable {
     private long test_timestamp = System.currentTimeMillis();
     private int test_run_no = 90;
 
-    private long test_duration;
+    private double test_duration;
     private boolean test_success = false;
     private boolean test_deviation_flag = false;
     private static final Logger log = LoggerFactory.getLogger(LoadTestResult.class);
@@ -34,14 +34,13 @@ public class LoadTestResult implements Serializable {
         this.test_name = test_name;
         this.test_tags = test_tags;
         this.test_run_no = Integer.parseInt(test_run_no);
-        this.test_duration = Integer.valueOf(test_duration);
+        this.test_duration = Double.parseDouble(test_duration);
         this.test_success = Boolean.parseBoolean(test_success);
         this.test_deviation_flag = Boolean.parseBoolean(test_deviation_flag);
 
     }
 
     public LoadTestResult() {
-        test_timestamp = System.currentTimeMillis();
     }
 
     public String getTest_id() {
@@ -84,11 +83,11 @@ public class LoadTestResult implements Serializable {
         this.test_run_no = test_run_no;
     }
 
-    public long getTest_duration() {
+    public double getTest_duration() {
         return test_duration;
     }
 
-    public void setTest_duration(long test_duration) {
+    public void setTest_duration(double test_duration) {
         this.test_duration = test_duration;
     }
 

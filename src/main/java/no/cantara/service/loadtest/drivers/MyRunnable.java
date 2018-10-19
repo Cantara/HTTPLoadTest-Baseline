@@ -27,9 +27,9 @@ public class MyRunnable implements Callable<LoadTestResult> {
             return null;
         }
 
-        long startTime = System.currentTimeMillis();
+        long startNanoTime = System.nanoTime();
 
-        logTimedCode(startTime, loadTestResult.getTest_run_no() + " - starting processing!");
+        logTimedCode(startNanoTime, loadTestResult.getTest_run_no() + " - starting processing!");
 
         String result = "";
         int code = 200;
@@ -49,16 +49,16 @@ public class MyRunnable implements Callable<LoadTestResult> {
             result = "->Red<-\t";
             loadTestResult.setTest_deviation_flag(true);
         }
-        loadTestResult.setTest_duration(Long.valueOf(System.currentTimeMillis() - startTime));
+        loadTestResult.setTest_duration((System.nanoTime() - startNanoTime) / 1000000.0);
         log.trace(url + "\t\tStatus:" + result);
-        logTimedCode(startTime, loadTestResult.getTest_run_no() + " - processing completed!");
+        logTimedCode(startNanoTime, loadTestResult.getTest_run_no() + " - processing completed!");
 
         return loadTestResult;
     }
 
-    private static void logTimedCode(long startTime, String msg) {
-        long elapsedSeconds = (System.currentTimeMillis() - startTime);
-        log.trace("{}ms [{}] {}\n", elapsedSeconds, Thread.currentThread().getName(), msg);
+    private static void logTimedCode(long startNanoTime, String msg) {
+        long elapsedMilliseconds = Math.round((System.nanoTime() - startNanoTime) / 1000000.0);
+        log.trace("{}ms [{}] {}\n", elapsedMilliseconds, Thread.currentThread().getName(), msg);
     }
 
 }
