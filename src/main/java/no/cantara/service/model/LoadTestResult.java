@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({"test_id", "test_name", "test_run_no", "test_duration", "test_success", "test_deviation_flag", "test_tags"})
+@JsonPropertyOrder({"test_id", "test_name", "test_run_no", "test_duration", "test_success", "test_deviation_flag", "worker_concurrency_degree", "command_concurrency_degree", "test_tags"})
 public class LoadTestResult implements Serializable {
     private String test_id;
     private String test_name;
@@ -22,6 +22,9 @@ public class LoadTestResult implements Serializable {
     private boolean test_deviation_flag = false;
     private static final Logger log = LoggerFactory.getLogger(LoadTestResult.class);
 
+    private int worker_concurrency_degree;
+    private int command_concurrency_degree;
+
 
     public LoadTestResult(@JsonProperty("test_id") String id,
                           @JsonProperty("test_name") String test_name,
@@ -29,7 +32,9 @@ public class LoadTestResult implements Serializable {
                           @JsonProperty("test_run_no") String test_run_no,
                           @JsonProperty("test_duration") String test_duration,
                           @JsonProperty("test_success") String test_success,
-                          @JsonProperty("test_deviation_flag") String test_deviation_flag) {
+                          @JsonProperty("test_deviation_flag") String test_deviation_flag,
+                          @JsonProperty("worker_concurrency_degree") String worker_concurrency_degree,
+                          @JsonProperty("command_concurrency_degree") String command_concurrency_degree) {
         this.test_id = id;
         this.test_name = test_name;
         this.test_tags = test_tags;
@@ -37,6 +42,8 @@ public class LoadTestResult implements Serializable {
         this.test_duration = Double.parseDouble(test_duration);
         this.test_success = Boolean.parseBoolean(test_success);
         this.test_deviation_flag = Boolean.parseBoolean(test_deviation_flag);
+        this.worker_concurrency_degree = Integer.parseInt(worker_concurrency_degree);
+        this.command_concurrency_degree = Integer.parseInt(command_concurrency_degree);
 
     }
 
@@ -105,6 +112,22 @@ public class LoadTestResult implements Serializable {
 
     public void setTest_deviation_flag(boolean test_deviation_flag) {
         this.test_deviation_flag = test_deviation_flag;
+    }
+
+    public int getWorker_concurrency_degree() {
+        return worker_concurrency_degree;
+    }
+
+    public void setWorker_concurrency_degree(int worker_concurrency_degree) {
+        this.worker_concurrency_degree = worker_concurrency_degree;
+    }
+
+    public int getCommand_concurrency_degree() {
+        return command_concurrency_degree;
+    }
+
+    public void setCommand_concurrency_degree(int command_concurrency_degree) {
+        this.command_concurrency_degree = command_concurrency_degree;
     }
 }
 

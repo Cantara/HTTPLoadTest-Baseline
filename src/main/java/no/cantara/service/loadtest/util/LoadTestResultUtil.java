@@ -17,7 +17,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class LoadTestResultUtil {
 
@@ -54,6 +60,8 @@ public class LoadTestResultUtil {
     public static final String STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS = "stats_w_ninetyfive_percentine_success_ms";
     public static final String STATS_W_NINETYNINE_PERCENTINE_SUCCESS_MS = "stats_w_ninetynine_percentine_success_ms";
     public static final String STATS_TOTAL_SUCCESSRATE = "stats_total_successrate";
+    public static final String STATS_WORKER_CONCURRENCY_MEAN = "stats_worker_concurrency_mean";
+    public static final String STATS_COMMAND_CONCURRENCY_MEAN = "stats_command_concurrency_mean";
     public static final String BENCHMARK_REQ_90_PERCENTILE_READ_DURATION_MS = "benchmark_req_90percentile_read_duration_ms";
     public static final String BENCHMARK_REQ_90_PERCENTILE_WRITE_DURATION_MS = "benchmark_req_90percentile_write_duration_ms";
     public static final String BENCHMARK_REQ_95_PERCENTILE_READ_DURATION_MS = "benchmark_req_95percentile_read_duration_ms";
@@ -133,6 +141,8 @@ public class LoadTestResultUtil {
         double w_ninety_percentine_success_ms = 0;
         double w_ninetyfive_percentine_success_ms = 0;
         double w_ninetynine_percentine_success_ms = 0;
+        long workerConcurrencyDegreeSum = 0;
+        long commandConcurrencyDegreeSum = 0;
         List<Double> r_times = new ArrayList<Double>();
         List<Double> w_times = new ArrayList<Double>();
         for (LoadTestResult loadTestResult : loadTestResults) {
@@ -170,6 +180,8 @@ public class LoadTestResultUtil {
 
                 }
             }
+            workerConcurrencyDegreeSum += loadTestResult.getWorker_concurrency_degree();
+            commandConcurrencyDegreeSum += loadTestResult.getCommand_concurrency_degree();
         }
 
         // Evaluate
@@ -200,7 +212,10 @@ public class LoadTestResultUtil {
                 w_median_success_ms = w_times_array[w_times_array.length / 2];
         }
 
-        int total_successrate = 100 * ((r_success + w_success + success) / Math.max(1, (r_results + w_results + results)));
+        int N = r_results + w_results + results;
+        int total_successrate = 100 * ((r_success + w_success + success) / Math.max(1, N));
+        double workerConcurrencyDegree = workerConcurrencyDegreeSum / (double) Math.max(1, N);
+        double commandConcurrencyDegree = commandConcurrencyDegreeSum / (double) Math.max(1, N);
 
         statisticsMap.put(STATS_R_DEVIATIONS, Long.toString(r_deviations));
         statisticsMap.put(STATS_R_SUCCESS, Long.toString(r_success));
@@ -218,8 +233,8 @@ public class LoadTestResultUtil {
         statisticsMap.put(STATS_O_FAILURES, Long.toString(results - success));
         statisticsMap.put(STATS_T_DEVIATIONS, Long.toString(r_deviations + w_deviations + deviations));
         statisticsMap.put(STATS_T_SUCCESS, Long.toString(r_success + w_success + success));
-        statisticsMap.put(STATS_T_RESULTS, Long.toString(r_results + w_results + results));
-        statisticsMap.put(STATS_T_FAILURES, Long.toString(r_results + w_results + results - (r_success + w_success + success)));
+        statisticsMap.put(STATS_T_RESULTS, Long.toString(N));
+        statisticsMap.put(STATS_T_FAILURES, Long.toString(N - (r_success + w_success + success)));
         statisticsMap.put(STATS_R_MEAN_SUCCESS_MS, toRoundedString(r_mean_success_ms));
         statisticsMap.put(STATS_R_MEDIAN_SUCCESS_MS, toRoundedString(r_median_success_ms));
         statisticsMap.put(STATS_R_NINETY_PERCENTINE_SUCCESS_MS, toRoundedString(r_ninety_percentine_success_ms));
@@ -231,6 +246,8 @@ public class LoadTestResultUtil {
         statisticsMap.put(STATS_W_NINETYFIVE_PERCENTINE_SUCCESS_MS, toRoundedString(w_ninetyfive_percentine_success_ms));
         statisticsMap.put(STATS_W_NINETYNINE_PERCENTINE_SUCCESS_MS, toRoundedString(w_ninetynine_percentine_success_ms));
         statisticsMap.put(STATS_TOTAL_SUCCESSRATE, Long.toString(total_successrate));
+        statisticsMap.put(STATS_WORKER_CONCURRENCY_MEAN, toRoundedString(workerConcurrencyDegree));
+        statisticsMap.put(STATS_COMMAND_CONCURRENCY_MEAN, toRoundedString(commandConcurrencyDegree));
 
         boolean isBenchmarkPassed = true;
         if (loadTestBenchmark.getBenchmark_req_90percentile_read_duration_ms() > 0) {

@@ -23,6 +23,16 @@ public class MyRunnable implements Callable<LoadTestResult> {
 
     @Override
     public LoadTestResult call() throws Exception {
+        int workerConcurrencyDegreeAfterEntry = loadTestExecutionContext.workerConcurrencyDegree().incrementAndGet();
+        loadTestResult.setWorker_concurrency_degree(workerConcurrencyDegreeAfterEntry);
+        try {
+            return doCall();
+        } finally {
+            loadTestExecutionContext.workerConcurrencyDegree().decrementAndGet();
+        }
+    }
+
+    public LoadTestResult doCall() throws Exception {
         if (loadTestExecutionContext.stopped()) {
             return null;
         }

@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertTrue;
 
@@ -55,10 +56,10 @@ public class CommandReadTestSpecificationFromFileSpecTest {
             log.debug("{}  - Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                myPostCommand = new CommandPostFromTestSpecification(testSpecification);
+                myPostCommand = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
                 result = myPostCommand.execute();
             } else {
-                myGetCommand = new CommandGetFromTestSpecification(testSpecification);
+                myGetCommand = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger());
                 result = myGetCommand.execute();
             }
             log.info("{} - Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
@@ -93,10 +94,10 @@ public class CommandReadTestSpecificationFromFileSpecTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                myPostCommand = new CommandPostFromTestSpecification(testSpecification);
+                myPostCommand = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
                 result = myPostCommand.execute();
             } else {
-                myGetCommand = new CommandGetFromTestSpecification(testSpecification);
+                myGetCommand = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger());
                 result = myGetCommand.execute();
             }
             log.info("Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);

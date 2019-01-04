@@ -5,6 +5,7 @@ import no.cantara.service.model.TestSpecification;
 
 import java.net.URI;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandGetFromTestSpecification extends MyBaseHttpGetHystrixCommand<String> {
 
@@ -31,9 +32,10 @@ public class CommandGetFromTestSpecification extends MyBaseHttpGetHystrixCommand
             "</soapenv:Envelope>\n";
 
 
-    public CommandGetFromTestSpecification(TestSpecification testSpecification) {
+    public CommandGetFromTestSpecification(TestSpecification testSpecification, AtomicInteger commandConcurrencyDegree) {
         super(URI.create(testSpecification.getCommand_url()),
-                "hystrixCommandGetFromTestSpecification_" + r.nextInt(100));
+                "hystrixCommandGetFromTestSpecification_" + r.nextInt(100),
+                commandConcurrencyDegree);
         this.template = testSpecification.getCommand_template();
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();

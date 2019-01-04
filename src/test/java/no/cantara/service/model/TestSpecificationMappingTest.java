@@ -10,7 +10,12 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertTrue;
 
@@ -181,7 +186,7 @@ public class TestSpecificationMappingTest {
             testSpecification.resolveVariables(null, null, null);
             assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
             testSpecification.resolveVariables(null, null, null);
-            CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+            CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
             String result = command.execute();
             log.warn(result);
 

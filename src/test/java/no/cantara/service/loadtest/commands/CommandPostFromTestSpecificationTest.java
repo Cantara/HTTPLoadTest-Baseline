@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertTrue;
 
@@ -88,10 +89,10 @@ public class CommandPostFromTestSpecificationTest {
             log.trace("{} Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification);
+                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
                 result = commandPostFromTestSpecification.execute();
             } else {
-                CommandGetFromTestSpecification commandGetFromTestSpecification = new CommandGetFromTestSpecification(testSpecification);
+                CommandGetFromTestSpecification commandGetFromTestSpecification = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger());
                 result = commandGetFromTestSpecification.execute();
             }
             resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
@@ -118,9 +119,9 @@ public class CommandPostFromTestSpecificationTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                result = new CommandPostFromTestSpecification(testSpecification).execute();
+                result = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger()).execute();
             } else {
-                result = new CommandGetFromTestSpecification(testSpecification).execute();
+                result = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger()).execute();
             }
             log.debug("Returned result: " + result);
             //assertTrue(result.length() > 0);
@@ -145,11 +146,11 @@ public class CommandPostFromTestSpecificationTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification);
+                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
                 result = commandPostFromTestSpecification.execute();
                 log.trace("" + commandPostFromTestSpecification.isCircuitBreakerOpen());
             } else {
-                result = new CommandGetFromTestSpecification(testSpecification).execute();
+                result = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger()).execute();
             }
             log.debug("Returned result: " + result);
             //assertTrue(result.length() > 0);

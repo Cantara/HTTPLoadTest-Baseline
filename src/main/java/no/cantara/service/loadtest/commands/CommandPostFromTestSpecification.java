@@ -8,6 +8,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
 
@@ -18,9 +19,10 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
     String template = "";
 
 
-    public CommandPostFromTestSpecification(TestSpecification testSpecification) {
+    public CommandPostFromTestSpecification(TestSpecification testSpecification, AtomicInteger commandConcurrencyDegree) {
         super(URI.create(testSpecification.getCommand_url()),
-                "hystrixCommandPostFromTestSpecification_" + r.nextInt(100));
+                "hystrixCommandPostFromTestSpecification_" + r.nextInt(100),
+                commandConcurrencyDegree);
         this.template = testSpecification.getCommand_template();
         this.contentType = testSpecification.getCommand_contenttype();
         this.httpAuthorizationString = testSpecification.getCommand_http_authstring();

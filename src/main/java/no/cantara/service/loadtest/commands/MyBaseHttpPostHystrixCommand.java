@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
 
@@ -21,9 +22,12 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     protected String TAG = "";
     protected HttpRequest request;
     protected long requestDurationMicroSeconds = 0;
+    protected final AtomicInteger commandConcurrencyDegree;
+    protected int commandConcurrencyDegreeOnEntry;
 
-    protected MyBaseHttpPostHystrixCommand(URI serviceUri, String hystrixGroupKey) {
+    protected MyBaseHttpPostHystrixCommand(URI serviceUri, String hystrixGroupKey, AtomicInteger commandConcurrencyDegree) {
         super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)));
+        this.commandConcurrencyDegree = commandConcurrencyDegree;
         init(serviceUri, hystrixGroupKey);
     }
 
@@ -37,8 +41,12 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
     @Override
     protected R run() {
-        return doPostCommand();
-
+        commandConcurrencyDegreeOnEntry = commandConcurrencyDegree.incrementAndGet();
+        try {
+            return doPostCommand();
+        } finally {
+            commandConcurrencyDegree.decrementAndGet();
+        }
     }
 
     protected R doPostCommand() {
@@ -156,6 +164,10 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
     public long getRequestDurationMicroSeconds() {
         return requestDurationMicroSeconds;
+    }
+
+    public int getCommandConcurrencyDegreeOnEntry() {
+        return commandConcurrencyDegreeOnEntry;
     }
 }
 

@@ -18,7 +18,9 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import static no.cantara.service.loadtest.util.HTTPResultUtil.*;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.first150;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
+import static no.cantara.service.loadtest.util.HTTPResultUtil.firstX;
 
 
 public class MyReadRunnable implements Callable<LoadTestResult> {
@@ -59,6 +61,16 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
     }
 
     private LoadTestResult execute() {
+        int workerConcurrencyDegreeAfterEntry = loadTestExecutionContext.workerConcurrencyDegree().incrementAndGet();
+        loadTestResult.setWorker_concurrency_degree(workerConcurrencyDegreeAfterEntry);
+        try {
+            return doExecute();
+        } finally {
+            loadTestExecutionContext.workerConcurrencyDegree().decrementAndGet();
+        }
+    }
+
+    private LoadTestResult doExecute() {
         if (loadTestExecutionContext.stopped()) {
             return null;
         }
@@ -100,8 +112,9 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                     String result = null;
                     try {
                         if (testSpecification.isCommand_http_post()) {
-                            CommandPostFromTestSpecification postcommand = new CommandPostFromTestSpecification(testSpecification);
+                            CommandPostFromTestSpecification postcommand = new CommandPostFromTestSpecification(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
                             result = postcommand.execute();
+                            loadTestResult.setCommand_concurrency_degree(postcommand.getCommandConcurrencyDegreeOnEntry());
                             commandDurationMicroSeconds = commandDurationMicroSeconds + postcommand.getRequestDurationMicroSeconds();
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!postcommand.isSuccessfulExecution()) {
@@ -113,8 +126,9 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                                 loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":R(" + first50(result) + ") -");
                             }
                         } else {
-                            CommandGetFromTestSpecification getcommand = new CommandGetFromTestSpecification(testSpecification);
+                            CommandGetFromTestSpecification getcommand = new CommandGetFromTestSpecification(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
                             result = getcommand.execute();
+                            loadTestResult.setCommand_concurrency_degree(getcommand.getCommandConcurrencyDegreeOnEntry());
                             commandDurationMicroSeconds = commandDurationMicroSeconds + getcommand.getRequestDurationMicroSeconds();
                             log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!getcommand.isSuccessfulExecution()) {

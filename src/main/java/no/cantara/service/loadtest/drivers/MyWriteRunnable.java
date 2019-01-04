@@ -60,6 +60,16 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
     }
 
     private LoadTestResult execute() {
+        int workerConcurrencyDegreeAfterEntry = loadTestExecutionContext.workerConcurrencyDegree().incrementAndGet();
+        loadTestResult.setWorker_concurrency_degree(workerConcurrencyDegreeAfterEntry);
+        try {
+            return doExecute();
+        } finally {
+            loadTestExecutionContext.workerConcurrencyDegree().decrementAndGet();
+        }
+    }
+
+    private LoadTestResult doExecute() {
         if (loadTestExecutionContext.stopped()) {
             return null;
         }
@@ -98,8 +108,9 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                             Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
                     String result;
                     if (testSpecification.isCommand_http_post()) {
-                        CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification);
+                        CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
                         result = command.execute();
+                        loadTestResult.setCommand_concurrency_degree(command.getCommandConcurrencyDegreeOnEntry());
                         commandDurationMicroSeconds = commandDurationMicroSeconds + command.getRequestDurationMicroSeconds();
                         log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
@@ -111,8 +122,9 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
                         }
                     } else {
-                        CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification);
+                        CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
                         result = command.execute();
+                        loadTestResult.setCommand_concurrency_degree(command.getCommandConcurrencyDegreeOnEntry());
                         commandDurationMicroSeconds = commandDurationMicroSeconds + command.getRequestDurationMicroSeconds();
                         log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {

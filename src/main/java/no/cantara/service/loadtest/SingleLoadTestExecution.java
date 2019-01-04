@@ -17,7 +17,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
@@ -41,6 +48,8 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     private long stopTime = 0;
     private boolean isRunning = false;
     private boolean stopInitiated = false;
+    private final AtomicInteger workerConcurrencyDegree = new AtomicInteger(0);
+    private final AtomicInteger commandConcurrencyDegree = new AtomicInteger(0);
 
     public SingleLoadTestExecution(List<TestSpecification> readTestSpecificationList,
                                    List<TestSpecification> writeTestSpecificationList,
@@ -219,6 +228,16 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
         if (size > 0) {
             log.warn("{} task(s) are still in progress, their results will be discarded!", size);
         }
+    }
+
+    @Override
+    public AtomicInteger workerConcurrencyDegree() {
+        return workerConcurrencyDegree;
+    }
+
+    @Override
+    public AtomicInteger commandConcurrencyDegree() {
+        return commandConcurrencyDegree;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package no.cantara.service.loadtest.drivers;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public interface LoadTestExecutionContext {
 
     /**
@@ -8,4 +10,8 @@ public interface LoadTestExecutionContext {
      * @return
      */
     boolean stopped();
+
+    AtomicInteger workerConcurrencyDegree();
+
+    AtomicInteger commandConcurrencyDegree();
 }
