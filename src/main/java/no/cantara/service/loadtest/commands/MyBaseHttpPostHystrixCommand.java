@@ -50,6 +50,8 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
 
             log.trace("TAG" + " - serviceUri={}", uriString);
 
+            long startTime = System.nanoTime();
+
             if (getQueryParameters() != null && getQueryParameters().length != 0) {
                 request = HttpRequest.post(uriString, true, getQueryParameters());
             } else {
@@ -63,11 +65,9 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
             request = dealWithRequestBeforeSend(request);
 
             int statusCode;
-            long startTime = System.nanoTime();
             try {
                 if (getFormParameters() != null && !getFormParameters().isEmpty()) {
                     request.contentType(HttpSender.APPLICATION_FORM_URLENCODED);
-                    startTime = System.nanoTime(); // improve duration accuracy
                     request.form(getFormParameters());
                 }
 
