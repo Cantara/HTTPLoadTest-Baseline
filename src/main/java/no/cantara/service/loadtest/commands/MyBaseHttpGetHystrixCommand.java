@@ -3,9 +3,6 @@ package no.cantara.service.loadtest.commands;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandProperties;
-import com.netflix.hystrix.HystrixThreadPoolProperties;
-import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import no.cantara.base.command.HttpSender;
 import no.cantara.base.util.StringConv;
 import org.slf4j.Logger;
@@ -16,28 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
+
     protected Logger log;
     protected URI serviceUri;
     protected String TAG = "";
     protected HttpRequest request;
     protected long requestDurationMicroSeconds = 0;
-
-    private static HystrixThreadPoolProperties.Setter threadProperties;
-
-    static {
-        threadProperties = HystrixThreadPoolProperties.Setter();
-        threadProperties.withCoreSize(10);
-        threadProperties.withMaxQueueSize(10000);
-        HystrixRequestContext.initializeContext();
-
-    }
-
-    protected MyBaseHttpGetHystrixCommand(URI serviceUri, String hystrixGroupKey, int hystrixExecutionTimeOut) {
-        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)).
-                andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-                                                                     .withExecutionTimeoutInMilliseconds(hystrixExecutionTimeOut)));
-        init(serviceUri, hystrixGroupKey);
-    }
 
     protected MyBaseHttpGetHystrixCommand(URI serviceUri, String hystrixGroupKey) {
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)));
@@ -49,7 +30,6 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
         this.serviceUri = serviceUri;
         this.TAG = this.getClass().getName() + ", pool :" + hystrixGroupKey;
         this.log = LoggerFactory.getLogger(TAG);
-        HystrixRequestContext.initializeContext();
     }
 
 
