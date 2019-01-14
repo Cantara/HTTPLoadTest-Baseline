@@ -44,6 +44,7 @@ public class CommandReadTestSpecificationFromFileSpecTest {
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
         });
+        readTestSpec.forEach(ts -> ts.setCommand_url(ts.getCommand_url().replace("http://localhost:8086/HTTPLoadTest-baseline", testServer.getUrl())));
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
         CommandGetFromTestSpecification myGetCommand = null;

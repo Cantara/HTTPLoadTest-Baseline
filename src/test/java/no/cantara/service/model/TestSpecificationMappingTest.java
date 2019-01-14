@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.TemplateUtil;
+import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -170,28 +171,36 @@ public class TestSpecificationMappingTest {
         assertTrue(loadTestJson.contains("HTTPLoadTest-baseline"));
 
     }
+
     @Test
     public void readTestSpecificationWithExternalTemplateMappingFromFile() throws Exception {
+        TestServer testServer;
+        testServer = new TestServer(getClass());
+        testServer.start();
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(classLoader.getResource("loadtest_setup/specifications/read/TestReadConfigReadTestSpecification.json").getFile());
+            List<TestSpecification> readTestSpec = new ArrayList<>();
+            readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
+            });
+            readTestSpec.forEach(ts -> ts.setCommand_url(ts.getCommand_url().replace("http://localhost:8086/HTTPLoadTest-baseline", testServer.getUrl())));
+            for (TestSpecification testSpecificationo : readTestSpec) {
+                TestSpecification testSpecification = testSpecificationo.clone();
 
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("loadtest_setup/specifications/read/TestReadConfigReadTestSpecification.json").getFile());
-        List<TestSpecification> readTestSpec = new ArrayList<>();
-        readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
-        });
-        for (TestSpecification testSpecificationo : readTestSpec) {
-            TestSpecification testSpecification = testSpecificationo.clone();
+                assertTrue(testSpecification.getCommand_url().length() > 0);
+                //testSpecification.setCommand_template("FILE:./pom.xml");
+                testSpecification.resolveVariables(null, null, null);
+                assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
+                testSpecification.resolveVariables(null, null, null);
+                CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
+                String result = command.execute();
+                log.warn(result);
 
-            assertTrue(testSpecification.getCommand_url().length() > 0);
-            //testSpecification.setCommand_template("FILE:./pom.xml");
-            testSpecification.resolveVariables(null, null, null);
-            assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
-            testSpecification.resolveVariables(null, null, null);
-            CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
-            String result = command.execute();
-            log.warn(result);
-
+            }
+            //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
+        } finally {
+            testServer.stop();
         }
-        //      assertTrue(fileLoadtest.getTest_id().equalsIgnoreCase("TestID"));
     }
 
 

@@ -79,6 +79,7 @@ public class CommandPostFromTestSpecificationTest {
         File file = new File(classLoader.getResource("loadtest_setup/specifications/read/TestReadConfigReadTestSpecification.json").getFile());
         List<TestSpecification> readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
+        readTestSpec.forEach(ts -> ts.setCommand_url(ts.getCommand_url().replace("http://localhost:8086/HTTPLoadTest-baseline", testServer.getUrl())));
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
         int n = 1;
@@ -111,6 +112,7 @@ public class CommandPostFromTestSpecificationTest {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
+        readTestSpec.forEach(ts -> ts.setCommand_url(ts.getCommand_url().replace("http://localhost:8086/HTTPLoadTest-baseline", testServer.getUrl())));
         Map<String, String> resolvedResultVariables = new HashMap<>();
         for (TestSpecification testSpecificationo : readTestSpec) {
             TestSpecification testSpecification = testSpecificationo.clone();
@@ -138,6 +140,7 @@ public class CommandPostFromTestSpecificationTest {
         List<TestSpecification> readTestSpec = new ArrayList<>();
         readTestSpec = mapper.readValue(file, new TypeReference<List<TestSpecification>>() {
         });
+        readTestSpec.forEach(ts -> ts.setCommand_url(ts.getCommand_url().replace("http://localhost:8086/HTTPLoadTest-baseline", testServer.getUrl())));
         Map<String, String> resolvedResultVariables = new HashMap<>();
         for (TestSpecification testSpecificationo : readTestSpec) {
             TestSpecification testSpecification = testSpecificationo.clone();
