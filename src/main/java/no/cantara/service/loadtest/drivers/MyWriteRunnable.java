@@ -60,7 +60,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                 inheritedVariables.putAll(testSpecification.getCommand_replacement_map());
 
                 if (testSpecification.getCommand_url().length() > 0) {
-                    log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
+                    log.trace("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
                     loadTestResult.setTest_success(false);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() + " - (Write-URL:" + writeCommandNo++ + "/" +
                             Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
@@ -70,7 +70,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         result = command.execute();
                         loadTestResult.setCommand_concurrency_degree(command.getCommandConcurrencyDegreeOnEntry());
                         commandDurationMicroSeconds = commandDurationMicroSeconds + command.getRequestDurationMicroSeconds();
-                        log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
+                        log.trace("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -84,7 +84,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         result = command.execute();
                         loadTestResult.setCommand_concurrency_degree(command.getCommandConcurrencyDegreeOnEntry());
                         commandDurationMicroSeconds = commandDurationMicroSeconds + command.getRequestDurationMicroSeconds();
-                        log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
+                        log.trace("{} returned response: {}", testSpecification.getCommand_url(), result);
                         if (!command.isSuccessfulExecution()) {
                             loadTestResult.setTest_success(false);
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -94,7 +94,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
                         }
                     }
-                    log.info("Returned result: W-{}.{} - {} ", loadTestResult.getTest_run_no(), writeCommandNo, result);
+                    log.trace("Returned result: W-{}.{} - {} ", loadTestResult.getTest_run_no(), writeCommandNo, result);
                     if (result == null || result.startsWith("StatusCode:")) {
                         loadTestResult.setTest_success(false);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -102,7 +102,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                         loadTestResult.setTest_success(true);
                         resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first50(result) + ") -:Vars(" + resolvedResultVariables + ") - ");
-                        log.info("{} Resolved variables: {} result: {} from command_response_map: {}", testSpecification.getCommand_url(), resolvedResultVariables, result, testSpecification.getCommand_response_map());
+                        log.trace("{} Resolved variables: {} result: {} from command_response_map: {}", testSpecification.getCommand_url(), resolvedResultVariables, result, testSpecification.getCommand_response_map());
                     }
                 }
                 // We break the flow if one step fail

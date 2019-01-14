@@ -206,7 +206,7 @@ public class TestSpecification implements Serializable, Cloneable {
             try {
                 String contents = templateByFileReference.computeIfAbsent(filename, f -> loadFromDiskByName(f));
                 setCommand_template(contents);
-                log.info("loadTemplateReference - Updated FILE; filename:{}, reference with: {} \n template now: {}", filename, contents, getCommand_template());
+                log.trace("loadTemplateReference - Updated FILE; filename:{}, reference with: {} \n template now: {}", filename, contents, getCommand_template());
             } catch (Exception e) {
                 log.error("loadTemplateReference - Unable to load external referenced TestSpecificationtremplate, filaname: {} exception: {}", filename, e);
             }
@@ -230,13 +230,13 @@ public class TestSpecification implements Serializable, Cloneable {
         }
         Map<String, String> command_replacement_map = getCommand_replacement_map();
         loadTemplateReference();
-        log.info("resolveVariables - Active variables: {}", command_replacement_map);
+        log.trace("resolveVariables - Active variables: {}", command_replacement_map);
         setCommand_url(getTemplateUtil().updateTemplateWithValuesFromMap(getCommand_url()));
-        log.info("resolveVariables -Updated commandURL: {}", getCommand_url());
+        log.trace("resolveVariables -Updated commandURL: {}", getCommand_url());
         setCommand_http_authstring(getTemplateUtil().updateTemplateWithValuesFromMap(getCommand_http_authstring()));
-        log.info("resolveVariables - Updated command_http_authstring: {}", getCommand_http_authstring());
+        log.trace("resolveVariables - Updated command_http_authstring: {}", getCommand_http_authstring());
         setCommand_template(getTemplateUtil().updateTemplateWithValuesFromMap(getCommand_template()));
-        log.info("resolveVariables - Updated command_template: {}", getCommand_template());
+        log.trace("resolveVariables - Updated command_template: {}", getCommand_template());
 
     }
 

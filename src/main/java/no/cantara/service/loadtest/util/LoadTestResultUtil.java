@@ -112,11 +112,11 @@ public class LoadTestResultUtil {
             LoadTestExecutorService.stop();  // We might get in trouble if no memory for native threads in high thread situations
         }
         if (loadTestResults == null) {
-            log.info("hasPassedBenchmark - no results - skipping");
+            log.trace("hasPassedBenchmark - no results - skipping");
             return statisticsMap;  // We ship on empty results and if tests are running and whileRunning flag is not set
         }
         if (!whileRunning && LoadTestExecutorService.isRunning()) {
-            log.info("hasPassedBenchmark - is running - whileRunning=false - skipping");
+            log.trace("hasPassedBenchmark - is running - whileRunning=false - skipping");
             return statisticsMap;  // We ship on empty results and if tests are running and whileRunning flag is not set
 
         }

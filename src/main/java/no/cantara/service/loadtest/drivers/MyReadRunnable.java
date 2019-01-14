@@ -61,7 +61,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                 if (testSpecification.getCommand_url().length() > 0) {
 
 
-                    log.info("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
+                    log.trace("Calling {} \n- template:{}", testSpecification.getCommand_url(), testSpecification.getCommand_template());
                     loadTestResult.setTest_success(false);
                     loadTestResult.setTest_tags(loadTestResult.getTest_tags() +
                             " - (Read-URL:" + readCommandNo++ + "/" + Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
@@ -73,7 +73,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             result = postcommand.execute();
                             loadTestResult.setCommand_concurrency_degree(postcommand.getCommandConcurrencyDegreeOnEntry());
                             commandDurationMicroSeconds = commandDurationMicroSeconds + postcommand.getRequestDurationMicroSeconds();
-                            log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
+                            log.trace("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!postcommand.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
                                 loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -87,7 +87,7 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                             result = getcommand.execute();
                             loadTestResult.setCommand_concurrency_degree(getcommand.getCommandConcurrencyDegreeOnEntry());
                             commandDurationMicroSeconds = commandDurationMicroSeconds + getcommand.getRequestDurationMicroSeconds();
-                            log.info("{} returned response: {}", testSpecification.getCommand_url(), result);
+                            log.trace("{} returned response: {}", testSpecification.getCommand_url(), result);
                             if (!getcommand.isSuccessfulExecution()) {
                                 loadTestResult.setTest_success(false);
                                 loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
@@ -101,14 +101,14 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
                         log.error("Unable to instansiate TestSpecification", e);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":Unable to instansiate TestSpecification(" + first50(e.getMessage()) + ") -");
                     }
-                    log.info("Returned result: R-{}.{} - {} ", loadTestResult.getTest_run_no(), readCommandNo, result);
+                    log.trace("Returned result: R-{}.{} - {} ", loadTestResult.getTest_run_no(), readCommandNo, result);
                     if (result == null || result.startsWith("StatusCode:")) {
                         loadTestResult.setTest_success(false);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":F(" + firstX(result, 250) + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                     } else {
                         loadTestResult.setTest_success(true);
                         resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
-                        log.info("{} Resolved variables: {}", testSpecification.getCommand_url(), resolvedResultVariables);
+                        log.trace("{} Resolved variables: {}", testSpecification.getCommand_url(), resolvedResultVariables);
                         loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":S(" + first150(result) + ") -:vars(" + resolvedResultVariables + ") + Req:( -" + testSpecification.toLongString() + ") - ");
                     }
 

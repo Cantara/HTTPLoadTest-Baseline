@@ -45,7 +45,7 @@ public class HTTPResultUtil {
             log.trace("resultToParse was empty, so returning empty .");
             return resultsMap;
         }
-        log.info("parseWithRegexp {}", resultToParse);
+        log.trace("parseWithRegexp {}", resultToParse);
         for (String regExpKey : regexpSelectorMap.keySet()) {
             Pattern MY_PATTERN = Pattern.compile(regexpSelectorMap.get(regExpKey));
             Matcher m = MY_PATTERN.matcher(resultToParse);
@@ -72,7 +72,7 @@ public class HTTPResultUtil {
             log.trace("resultToParse was empty, so returning empty .");
             return resultsMap;
         }
-        log.info("parseWithJsonPath {}", resultToParse);
+        log.trace("parseWithJsonPath {}", resultToParse);
 
         for (String jsonPathKey : jsonpaths.keySet()) {
             try {
@@ -101,7 +101,7 @@ public class HTTPResultUtil {
             return resultsMap;
         }
 
-        log.info("parseWithJsonPath {}", resultToParse);
+        log.trace("parseWithJsonPath {}", resultToParse);
         for (String xPathKey : xpaths.keySet()) {
             try {
                 String result =
