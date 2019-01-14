@@ -32,7 +32,7 @@ public class TemplateUtil {
         fizzleFunctionByKey.put("timestamp", (parameters, input) -> Fizzler.getTimestamp(input));
     }
 
-    static final Pattern variablePattern = Pattern.compile("#\\(?(\\p{Alnum}+)\\)?");
+    static final Pattern variablePattern = Pattern.compile("#\\(?([\\p{Alnum}_]+)\\)?");
 
     final Map<String, String> templatereplacementMap;
     final Map<String, Expression> expressionByKey;
@@ -49,7 +49,7 @@ public class TemplateUtil {
                     String variableIdentifier = m.group(1).toLowerCase();
                     expressionByKey.put(variableIdentifier, new Expression(e.getValue()));
                 } else {
-                    log.warn("template-replacement-map contains key not on #variable form: " + e.getKey());
+                    log.warn("template-replacement-map contains key not on #variable form: {}", e.getKey());
                 }
             }
         }
@@ -68,7 +68,6 @@ public class TemplateUtil {
 
     static final Pattern fizzleFunctionPattern =
             Pattern.compile("#[Ff][Ii][Zz][Zz][Ll][Ee]\\(([^():]+)(?:\\(([^)]*)\\))?:?([^)]*)\\)");
-    static final Pattern replaceablePattern = Pattern.compile("(?:" + fizzleFunctionPattern.pattern() + ")|(?:" + variablePattern.pattern() + ")");
 
     class Expression {
 
@@ -86,8 +85,15 @@ public class TemplateUtil {
 
             resolvedExpression = "$$circular$$reference$$protection$$";
 
+            resolvedExpression = resolveWithFizzlePattern(template);
+            resolvedExpression = resolveWithVariablePattern(resolvedExpression);
+
+            return resolvedExpression;
+        }
+
+        private String resolveWithFizzlePattern(String template) {
             StringBuilder result = new StringBuilder();
-            Matcher replaceableExpressionsInTemplateMatcher = replaceablePattern.matcher(template);
+            Matcher replaceableExpressionsInTemplateMatcher = fizzleFunctionPattern.matcher(template);
             int previousEnd = 0;
             while (replaceableExpressionsInTemplateMatcher.find()) {
                 result.append(template, previousEnd, replaceableExpressionsInTemplateMatcher.start());
@@ -104,11 +110,25 @@ public class TemplateUtil {
                         String fizzleOutput = function.apply(fizzleFunctionArguments, resolvedFizzleInput);
                         result.append(fizzleOutput);
                     }
-                } else if (replaceableExpressionsInTemplateMatcher.group(4) != null) {
-                    String variableIdentifier = replaceableExpressionsInTemplateMatcher.group(4).toLowerCase();
+                }
+                previousEnd = replaceableExpressionsInTemplateMatcher.end();
+            }
+            result.append(template.substring(previousEnd)); // tail
+
+            return result.toString();
+        }
+
+        private String resolveWithVariablePattern(String template) {
+            StringBuilder result = new StringBuilder();
+            Matcher replaceableExpressionsInTemplateMatcher = variablePattern.matcher(template);
+            int previousEnd = 0;
+            while (replaceableExpressionsInTemplateMatcher.find()) {
+                result.append(template, previousEnd, replaceableExpressionsInTemplateMatcher.start());
+                if (replaceableExpressionsInTemplateMatcher.group(1) != null) {
+                    String variableIdentifier = replaceableExpressionsInTemplateMatcher.group(1).toLowerCase();
                     Expression expression = expressionByKey.get(variableIdentifier);
                     if (expression == null) {
-                        log.warn("Unable to resolve template variable #" + variableIdentifier);
+                        log.warn("Unable to resolve template variable #{}", variableIdentifier);
                         result.append(expression);
                     } else {
                         String resolvedExpression = expression.resolve();
@@ -120,8 +140,7 @@ public class TemplateUtil {
             }
             result.append(template.substring(previousEnd)); // tail
 
-            resolvedExpression = result.toString();
-            return resolvedExpression;
+            return result.toString();
         }
     }
 }
