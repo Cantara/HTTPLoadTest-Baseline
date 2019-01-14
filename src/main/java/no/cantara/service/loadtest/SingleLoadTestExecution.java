@@ -6,7 +6,6 @@ import no.cantara.service.loadtest.drivers.MyReadRunnable;
 import no.cantara.service.loadtest.drivers.MyRunnable;
 import no.cantara.service.loadtest.drivers.MyWriteRunnable;
 import no.cantara.service.loadtest.util.BlockingExecutor;
-import no.cantara.service.loadtest.util.FutureSelector;
 import no.cantara.service.loadtest.util.LoadTestResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
@@ -14,17 +13,15 @@ import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
@@ -42,12 +39,12 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     private final List<TestSpecification> writeTestSpecificationList;
     private final int threadPoolSize;
 
-    // mutable variables, all read/write access must be synchronized on this instance
-    private int tasksScheduled = 0;
-    private long startTime = System.currentTimeMillis();
-    private long stopTime = 0;
-    private boolean isRunning = false;
-    private boolean stopInitiated = false;
+    // mutable variables
+    private final AtomicInteger tasksScheduled = new AtomicInteger(0);
+    private final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
+    private final AtomicLong stopTime = new AtomicLong(0);
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private final AtomicBoolean stopInitiated = new AtomicBoolean(false);
     private final AtomicInteger workerConcurrencyDegree = new AtomicInteger(0);
     private final AtomicInteger commandConcurrencyDegree = new AtomicInteger(0);
 
@@ -58,23 +55,17 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
         this.readTestSpecificationList = readTestSpecificationList;
         this.writeTestSpecificationList = writeTestSpecificationList;
         this.loadTestConfig = loadTestConfig;
-
-        threadPoolSize = loadTestConfig.getTest_no_of_threads();
-
+        this.threadPoolSize = loadTestConfig.getTest_no_of_threads();
         this.loadTestRunNo = loadTestRunNo;
-
         runTaskExecutor = new BlockingExecutor(threadPoolSize, threadPoolSize * WORK_QUEUE_CAPACITY_FACTOR);
     }
 
     void runLoadTest() {
 
-        long startTime;
+        long startTime = System.currentTimeMillis();
+        this.startTime.set(startTime);
 
-        synchronized (this) {
-            this.startTime = System.currentTimeMillis();
-            startTime = this.startTime;
-            isRunning = true;
-        }
+        isRunning.set(true);
 
         try {
 
@@ -90,18 +81,13 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
 
             log.info("Async LoadTest {} completed, ran for {} seconds, max running time: {} seconds", loadTestConfig.getTest_id(), (System.currentTimeMillis() - startTime) / 1000, loadTestConfig.getTest_duration_in_seconds());
 
-            synchronized (this) {
-                stopTime = System.currentTimeMillis();
-            }
-
+            stopTime.set(System.currentTimeMillis());
 
         } finally {
             try {
                 LoadTestResultUtil.storeResultToFiles();
             } finally {
-                synchronized (this) {
-                    isRunning = false;
-                }
+                isRunning.set(false);
             }
         }
     }
@@ -127,7 +113,6 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     }
 
     private void runTask(LoadTestConfig loadTestConfig) {
-        FutureSelector<LoadTestResult> futureSelector = new FutureSelector<>();
         try {
             int runNo = 1;
             int read_ratio = loadTestConfig.getTest_read_write_ratio();
@@ -135,99 +120,70 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
             while (!stopped()) {
 
                 int chance = r.nextInt(100);
-                long maxRunTimeMs = startTime + loadTestConfig.getTest_duration_in_seconds() * 1000 - System.currentTimeMillis();
 
-                // We stop a little before known timeout, we quit on stop-signal... and we schedule max 10*the configured number of threads to avoid overusing memory
-                // for long (endurance) loadtest runs
-                log.info("MaxRunInMilliSeconds: {}, LOAD_TEST_RAMPDOWN_TIME_MS:{} , tasks scheduled: {}", maxRunTimeMs, LOAD_TEST_RAMPDOWN_TIME_MS, tasksScheduled);
+                Callable<LoadTestResult> worker;
 
                 if (read_ratio == 0) {
                     String url = "http://localhost:" + Main.PORT_NO + Main.CONTEXT_PATH;
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id(loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Callable<LoadTestResult> worker = new MyRunnable(url, loadTestResult, this);
-                    try {
-                        futureSelector.add(runTaskExecutor.submit(worker));
-                        tasksScheduled++;
-                    } catch (RejectedExecutionException e) {
-                        // This will typically happen if the thread-pool is stopped while this thread is waiting
-                        // for available work-queue capacity
-                    }
+                    LoadTestResult loadTestResult = createLoadTestResult(loadTestConfig.getTest_id(), runNo++);
+                    worker = new MyRunnable(url, loadTestResult, this);
                 } else if (chance <= read_ratio) {
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id("r-" + loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Callable<LoadTestResult> worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult, this);
-                    try {
-                        futureSelector.add(runTaskExecutor.submit(worker));
-                        tasksScheduled++;
-                    } catch (RejectedExecutionException e) {
-                        // This will typically happen if the thread-pool is stopped while this thread is waiting
-                        // for available work-queue capacity
-                    }
+                    LoadTestResult loadTestResult = createLoadTestResult("r-" + loadTestConfig.getTest_id(), runNo++);
+                    worker = new MyReadRunnable(readTestSpecificationList, loadTestConfig, loadTestResult, this);
                 } else {
-                    LoadTestResult loadTestResult = new LoadTestResult();
-                    loadTestResult.setTest_id("w-" + loadTestConfig.getTest_id());
-                    loadTestResult.setTest_name(loadTestConfig.getTest_name());
-                    loadTestResult.setTest_run_no(runNo++);
-                    Callable<LoadTestResult> worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult, this);
-                    try {
-                        futureSelector.add(runTaskExecutor.submit(worker));
-                        tasksScheduled++;
-                    } catch (RejectedExecutionException e) {
-                        // This will typically happen if the thread-pool is stopped while this thread is waiting
-                        // for available work-queue capacity
-                    }
+                    LoadTestResult loadTestResult = createLoadTestResult("w-" + loadTestConfig.getTest_id(), runNo++);
+                    worker = new MyWriteRunnable(writeTestSpecificationList, loadTestConfig, loadTestResult, this);
                 }
 
-                handleCompletedResults(futureSelector);
+                submitTestTask(worker);
+                tasksScheduled.incrementAndGet();
             }
         } finally {
-            try {
-                runTaskExecutor.awaitTermination(2 * THREAD_POOL_SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                log.warn("", e); // log unexpected interrupt
-            }
-            try {
-                handleIncompleteResults(futureSelector);
-                handleCompletedResults(futureSelector);
-            } catch (RuntimeException e) {
-                log.warn("", e);
-            }
+            shutdownAndAwaitTermination(runTaskExecutor);
         }
     }
 
-    private void handleCompletedResults(FutureSelector<LoadTestResult> futureSelector) {
-        Collection<Future<LoadTestResult>> doneFutures = futureSelector.selectAllDone();
-        for (Future<LoadTestResult> future : doneFutures) {
+    private void submitTestTask(final Callable<LoadTestResult> worker) {
+        // The first call to runAsync on runTaskExecutor will block until work-queue capacity is available
+        CompletableFuture.runAsync(() -> {
+            long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();
+            // Check if we should randomize sleeptime
+            if (loadTestConfig.isTest_randomize_sleeptime()) {
+                int chance = r.nextInt(100);
+                sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms() * chance / 100;
+            }
             try {
-                if (future.isCancelled()) {
-                    log.warn("Task cancelled!");
-                } else {
-                    LoadTestResult loadTestResult = future.get(1, TimeUnit.MILLISECONDS);
-                    if (loadTestResult != null) {
-                        LoadTestExecutorService.addResult(loadTestResult); // TODO Circular dependency, this should be avoided!
-                    }
+                //log.trace("Sleeping {} ms before test as configured in the loadTestConfig", sleeptime);
+                Thread.sleep(sleeptime);
+            } catch (Exception e) {
+                log.warn("Thread interrupted in wait sleep", e);
+            }
+        }, runTaskExecutor).thenAccept(v -> {
+            try {
+                LoadTestResult ltr;
+                int workerConcurrencyDegreeAfterEntry = workerConcurrencyDegree().incrementAndGet();
+                try {
+                    ltr = worker.call();
+                } finally {
+                    workerConcurrencyDegree().decrementAndGet();
                 }
-            } catch (InterruptedException e) {
-                // ignore
-            } catch (ExecutionException e) {
-                log.error("", e);
-            } catch (TimeoutException e) {
-                // ignore
+                ltr.setWorker_concurrency_degree(workerConcurrencyDegreeAfterEntry);
+                LoadTestExecutorService.addResult(ltr);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
+        }).exceptionally(t -> {
+            t.printStackTrace();
+            return null;
+        });
     }
 
-    private void handleIncompleteResults(FutureSelector<LoadTestResult> futureSelector) {
-        Collection<Future<LoadTestResult>> notDoneFutures = futureSelector.selectAllNotDone();
-        int size = notDoneFutures.size();
-        if (size > 0) {
-            log.warn("{} task(s) are still in progress, their results will be discarded!", size);
-        }
+    private LoadTestResult createLoadTestResult(String testId, int runNo) {
+        LoadTestResult loadTestResult = new LoadTestResult();
+        loadTestResult.setTest_run_no(runNo);
+        loadTestResult.setTest_name(loadTestConfig.getTest_name());
+        loadTestResult.setTest_id(testId);
+        return loadTestResult;
     }
 
     @Override
@@ -241,19 +197,16 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
     }
 
     @Override
-    public synchronized boolean stopped() {
-        return stopInitiated;
+    public boolean stopped() {
+        return stopInitiated.get();
     }
 
-    public synchronized boolean isRunning() {
-        return isRunning;
+    public boolean isRunning() {
+        return isRunning.get();
     }
 
     public void stop() {
-        synchronized (this) {
-            stopInitiated = true;
-        }
-        shutdownAndAwaitTermination(runTaskExecutor);
+        stopInitiated.set(true);
     }
 
     private void shutdownAndAwaitTermination(ExecutorService pool) {
@@ -275,16 +228,16 @@ public class SingleLoadTestExecution implements LoadTestExecutionContext {
         }
     }
 
-    public synchronized long getStartTime() {
-        return startTime;
+    public long getStartTime() {
+        return startTime.get();
     }
 
-    public synchronized long getStopTime() {
-        return stopTime;
+    public long getStopTime() {
+        return stopTime.get();
     }
 
-    public synchronized int getTasksScheduled() {
-        return tasksScheduled;
+    public int getTasksScheduled() {
+        return tasksScheduled.get();
     }
 
     public int getLoadTestRunNo() {

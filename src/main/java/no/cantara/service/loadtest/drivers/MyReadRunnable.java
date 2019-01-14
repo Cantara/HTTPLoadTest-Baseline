@@ -3,7 +3,6 @@ package no.cantara.service.loadtest.drivers;
 import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
 import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
 import no.cantara.service.loadtest.util.HTTPResultUtil;
-import no.cantara.service.loadtest.util.TimedProcessingUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
 import no.cantara.service.model.TestSpecification;
@@ -11,7 +10,7 @@ import no.cantara.util.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -45,52 +44,10 @@ public class MyReadRunnable implements Callable<LoadTestResult> {
         if (loadTestExecutionContext.stopped()) {
             return null;
         }
-
-        long startNanoTime = System.nanoTime();
-        try {
-            return TimedProcessingUtil.runWithTimeout(new Callable<LoadTestResult>() {
-                @Override
-                public LoadTestResult call() {
-                    return execute();
-                }
-            }, loadTestConfig.getTest_duration_in_seconds(), TimeUnit.SECONDS);
-        } catch (Exception e) {
-            logTimedCode(startNanoTime, loadTestConfig.getTest_id() + " - MyReadRunnable was interrupted!");
-            return null;
-        }
-    }
-
-    private LoadTestResult execute() {
-        int workerConcurrencyDegreeAfterEntry = loadTestExecutionContext.workerConcurrencyDegree().incrementAndGet();
-        loadTestResult.setWorker_concurrency_degree(workerConcurrencyDegreeAfterEntry);
-        try {
-            return doExecute();
-        } finally {
-            loadTestExecutionContext.workerConcurrencyDegree().decrementAndGet();
-        }
-    }
-
-    private LoadTestResult doExecute() {
-        if (loadTestExecutionContext.stopped()) {
-            return null;
-        }
-
-        long sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms();
-        // Check if we should randomize sleeptime
-        if (loadTestConfig.isTest_randomize_sleeptime()) {
-            int chance = r.nextInt(100);
-            sleeptime = 0L + loadTestConfig.getTest_sleep_in_ms() * chance / 100;
-        }
-        try {
-            //log.trace("Sleeping {} ms before test as configured in the loadTestConfig", sleeptime);
-            Thread.sleep(sleeptime);
-        } catch (Exception e) {
-            log.warn("Thread interrupted in wait sleep", e);
-        }
         long startNanoTime = System.nanoTime();
 
         logTimedCode(startNanoTime, loadTestResult.getTest_run_no() + " - starting processing!");
-        Map<String, String> resolvedResultVariables = new HashMap<>();
+        Map<String, String> resolvedResultVariables = new LinkedHashMap<>();
         Map<String, String> inheritedVariables = loadTestConfig.getTest_global_variables_map();
 
         long commandDurationMicroSeconds = 0;
