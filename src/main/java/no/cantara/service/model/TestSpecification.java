@@ -13,12 +13,16 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static no.cantara.util.Configuration.loadFromDiskByName;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestSpecification implements Serializable, Cloneable {
+
+    private static final Map<String, String> templateByFileReference = new ConcurrentHashMap<>(200);
+
     private String command_url;
     private String command_contenttype = "application/json";
     private String command_http_authstring;
@@ -200,7 +204,7 @@ public class TestSpecification implements Serializable, Cloneable {
 
             String filename = getCommand_template().substring(5);
             try {
-                String contents = loadFromDiskByName(filename);
+                String contents = templateByFileReference.computeIfAbsent(filename, f -> loadFromDiskByName(f));
                 setCommand_template(contents);
                 log.info("loadTemplateReference - Updated FILE; filename:{}, reference with: {} \n template now: {}", filename, contents, getCommand_template());
             } catch (Exception e) {
