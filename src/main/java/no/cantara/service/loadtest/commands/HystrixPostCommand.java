@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixCommand<String> {
+class HystrixPostCommand extends AbstractHystrixBaseHttpPostCommand<String> implements Command {
 
     String contentType;
     static Random r = new Random();
@@ -19,7 +19,7 @@ public class CommandPostFromTestSpecification extends MyBaseHttpPostHystrixComma
     String template = "";
 
 
-    public CommandPostFromTestSpecification(TestSpecification testSpecification, AtomicInteger commandConcurrencyDegree) {
+    HystrixPostCommand(TestSpecification testSpecification, AtomicInteger commandConcurrencyDegree) {
         super(URI.create(testSpecification.getCommand_url()),
                 "hystrixCommandPostFromTestSpecification_" + r.nextInt(100),
                 commandConcurrencyDegree);

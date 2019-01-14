@@ -1,10 +1,9 @@
 package no.cantara.service.loadtest.commands;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.netflix.hystrix.HystrixCommand;
-import com.netflix.hystrix.HystrixCommandGroupKey;
 import no.cantara.base.command.HttpSender;
 import no.cantara.base.util.StringConv;
+import no.cantara.service.model.TestSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
+class PlainHttpGetCommand implements Command {
 
     protected Logger log;
     protected URI serviceUri;
@@ -22,23 +21,39 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
     protected long requestDurationMicroSeconds = 0;
     protected final AtomicInteger commandConcurrencyDegree;
     protected int commandConcurrencyDegreeOnEntry;
+    protected boolean successfullExecution = false;
+    protected boolean responseRejected = false;
 
-    protected MyBaseHttpGetHystrixCommand(URI serviceUri, String hystrixGroupKey, AtomicInteger commandConcurrencyDegree) {
-        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)));
+    String contentType;
+    String httpAuthorizationString;
+    String template;
+
+    PlainHttpGetCommand(TestSpecification testSpecification, AtomicInteger commandConcurrencyDegree) {
+        this.serviceUri = URI.create(testSpecification.getCommand_url());
+        this.template = testSpecification.getCommand_template();
+        this.contentType = testSpecification.getCommand_contenttype();
+        this.httpAuthorizationString = testSpecification.getCommand_http_authstring();
         this.commandConcurrencyDegree = commandConcurrencyDegree;
-        init(serviceUri, hystrixGroupKey);
-    }
-
-
-    private void init(URI serviceUri, String hystrixGroupKey) {
-        this.serviceUri = serviceUri;
-        this.TAG = this.getClass().getName() + ", pool :" + hystrixGroupKey;
+        this.TAG = this.getClass().getName() + ", pool : shared";
         this.log = LoggerFactory.getLogger(TAG);
     }
 
+    public String execute() {
+        String result = run();
+        successfullExecution = true;
+        return result;
+    }
 
-    @Override
-    protected R run() {
+    public boolean isSuccessfulExecution() {
+        return successfullExecution;
+    }
+
+    public boolean isResponseRejected() {
+        return responseRejected;
+    }
+
+    //@Override
+    protected String run() {
         commandConcurrencyDegreeOnEntry = commandConcurrencyDegree.incrementAndGet();
         try {
             return doGetCommand();
@@ -47,7 +62,7 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
         }
     }
 
-    protected R doGetCommand() {
+    protected String doGetCommand() {
         try {
             String uriString = serviceUri.toString();
             if (getTargetPath() != null) {
@@ -104,28 +119,6 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
         }
     }
 
-    protected R dealWithFailedResponse(String responseBody, int statusCode) {
-        return null;
-    }
-
-    protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
-        //CAN USE MULTIPART
-
-        //JUST EXAMPLE
-
-        //		HttpRequest request = HttpRequest.post("http://google.com");
-        //		request.part("status[body]", "Making a multipart request");
-        //		request.part("status[image]", new File("/home/kevin/Pictures/ide.png"));
-
-        //OR SEND SOME DATA
-
-        //request.send("name=huydo")
-        //or something like
-        //request.contentType("application/json").send(applicationJson);
-
-        return request;
-    }
-
     protected void onFailed(String responseBody, int statusCode) {
         log.debug(TAG + " - Unexpected response from {}. Status code is {} content is {} ", serviceUri, String.valueOf(statusCode) + responseBody);
     }
@@ -133,8 +126,6 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
     protected void onCompleted(String responseBody) {
         log.debug(TAG + " - ok: " + responseBody);
     }
-
-    protected abstract String getTargetPath();
 
     protected Map<String, String> getFormParameters() {
         return new HashMap<String, String>();
@@ -144,15 +135,8 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
         return new String[]{};
     }
 
-    @SuppressWarnings("unchecked")
-    protected R dealWithResponse(String response) {
-        return (R) response;
-    }
-
-    @Override
-    protected R getFallback() {
-        log.warn(TAG + " - fallback - serviceUri={}", serviceUri.toString() + getTargetPath());
-        return null;
+    protected String dealWithResponse(String response) {
+        return response;
     }
 
     private byte[] responseBody;
@@ -167,5 +151,57 @@ public abstract class MyBaseHttpGetHystrixCommand<R> extends HystrixCommand<R> {
 
     public int getCommandConcurrencyDegreeOnEntry() {
         return commandConcurrencyDegreeOnEntry;
+    }
+
+    private String headerName(String header) {
+        return header.substring(0, header.indexOf(":")).trim();
+    }
+
+    private String headerValue(String header) {
+        return header.substring(header.indexOf(":") + 1, header.length()).trim();
+    }
+
+    protected HttpRequest dealWithRequestBeforeSend(HttpRequest request) {
+        // request= super.dealWithRequestBeforeSend(request);
+        if (this.httpAuthorizationString != null && this.httpAuthorizationString.length() > 10) {
+            if (httpAuthorizationString.startsWith("X-AUTH")) {
+                request = request.header(headerName(httpAuthorizationString), headerValue(httpAuthorizationString));
+            } else {
+                request = request.authorization(this.httpAuthorizationString);
+                log.info("Added authorizarion header: {}", this.httpAuthorizationString);
+                //log.trace(request.header("Authorization"));
+
+            }
+
+        }
+
+        if (template.contains("soapenv:Envelope")) {
+            //request.getConnection().addRequestProperty("SOAPAction", SOAP_ACTION);
+        }
+
+        request = request.contentType(contentType).accept("*/*");  //;
+        if (template == null || template.length() > 1) {
+            return request;
+        } else {
+            //request=request.body(this.template);
+            return request;
+        }
+    }
+
+    protected String dealWithFailedResponse(String responseBody, int statusCode) {
+        if (statusCode < 300 && statusCode >= 200) {
+            return responseBody;
+        }
+        if (statusCode == 302) {
+            responseBody = "[{\"code\": \""
+                    + responseBody.substring(responseBody.indexOf("code=") + 5, responseBody.indexOf("&state"))
+                    + "\"}]";
+            return responseBody;
+        }
+        return "StatusCode:" + statusCode + ":" + responseBody;
+    }
+
+    protected String getTargetPath() {
+        return "";
     }
 }

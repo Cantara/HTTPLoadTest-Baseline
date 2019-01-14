@@ -13,9 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static no.cantara.service.loadtest.util.HTTPResultUtil.first50;
-
-public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> {
+abstract class AbstractHystrixBaseHttpGetCommand<R> extends HystrixCommand<R> {
 
     protected Logger log;
     protected URI serviceUri;
@@ -25,8 +23,8 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     protected final AtomicInteger commandConcurrencyDegree;
     protected int commandConcurrencyDegreeOnEntry;
 
-    protected MyBaseHttpPostHystrixCommand(URI serviceUri, String hystrixGroupKey, AtomicInteger commandConcurrencyDegree) {
-        super(HystrixCommand.Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)));
+    AbstractHystrixBaseHttpGetCommand(URI serviceUri, String hystrixGroupKey, AtomicInteger commandConcurrencyDegree) {
+        super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(hystrixGroupKey)));
         this.commandConcurrencyDegree = commandConcurrencyDegree;
         init(serviceUri, hystrixGroupKey);
     }
@@ -43,32 +41,32 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     protected R run() {
         commandConcurrencyDegreeOnEntry = commandConcurrencyDegree.incrementAndGet();
         try {
-            return doPostCommand();
+            return doGetCommand();
         } finally {
             commandConcurrencyDegree.decrementAndGet();
         }
     }
 
-    protected R doPostCommand() {
+    protected R doGetCommand() {
         try {
             String uriString = serviceUri.toString();
             if (getTargetPath() != null) {
                 uriString += getTargetPath();
             }
 
-            log.trace("TAG" + " - serviceUri={}", uriString);
+            log.trace("TAG" + " - serviceUri={} ", uriString);
 
             long startTime = System.nanoTime();
 
             if (getQueryParameters() != null && getQueryParameters().length != 0) {
-                request = HttpRequest.post(uriString, true, getQueryParameters());
+                request = HttpRequest.get(uriString, true, getQueryParameters());
             } else {
-                request = HttpRequest.post(uriString);
+                request = HttpRequest.get(uriString);
             }
-            request.trustAllCerts();
-            request.trustAllHosts();
-            request.followRedirects(false);
 
+//            request.trustAllCerts();
+//            request.trustAllHosts();
+            request.followRedirects(false);
 
             request = dealWithRequestBeforeSend(request);
 
@@ -85,11 +83,13 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
                 requestDurationMicroSeconds = Math.round((System.nanoTime() - startTime) / 1000.0);
             }
 
-            byte[] responseBodyCopy = responseBody.clone();
-            String responseAsText = StringConv.UTF8(responseBodyCopy);
-            if (responseBodyCopy.length > 0) {
-                log.trace("StringConv: {}", responseAsText);
+            String location = "";
+            String responseAsText = StringConv.UTF8(responseBody);
+            if (statusCode == 302) {
+                location = request.getConnection().getHeaderField("Location");
+                responseAsText = "{\"Location\": \"" + location + "\"}";
             }
+
             switch (statusCode) {
                 case java.net.HttpURLConnection.HTTP_OK:
                     onCompleted(responseAsText);
@@ -131,9 +131,8 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     }
 
     protected void onCompleted(String responseBody) {
-        log.debug(TAG + " - ok: " + first50(responseBody));
+        log.debug(TAG + " - ok: " + responseBody);
     }
-
 
     protected abstract String getTargetPath();
 
@@ -159,7 +158,7 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
     private byte[] responseBody;
 
     public byte[] getResponseBodyAsByteArray() {
-        return responseBody.clone();
+        return responseBody;
     }
 
     public long getRequestDurationMicroSeconds() {
@@ -170,4 +169,3 @@ public abstract class MyBaseHttpPostHystrixCommand<R> extends HystrixCommand<R> 
         return commandConcurrencyDegreeOnEntry;
     }
 }
-

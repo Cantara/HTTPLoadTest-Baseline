@@ -47,8 +47,8 @@ public class CommandReadTestSpecificationFromFileSpecTest {
         readTestSpec.forEach(ts -> ts.setCommand_url(ts.getCommand_url().replace("http://localhost:8086/HTTPLoadTest-baseline", testServer.getUrl())));
         Map<String, String> resolvedResultVariables = new HashMap<>();
 
-        CommandGetFromTestSpecification myGetCommand = null;
-        CommandPostFromTestSpecification myPostCommand = null;
+        HystrixGetCommand myGetCommand = null;
+        HystrixPostCommand myPostCommand = null;
         int n = 1;
         for (TestSpecification testSpecificationo : readTestSpec) {
             TestSpecification testSpecification = testSpecificationo.clone();
@@ -57,10 +57,10 @@ public class CommandReadTestSpecificationFromFileSpecTest {
             log.debug("{}  - Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                myPostCommand = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
+                myPostCommand = new HystrixPostCommand(testSpecification, new AtomicInteger());
                 result = myPostCommand.execute();
             } else {
-                myGetCommand = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger());
+                myGetCommand = new HystrixGetCommand(testSpecification, new AtomicInteger());
                 result = myGetCommand.execute();
             }
             log.info("{} - Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);
@@ -80,8 +80,8 @@ public class CommandReadTestSpecificationFromFileSpecTest {
         InputStream inputStream = Configuration.loadByName(filenameIntestResourcesToCreateAndRunTestFrom);
         List<TestSpecification> readTestSpec = readTestSpec = mapper.readValue(inputStream, new TypeReference<List<TestSpecification>>() {
         });
-        CommandGetFromTestSpecification myGetCommand = null;
-        CommandPostFromTestSpecification myPostCommand = null;
+        HystrixGetCommand myGetCommand = null;
+        HystrixPostCommand myPostCommand = null;
         for (TestSpecification testSpecification : readTestSpec) {
             assertTrue(testSpecification.getCommand_url().length() > 0);
             testSpecification.resolveVariables(null, null, null);
@@ -95,10 +95,10 @@ public class CommandReadTestSpecificationFromFileSpecTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                myPostCommand = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
+                myPostCommand = new HystrixPostCommand(testSpecification, new AtomicInteger());
                 result = myPostCommand.execute();
             } else {
-                myGetCommand = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger());
+                myGetCommand = new HystrixGetCommand(testSpecification, new AtomicInteger());
                 result = myGetCommand.execute();
             }
             log.info("Returned result: " + result + "\n" + myGetCommand + "\n" + myPostCommand);

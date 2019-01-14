@@ -27,6 +27,7 @@ public class TestSpecification implements Serializable, Cloneable {
     private String command_contenttype = "application/json";
     private String command_http_authstring;
     private boolean command_http_post = false;
+    private boolean command_use_hystrix = true;
     private int command_timeout_milliseconds = 2000;
     private String command_template = "";
     private Map<String, String> command_replacement_map = TestSpecificationLoader.getGlobal_command_replacement_map();
@@ -42,12 +43,14 @@ public class TestSpecification implements Serializable, Cloneable {
                              @JsonProperty("command_contenttype") String command_contenttype,
                              @JsonProperty("command_http_authstring") String command_http_authstring,
                              @JsonProperty("command_http_post") String command_http_post,
+                             @JsonProperty("command_use_hystrix") String command_use_hystrix,
                              @JsonProperty("command_timeout_milliseconds") String command_timeout_milliseconds,
                              @JsonProperty("command_template") String command_template,
                              @JsonProperty("command_replacement_map") Map<String, String> command_replacement_map,
                              @JsonProperty("command_response_map") Map<String, String> command_response_map) {
         this.command_url = command_url;
         this.command_http_post = Boolean.parseBoolean(command_http_post);
+        this.command_use_hystrix = Boolean.parseBoolean(command_use_hystrix);
         this.command_http_authstring = command_http_authstring;
         this.command_timeout_milliseconds = Integer.parseInt(command_timeout_milliseconds);
         this.command_contenttype = command_contenttype;
@@ -121,6 +124,14 @@ public class TestSpecification implements Serializable, Cloneable {
 
     public void setCommand_http_post(boolean command_http_post) {
         this.command_http_post = command_http_post;
+    }
+
+    public boolean isCommand_use_hystrix() {
+        return command_use_hystrix;
+    }
+
+    public void setCommand_use_hystrix(boolean command_use_hystrix) {
+        this.command_use_hystrix = command_use_hystrix;
     }
 
     public int getCommand_timeout_milliseconds() {

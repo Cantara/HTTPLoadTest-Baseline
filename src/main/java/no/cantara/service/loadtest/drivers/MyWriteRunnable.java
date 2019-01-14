@@ -1,7 +1,7 @@
 package no.cantara.service.loadtest.drivers;
 
-import no.cantara.service.loadtest.commands.CommandGetFromTestSpecification;
-import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
+import no.cantara.service.loadtest.commands.Command;
+import no.cantara.service.loadtest.commands.CommandFactory;
 import no.cantara.service.loadtest.util.HTTPResultUtil;
 import no.cantara.service.model.LoadTestConfig;
 import no.cantara.service.model.LoadTestResult;
@@ -66,7 +66,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                             Thread.currentThread().getName() + " " + testSpecification.getCommand_url() + ")");
                     String result;
                     if (testSpecification.isCommand_http_post()) {
-                        CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
+                        Command command = CommandFactory.createPostCommand(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
                         result = command.execute();
                         loadTestResult.setCommand_concurrency_degree(command.getCommandConcurrencyDegreeOnEntry());
                         commandDurationMicroSeconds = commandDurationMicroSeconds + command.getRequestDurationMicroSeconds();
@@ -80,7 +80,7 @@ public class MyWriteRunnable implements Callable<LoadTestResult> {
                             loadTestResult.setTest_tags(loadTestResult.getTest_tags() + ":D(" + first50(result) + ") -");
                         }
                     } else {
-                        CommandGetFromTestSpecification command = new CommandGetFromTestSpecification(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
+                        Command command = CommandFactory.createGetCommand(testSpecification, loadTestExecutionContext.commandConcurrencyDegree());
                         result = command.execute();
                         loadTestResult.setCommand_concurrency_degree(command.getCommandConcurrencyDegreeOnEntry());
                         commandDurationMicroSeconds = commandDurationMicroSeconds + command.getRequestDurationMicroSeconds();

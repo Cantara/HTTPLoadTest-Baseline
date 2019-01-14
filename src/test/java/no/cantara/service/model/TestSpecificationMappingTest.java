@@ -2,7 +2,8 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.cantara.service.loadtest.commands.CommandPostFromTestSpecification;
+import no.cantara.service.loadtest.commands.Command;
+import no.cantara.service.loadtest.commands.CommandFactory;
 import no.cantara.service.loadtest.util.TemplateUtil;
 import no.cantara.service.testsupport.TestServer;
 import org.slf4j.Logger;
@@ -192,7 +193,7 @@ public class TestSpecificationMappingTest {
                 testSpecification.resolveVariables(null, null, null);
                 assertTrue(!testSpecification.getCommand_template().contains("FILE:"));
                 testSpecification.resolveVariables(null, null, null);
-                CommandPostFromTestSpecification command = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
+                Command command = CommandFactory.createHystrixPostCommand(testSpecification, new AtomicInteger());
                 String result = command.execute();
                 log.warn(result);
 

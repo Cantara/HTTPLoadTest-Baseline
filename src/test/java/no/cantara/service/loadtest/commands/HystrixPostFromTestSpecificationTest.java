@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertTrue;
 
-public class CommandPostFromTestSpecificationTest {
+public class HystrixPostFromTestSpecificationTest {
 
     private final static Logger log = LoggerFactory.getLogger(CommandVerifyTokenTest.class);
 
@@ -90,10 +90,10 @@ public class CommandPostFromTestSpecificationTest {
             log.trace("{} Calling {}", n, testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
+                HystrixPostCommand commandPostFromTestSpecification = new HystrixPostCommand(testSpecification, new AtomicInteger());
                 result = commandPostFromTestSpecification.execute();
             } else {
-                CommandGetFromTestSpecification commandGetFromTestSpecification = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger());
+                HystrixGetCommand commandGetFromTestSpecification = new HystrixGetCommand(testSpecification, new AtomicInteger());
                 result = commandGetFromTestSpecification.execute();
             }
             resolvedResultVariables = HTTPResultUtil.parse(result, testSpecification.getCommand_response_map());
@@ -121,9 +121,9 @@ public class CommandPostFromTestSpecificationTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                result = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger()).execute();
+                result = new HystrixPostCommand(testSpecification, new AtomicInteger()).execute();
             } else {
-                result = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger()).execute();
+                result = new HystrixGetCommand(testSpecification, new AtomicInteger()).execute();
             }
             log.debug("Returned result: " + result);
             //assertTrue(result.length() > 0);
@@ -149,11 +149,11 @@ public class CommandPostFromTestSpecificationTest {
             log.trace("Calling {}", testSpecification.getCommand_url());
             String result;
             if (testSpecification.isCommand_http_post()) {
-                CommandPostFromTestSpecification commandPostFromTestSpecification = new CommandPostFromTestSpecification(testSpecification, new AtomicInteger());
+                HystrixPostCommand commandPostFromTestSpecification = new HystrixPostCommand(testSpecification, new AtomicInteger());
                 result = commandPostFromTestSpecification.execute();
                 log.trace("" + commandPostFromTestSpecification.isCircuitBreakerOpen());
             } else {
-                result = new CommandGetFromTestSpecification(testSpecification, new AtomicInteger()).execute();
+                result = new HystrixGetCommand(testSpecification, new AtomicInteger()).execute();
             }
             log.debug("Returned result: " + result);
             //assertTrue(result.length() > 0);
