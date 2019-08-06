@@ -79,14 +79,9 @@
         <dependency>
             <groupId>no.cantara.base</groupId>
             <artifactId>Hystrix-BaseCommands</artifactId>
-            <version>0.1.9</version>
+            <version>0.1.11</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.kevinsawicki</groupId>
-            <artifactId>http-request2</artifactId>
-            <version>6.0.3</version>
-        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
