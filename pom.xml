@@ -339,7 +339,7 @@
         <dependency>
             <groupId>nu.validator</groupId>
             <artifactId>validator</artifactId>
-            <version>18.8.29</version>
+            <version>18.11.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.struts</groupId>
