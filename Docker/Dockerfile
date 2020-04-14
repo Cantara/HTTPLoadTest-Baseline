@@ -1,4 +1,4 @@
-FROM cantara/alpine-zulu-jdk13
+FROM cantara/alpine-zulu-jdk13:latest
 MAINTAINER Totto <totto@totto.org>
 
 ENV USER=HTTPLoadTest-baseline
