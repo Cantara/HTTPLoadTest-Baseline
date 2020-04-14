@@ -151,6 +151,9 @@ Open in browser:
 * To configure the write-testdriver: http://localhost:8086/HTTPLoadTest-baseline/config/write   
 * To select between pre-configured TestSpecifications sets: http://localhost:8086/HTTPLoadTest-baseline/config/select
 
+One way others have bundled/deployed HTTPLoadTest-baseline executions: 
+* https://github.com/statisticsnorway/linked-data-store-loadtest
+
 
 ### Work-in-progress - nice vizualisation of running loadtests
 
