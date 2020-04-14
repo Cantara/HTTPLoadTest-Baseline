@@ -9,6 +9,7 @@ RUN adduser -D  -s /bin/sh $USER
 # This application should have a good headroom for threads
 RUN ulimit -Su 62000
 
+RUN apk upgrade --available
 RUN apk -Uu add  wget logrotate bash
 
 ## Set up start of services
