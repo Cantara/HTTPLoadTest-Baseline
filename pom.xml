@@ -421,7 +421,7 @@
         <dependency>
             <groupId>nu.validator</groupId>
             <artifactId>cssvalidator</artifactId>
-            <version>1.0.7</version>
+            <version>1.0.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.struts</groupId>
