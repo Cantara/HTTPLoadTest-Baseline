@@ -342,6 +342,10 @@
             <version>20.7.2</version>
             <exclusions>
                 <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>org.apache.struts</groupId>
                     <artifactId>struts-tiles</artifactId>
                 </exclusion>
