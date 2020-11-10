@@ -405,7 +405,7 @@
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
-            <version>1.4.01</version>
+            <version>2.0.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/nu.validator/cssvalidator -->
         <dependency>
@@ -503,7 +503,7 @@
                                         <Main-Class>no.cantara.service.Main</Main-Class>
                                     </manifestEntries>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
