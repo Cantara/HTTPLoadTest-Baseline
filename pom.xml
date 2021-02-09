@@ -6,6 +6,34 @@
     <name>HTTPLoadTest-baseline</name>
     <url>https://wiki.cantara.no/display/HLT/Home</url>
 
+
+
+    <parent>
+        <groupId>no.cantara.emi</groupId>
+        <artifactId>parent</artifactId>
+        <version>8</version>
+    </parent>
+
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
+        <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
+        <url>https://wiki.cantara.no/display/HLT/Home</url>
+    <tag>HEAD</tag>
+  </scm>
+
+
+    <properties>
+        <service.name>HTTPLoadTest-baseline</service.name>
+        <jackson.version>2.12.1</jackson.version>
+        <jersey.version>2.33</jersey.version>
+        <jetty.version>9.4.35.v20201120</jetty.version>
+        <spring.version>5.3.2</spring.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <hystrix.version>1.5.18</hystrix.version>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
+
+    
     <developers>
         <developer>
             <id>totto</id>
@@ -31,33 +59,6 @@
         </developer>
 
     </developers>
-
-
-    <parent>
-        <groupId>no.cantara.emi</groupId>
-        <artifactId>parent</artifactId>
-        <version>8</version>
-    </parent>
-
-    <scm>
-        <developerConnection>scm:git:ssh://git@github.com/cantara/HTTPLoadTest-baseline.git</developerConnection>
-        <connection>scm:git:https://github.com/cantara/HTTPLoadTest-baseline.git</connection>
-        <url>https://wiki.cantara.no/display/HLT/Home</url>
-    <tag>HEAD</tag>
-  </scm>
-
-
-    <properties>
-        <service.name>HTTPLoadTest-baseline</service.name>
-        <jackson.version>2.12.1</jackson.version>
-        <jersey.version>2.32</jersey.version>
-        <jetty.version>9.4.35.v20201120</jetty.version>
-        <spring.version>5.3.2</spring.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <hystrix.version>1.5.18</hystrix.version>
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-    </properties>
-
     <!-- mvn versions:display-dependency-updates -->
     <dependencies>
         <dependency>
