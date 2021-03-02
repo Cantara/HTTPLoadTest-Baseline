@@ -32,6 +32,7 @@ public class OAuth2StubbedServerResource {
     }
 
     @POST
+    @Consumes({MediaType.APPLICATION_FORM_URLENCODED, MediaType.TEXT_PLAIN})
     public Response oauth2StubbedServerController(@Context UriInfo uriInfo) throws MalformedURLException {
 
 
