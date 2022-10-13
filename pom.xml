@@ -22,7 +22,6 @@
 
     <properties>
         <service.name>HTTPLoadTest-baseline</service.name>
-        <jackson.version>2.13.4.1</jackson.version>
         <jersey.version>2.37</jersey.version>
         <jetty.version>9.4.49.v20220914</jetty.version>
         <spring.version>5.3.23</spring.version>
@@ -233,12 +232,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.13.4</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.13.4</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-csv -->
