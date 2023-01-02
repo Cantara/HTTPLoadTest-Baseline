@@ -56,6 +56,7 @@ public class LoadTestResource {
     public static final String APPLICATION_PATH_FORM_BENCHMARK = "/loadTest/form/benchmark";
     public static final String APPLICATION_PATH_FORM_SELECT = "/loadTest/form/select";
     public static final String APPLICATION_PATH_STATUS = "/loadTest/status";
+    public static final String APPLICATION_PATH_DASHBOARD = "/loadTest/dashboard";
     public static final String APPLICATION_PATH_RUNSTATUS = "/loadTest/runstatus";
     public static final String APPLICATION_PATH_FULLSTATUS = "/loadTest/fullstatus";
     public static final String APPLICATION_PATH_FULLSTATUS_CSV = "/loadTest/fullstatus_csv";
@@ -423,6 +424,16 @@ public class LoadTestResource {
     }
 
     @GET
+    @Path("/dashboard")
+    @Produces({MediaType.TEXT_HTML, MediaType.APPLICATION_JSON + ";charset=utf-8"})
+    public Response getDashboard() {
+        return Response.ok(
+                new LoadTestDashboard(LoadTestExecutorService.isRunning()).
+                        generateHTMLPage()).
+                build();
+    }
+
+    @GET
     @Path("/runstatus")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getRunStatusJson() {
@@ -554,6 +565,7 @@ public class LoadTestResource {
                 "  <ul>" +
                 "  <li><b><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">LoadTestConfig</a></b></li>" +
                 "  <li><a href=\"" + CONTEXT_PATH + HEALTH_PATH + "\">Health</a></li>" +
+                "  <li><a href=\"" + CONTEXT_PATH + APPLICATION_PATH_DASHBOARD + "\">Dashboard</a></li>" +
                 "  </ul><br/>" +
                 "  <textarea readonly rows=\"40\" cols=\"100\">";
     }
@@ -568,6 +580,7 @@ public class LoadTestResource {
                 "  <ul>" +
                 "  <li><b><a href=\"" + CONTEXT_PATH + CONFIG_PATH + "\">LoadTestConfig</a></b></li>" +
                 "  <li><a href=\"" + CONTEXT_PATH + HEALTH_PATH + "\">Health</a></li>" +
+                "  <li><a href=\"" + CONTEXT_PATH + APPLICATION_PATH_DASHBOARD + "\">Dashboard</a></li>" +
                 "  </ul><br/>" +
                 "  <pre>";
     }
