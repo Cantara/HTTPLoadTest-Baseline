@@ -259,6 +259,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+         <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.4.10</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>
