@@ -2,6 +2,7 @@ package no.cantara.service.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import no.cantara.service.loadtest.commands.Command;
 import no.cantara.service.loadtest.commands.CommandFactory;
 import no.cantara.service.loadtest.util.TemplateUtil;
@@ -12,11 +13,7 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertTrue;
@@ -26,6 +23,9 @@ public class TestSpecificationMappingTest {
     private static final Logger log = LoggerFactory.getLogger(TestSpecificationMappingTest.class);
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    static {
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+    }
 
     @Test
     public void testTestSpecificationMapping() throws Exception {
