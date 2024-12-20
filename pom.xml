@@ -22,7 +22,7 @@
 
     <properties>
         <service.name>HTTPLoadTest-baseline</service.name>
-        <jersey.version>2.45</jersey.version>
+        <jersey.version>2.46</jersey.version>
         <jetty.version>9.4.56.v20240826</jetty.version>
         <spring.version>5.3.39</spring.version>
         <slf4j.version>2.0.16</slf4j.version>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-spring4</artifactId>
-            <version>2.45</version>
+            <version>2.46</version>
             <exclusions>
                 <!-- overlap with spring-aop -->
                 <exclusion>
