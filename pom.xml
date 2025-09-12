@@ -22,7 +22,7 @@
 
     <properties>
         <service.name>HTTPLoadTest-baseline</service.name>
-        <jersey.version>2.47</jersey.version>
+        <jersey.version>3.1.11</jersey.version>
         <jetty.version>9.4.58.v20250814</jetty.version>
         <spring.version>5.3.39</spring.version>
         <slf4j.version>2.0.17</slf4j.version>
@@ -507,7 +507,7 @@
                                         <Main-Class>no.cantara.service.Main</Main-Class>
                                     </manifestEntries>
                                 </transformer>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/spring.handlers</resource>
