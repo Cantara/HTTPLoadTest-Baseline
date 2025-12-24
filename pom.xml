@@ -329,7 +329,7 @@
         <dependency>
             <groupId>nu.validator</groupId>
             <artifactId>validator</artifactId>
-            <version>25.12.23</version>
+            <version>25.12.24</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
