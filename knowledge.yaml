@@ -1,0 +1,25 @@
+id: HTTPLoadTest-baseline
+name: HTTP Load Test Baseline
+version: 2.0.13-SNAPSHOT
+description: |
+  Baseline project for building HTTP load tests integrated into CI/CD pipelines.
+  Provides a configurable load test harness that runs against live services,
+  collecting latency and error metrics suitable for production quality gates.
+units:
+  - id: loadtest-engine
+    name: Load Test Engine
+    type: component
+    description: Concurrent HTTP request engine — drives configurable request rates and durations.
+    path: src/main/java/no/cantara/jau
+  - id: test-config
+    name: Test Configuration
+    type: component
+    description: Test scenario and target rate configuration — endpoints, concurrency, and duration.
+  - id: result-reporter
+    name: Result Reporter
+    type: component
+    description: Metrics collection and reporting — latency percentiles, error rates, and throughput.
+  - id: health-check
+    name: Health Check
+    type: component
+    description: Built-in health check endpoint for the load test runner itself.
