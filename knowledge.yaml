@@ -1,3 +1,17 @@
+kcp_version: "0.21"
+updated: "2026-06-20"
+language: en
+license: "Apache-2.0"
+indexing: private
+temporal:
+  valid_from: "2026-03-10"
+signing:
+  scheme: ed25519
+  scope: this-manifest
+  public_key: "MCowBQYDK2VwAyEAuipgusnqU9vjf3p2yPVLD/DmERT6tBbLOqEETdxAhMU="
+  signature: "https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/knowledge.yaml.sig"
+not_for: []
+
 id: HTTPLoadTest-baseline
 name: HTTP Load Test Baseline
 version: 2.0.13-SNAPSHOT
@@ -11,15 +25,27 @@ units:
     type: component
     description: Concurrent HTTP request engine — drives configurable request rates and durations.
     path: src/main/java/no/cantara/jau
+      content_hash:
+        algorithm: sha256
+        value: ""
   - id: test-config
     name: Test Configuration
     type: component
     description: Test scenario and target rate configuration — endpoints, concurrency, and duration.
+      content_hash:
+        algorithm: sha256
+        value: ""
   - id: result-reporter
     name: Result Reporter
     type: component
     description: Metrics collection and reporting — latency percentiles, error rates, and throughput.
+      content_hash:
+        algorithm: sha256
+        value: ""
   - id: health-check
     name: Health Check
     type: component
     description: Built-in health check endpoint for the load test runner itself.
+      content_hash:
+        algorithm: sha256
+        value: ""
