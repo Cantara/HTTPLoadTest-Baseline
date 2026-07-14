@@ -1,4 +1,4 @@
-kcp_version: "0.21"
+kcp_version: "0.26"
 updated: "2026-06-20"
 language: en
 license: "Apache-2.0"
@@ -25,27 +25,23 @@ units:
     type: component
     description: Concurrent HTTP request engine — drives configurable request rates and durations.
     path: src/main/java/no/cantara/jau
-      content_hash:
-        algorithm: sha256
-        value: ""
   - id: test-config
     name: Test Configuration
     type: component
     description: Test scenario and target rate configuration — endpoints, concurrency, and duration.
-      content_hash:
-        algorithm: sha256
-        value: ""
   - id: result-reporter
     name: Result Reporter
     type: component
     description: Metrics collection and reporting — latency percentiles, error rates, and throughput.
-      content_hash:
-        algorithm: sha256
-        value: ""
   - id: health-check
     name: Health Check
     type: component
     description: Built-in health check endpoint for the load test runner itself.
-      content_hash:
-        algorithm: sha256
-        value: ""
+
+# Serving Endpoint Binding (KCP SPEC v0.26 §3.12): authoritative manifest URL
+# and authorized MCP representative. Ignored by pre-0.26 verifiers.
+serving:
+  manifest:
+    - https://raw.githubusercontent.com/Cantara/HTTPLoadTest-Baseline/master/knowledge.yaml
+  mcp:
+    - https://mcp.cantara.no/mcp
