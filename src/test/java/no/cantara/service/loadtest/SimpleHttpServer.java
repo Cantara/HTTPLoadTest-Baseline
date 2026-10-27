@@ -1,15 +1,14 @@
 package no.cantara.service.loadtest;
 
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpStatus;
+import org.eclipse.jetty.io.Content;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
+import org.eclipse.jetty.util.Callback;
 
 public class SimpleHttpServer {
 
@@ -17,19 +16,17 @@ public class SimpleHttpServer {
 
     void start() {
         server = new Server(0);
-        server.setHandler(new AbstractHandler() {
+        server.setHandler(new Handler.Abstract() {
             @Override
-            public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+            public boolean handle(Request request, Response response, Callback callback) throws Exception {
                 String method = request.getMethod();
                 if ("PUT".equals(method) || "POST".equals(method)) {
-                    try (BufferedReader br = request.getReader()) {
-                        while (br.readLine() != null) ;
-                    }
+                    Content.Source.asString(request);
                 }
-                response.setContentType("application/json;charset=utf-8");
-                response.setStatus(HttpServletResponse.SC_OK);
-                baseRequest.setHandled(true);
-                response.getWriter().println("[]");
+                response.getHeaders().put(HttpHeader.CONTENT_TYPE, "application/json;charset=utf-8");
+                response.setStatus(HttpStatus.OK_200);
+                Content.Sink.write(response, true, "[]" + System.lineSeparator(), callback);
+                return true;
             }
         });
         try {

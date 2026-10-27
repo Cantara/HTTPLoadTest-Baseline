@@ -1,6 +1,6 @@
 package no.cantara.service.testsupport;
 
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 import no.cantara.service.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
