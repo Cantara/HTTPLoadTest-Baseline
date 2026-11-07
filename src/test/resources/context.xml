@@ -2,22 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:constretto="http://constretto.org/schema/constretto"
 
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-               http://constretto.org/schema/constretto http://constretto.org/schema/constretto/constretto-1.2.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:property-placeholder />
 
-    <constretto:configuration>
-        <constretto:stores>
-            <constretto:properties-store>
-                <constretto:resource location="classpath:application.properties"/>
-                <constretto:resource location="file:./config_override/application_override.properties"/>
-            </constretto:properties-store>
-        </constretto:stores>
-    </constretto:configuration>
+    <!-- Properties come from no.cantara.util.Configuration, which replaced the
+         Constretto store that used to be configured here. -->
 
     <context:component-scan base-package="no.cantara">
         <!--<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>-->

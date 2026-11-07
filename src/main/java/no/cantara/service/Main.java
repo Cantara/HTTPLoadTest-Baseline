@@ -9,16 +9,17 @@ import no.cantara.simulator.RestTestResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedServerResource;
 import no.cantara.simulator.oauth2stubbedserver.OAuth2StubbedTokenVerifyResource;
 import no.cantara.util.Configuration;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.UserStore;
-import org.eclipse.jetty.server.NCSARequestLog;
+import org.eclipse.jetty.server.CustomRequestLog;
+import org.eclipse.jetty.server.RequestLogWriter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.security.Constraint;
 import org.eclipse.jetty.util.security.Password;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -108,7 +109,7 @@ public class Main {
         if (webappPort != null) {
             connector.setPort(webappPort);
         }
-        NCSARequestLog requestLog = buildRequestLog();
+        CustomRequestLog requestLog = buildRequestLog();
         server.setRequestLog(requestLog);
         server.addConnector(connector);
         server.setHandler(context);
@@ -131,25 +132,18 @@ public class Main {
         }
     }
 
-    private NCSARequestLog buildRequestLog() {
-        NCSARequestLog requestLog = new NCSARequestLog("logs/jetty-yyyy_mm_dd.request.log");
-        requestLog.setAppend(true);
-        requestLog.setExtended(true);
-        requestLog.setLogTimeZone("GMT");
-
-        return requestLog;
+    private CustomRequestLog buildRequestLog() {
+        // Jetty 10 removed NCSARequestLog; this is its documented replacement.
+        RequestLogWriter writer = new RequestLogWriter("logs/jetty-yyyy_mm_dd.request.log");
+        writer.setAppend(true);
+        writer.setTimeZone("GMT");
+        return new CustomRequestLog(writer, CustomRequestLog.EXTENDED_NCSA_FORMAT);
     }
 
     private ConstraintSecurityHandler buildSecurityHandler() {
-        Constraint userRoleConstraint = new Constraint();
-        userRoleConstraint.setName(Constraint.__BASIC_AUTH);
-        userRoleConstraint.setRoles(new String[]{USER_ROLE, ADMIN_ROLE});
-        userRoleConstraint.setAuthenticate(true);
+        Constraint userRoleConstraint = Constraint.from(USER_ROLE, ADMIN_ROLE);
 
-        Constraint adminRoleConstraint = new Constraint();
-        adminRoleConstraint.setName(Constraint.__BASIC_AUTH);
-        adminRoleConstraint.setRoles(new String[]{ADMIN_ROLE});
-        adminRoleConstraint.setAuthenticate(true);
+        Constraint adminRoleConstraint = Constraint.from(ADMIN_ROLE);
 
         ConstraintMapping clientConstraintMapping = new ConstraintMapping();
         clientConstraintMapping.setConstraint(userRoleConstraint);
@@ -157,7 +151,7 @@ public class Main {
 
         // Allow testresource to be accessed without authentication
         ConstraintMapping testEndpointConstraintMapping = new ConstraintMapping();
-        testEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        testEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
         testEndpointConstraintMapping.setPathSpec("/test/*");
 
         ConstraintMapping adminRoleConstraintMapping = new ConstraintMapping();
@@ -172,7 +166,7 @@ public class Main {
 
         // Allow healthresource to be accessed without authentication
         ConstraintMapping healthEndpointConstraintMapping = new ConstraintMapping();
-        healthEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        healthEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
         healthEndpointConstraintMapping.setPathSpec(HealthResource.HEALTH_PATH);
         securityHandler.addConstraintMapping(healthEndpointConstraintMapping);
 
@@ -181,145 +175,145 @@ public class Main {
         if (!loadtest_basicauth) {
             // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configEndpointConstraintMapping = new ConstraintMapping();
-            configEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH);
             securityHandler.addConstraintMapping(configEndpointConstraintMapping);
 
             // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configTraceEndpointConstraintMapping = new ConstraintMapping();
-            configTraceEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configTraceEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configTraceEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_TRACE);
             securityHandler.addConstraintMapping(configTraceEndpointConstraintMapping);
 
             // Allow configresource to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configEndpoint2ConstraintMapping = new ConstraintMapping();
-            configEndpoint2ConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configEndpoint2ConstraintMapping.setConstraint(Constraint.ALLOWED);
             configEndpoint2ConstraintMapping.setPathSpec(SetupLoadTestResource.SETUP_PATH);
             securityHandler.addConstraintMapping(configEndpoint2ConstraintMapping);
 
             // Allow configresource read-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configLoadEndpointConstraintMapping = new ConstraintMapping();
-            configLoadEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configLoadEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configLoadEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_LOAD);
             securityHandler.addConstraintMapping(configLoadEndpointConstraintMapping);
 
             // Allow configresource read-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configReadEndpointConstraintMapping = new ConstraintMapping();
-            configReadEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configReadEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configReadEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_READ);
             securityHandler.addConstraintMapping(configReadEndpointConstraintMapping);
 
             // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configWriteEndpointConstraintMapping = new ConstraintMapping();
-            configWriteEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configWriteEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configWriteEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_WRITE);
             securityHandler.addConstraintMapping(configWriteEndpointConstraintMapping);
 
             // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configBenchmarkEndpointConstraintMapping = new ConstraintMapping();
-            configBenchmarkEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configBenchmarkEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configBenchmarkEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_BENCHMARK);
             securityHandler.addConstraintMapping(configBenchmarkEndpointConstraintMapping);
 
             // Allow configresource write-test_setup to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping configSelectEndpointConstraintMapping = new ConstraintMapping();
-            configSelectEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            configSelectEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             configSelectEndpointConstraintMapping.setPathSpec(ConfigLoadTestResource.CONFIG_PATH_SELECT_TESTSPECIFICATIONSET);
             securityHandler.addConstraintMapping(configSelectEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestEndpointConstraintMapping = new ConstraintMapping();
-            loadTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH);
             securityHandler.addConstraintMapping(loadTestEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestTraceEndpointConstraintMapping = new ConstraintMapping();
-            loadTestTraceEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestTraceEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestTraceEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_TRACE);
             securityHandler.addConstraintMapping(loadTestTraceEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestZipEndpointConstraintMapping = new ConstraintMapping();
-            loadTestZipEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestZipEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestZipEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_ZIP);
             securityHandler.addConstraintMapping(loadTestZipEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestFormEndpointConstraintMapping = new ConstraintMapping();
-            loadTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM);
             securityHandler.addConstraintMapping(loadTestFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestLoadFormEndpointConstraintMapping = new ConstraintMapping();
-            loadTestLoadFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestLoadFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestLoadFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_LOAD);
             securityHandler.addConstraintMapping(loadTestLoadFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestLoadTraceFormEndpointConstraintMapping = new ConstraintMapping();
-            loadTestLoadTraceFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestLoadTraceFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestLoadTraceFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_LOAD_TRACE);
             securityHandler.addConstraintMapping(loadTestLoadTraceFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadReadTestFormEndpointConstraintMapping = new ConstraintMapping();
-            loadReadTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadReadTestFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadReadTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_READ);
             securityHandler.addConstraintMapping(loadReadTestFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadWriteTestFormEndpointConstraintMapping = new ConstraintMapping();
-            loadWriteTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadWriteTestFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadWriteTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_WRITE);
             securityHandler.addConstraintMapping(loadWriteTestFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadBenchmarkFormEndpointConstraintMapping = new ConstraintMapping();
-            loadBenchmarkFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadBenchmarkFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadBenchmarkFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_BENCHMARK);
             securityHandler.addConstraintMapping(loadBenchmarkFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadSelectTestFormEndpointConstraintMapping = new ConstraintMapping();
-            loadSelectTestFormEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadSelectTestFormEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadSelectTestFormEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FORM_SELECT);
             securityHandler.addConstraintMapping(loadSelectTestFormEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestRunStatusEndpointConstraintMapping = new ConstraintMapping();
-            loadTestRunStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestRunStatusEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestRunStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STATUS);
             securityHandler.addConstraintMapping(loadTestRunStatusEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestDashboardEndpointConstraintMapping = new ConstraintMapping();
-            loadTestDashboardEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestDashboardEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestDashboardEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_DASHBOARD);
             securityHandler.addConstraintMapping(loadTestDashboardEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestStatusEndpointConstraintMapping = new ConstraintMapping();
-            loadTestStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestStatusEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_RUNSTATUS);
             securityHandler.addConstraintMapping(loadTestStatusEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestFullStatusEndpointConstraintMapping = new ConstraintMapping();
-            loadTestFullStatusEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestFullStatusEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestFullStatusEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FULLSTATUS);
             securityHandler.addConstraintMapping(loadTestFullStatusEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestFullStatusCSVEndpointConstraintMapping = new ConstraintMapping();
-            loadTestFullStatusCSVEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestFullStatusCSVEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestFullStatusCSVEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_FULLSTATUS_CSV);
             securityHandler.addConstraintMapping(loadTestFullStatusCSVEndpointConstraintMapping);
 
             // Allow loadTest to be accessed without authentication   (for now, should be protected for pipeline CD/CP use))
             ConstraintMapping loadTestStopEndpointConstraintMapping = new ConstraintMapping();
-            loadTestStopEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+            loadTestStopEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
             loadTestStopEndpointConstraintMapping.setPathSpec(LoadTestResource.APPLICATION_PATH_STOP);
             securityHandler.addConstraintMapping(loadTestStopEndpointConstraintMapping);
 
@@ -328,25 +322,25 @@ public class Main {
 
         // Allow OAuth2StubbedServerResource to be accessed without authentication
         ConstraintMapping oauthserverEndpointConstraintMapping = new ConstraintMapping();
-        oauthserverEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        oauthserverEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
         oauthserverEndpointConstraintMapping.setPathSpec(OAuth2StubbedServerResource.OAUTH2TOKENSERVER_PATH);
         securityHandler.addConstraintMapping(oauthserverEndpointConstraintMapping);
 
         // Allow OAuth2StubbedServerResource to be accessed without authentication
         ConstraintMapping pingEndpointConstraintMapping = new ConstraintMapping();
-        pingEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        pingEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
         pingEndpointConstraintMapping.setPathSpec(PingResource.PING_PATH);
         securityHandler.addConstraintMapping(pingEndpointConstraintMapping);
 
         // Allow RestTestResource to be accessed without authentication
         ConstraintMapping restTestEndpointConstraintMapping = new ConstraintMapping();
-        restTestEndpointConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        restTestEndpointConstraintMapping.setConstraint(Constraint.ALLOWED);
         restTestEndpointConstraintMapping.setPathSpec(RestTestResource.REST_PATH + "/*");
         securityHandler.addConstraintMapping(restTestEndpointConstraintMapping);
 
         // Allow tokenverifyerResource to be accessed without authentication
         ConstraintMapping tokenVerifyConstraintMapping = new ConstraintMapping();
-        tokenVerifyConstraintMapping.setConstraint(new Constraint(Constraint.NONE, Constraint.ANY_ROLE));
+        tokenVerifyConstraintMapping.setConstraint(Constraint.ALLOWED);
         tokenVerifyConstraintMapping.setPathSpec(OAuth2StubbedTokenVerifyResource.OAUTH2TOKENVERIFY_PATH);
         securityHandler.addConstraintMapping(tokenVerifyConstraintMapping);
 
