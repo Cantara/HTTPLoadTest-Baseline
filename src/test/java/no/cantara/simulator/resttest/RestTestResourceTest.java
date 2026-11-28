@@ -1,6 +1,6 @@
 package no.cantara.simulator.resttest;
 
-import com.jayway.restassured.http.ContentType;
+import io.restassured.http.ContentType;
 import no.cantara.service.testsupport.TestServer;
 import no.cantara.simulator.RestTestResource;
 import org.testng.annotations.AfterClass;
@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import java.net.HttpURLConnection;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 public class RestTestResourceTest {
 
